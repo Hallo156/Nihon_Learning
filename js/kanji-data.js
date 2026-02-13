@@ -27,6 +27,9 @@ const kanjiData = [
     { kanji: '八', meaning_de: ['acht', '8'], meaning_en: ['eight', '8'], on: 'ハチ', kun: 'やっ(つ)', romaji: 'hachi', romaji_variants: ['yattsu'], level: 'A1' },
     { kanji: '九', meaning_de: ['neun', '9'], meaning_en: ['nine', '9'], on: 'キュウ', kun: 'ここの(つ)', romaji: 'kyuu', romaji_variants: ['ku', 'kokonotsu', 'kyū'], level: 'A1' },
     { kanji: '十', meaning_de: ['zehn', '10'], meaning_en: ['ten', '10'], on: 'ジュウ', kun: 'とお', romaji: 'juu', romaji_variants: ['too', 'jū'], level: 'A1' },
+    { kanji: '百', meaning_de: ['hundert', '100'], meaning_en: ['hundred', '100'], on: 'ヒャク', kun: '—', romaji: 'hyaku', romaji_variants: [], level: 'A1' },
+    { kanji: '千', meaning_de: ['tausend', '1000'], meaning_en: ['thousand', '1000'], on: 'セン', kun: 'ち', romaji: 'sen', romaji_variants: ['chi'], level: 'A1' },
+    { kanji: '万', meaning_de: ['zehntausend', '10000'], meaning_en: ['ten thousand', '10000'], on: 'マン、バン', kun: '—', romaji: 'man', romaji_variants: ['ban'], level: 'A1' },
 
     /* ============ A1 — Wochentage ============ */
 
@@ -37,6 +40,27 @@ const kanjiData = [
     { kanji: '木', meaning_de: ['Baum', 'Holz'], meaning_en: ['tree', 'wood'], on: 'モク、ボク', kun: 'き', romaji: 'moku', romaji_variants: ['ki', 'boku'], level: 'A1' },
     { kanji: '金', meaning_de: ['Gold', 'Geld'], meaning_en: ['gold', 'money'], on: 'キン、コン', kun: 'かね', romaji: 'kin', romaji_variants: ['kane', 'kon'], level: 'A1' },
     { kanji: '土', meaning_de: ['Erde', 'Boden'], meaning_en: ['earth', 'soil', 'ground'], on: 'ド、ト', kun: 'つち', romaji: 'do', romaji_variants: ['tsuchi', 'to'], level: 'A1' },
+
+    /* ============ A1 — Zeit ============ */
+
+    { kanji: '年', meaning_de: ['Jahr'], meaning_en: ['year'], on: 'ネン', kun: 'とし', romaji: 'nen', romaji_variants: ['toshi'], level: 'A1' },
+    { kanji: '今', meaning_de: ['jetzt', 'heute'], meaning_en: ['now', 'present'], on: 'コン、キン', kun: 'いま', romaji: 'ima', romaji_variants: ['kon', 'kin'], level: 'A1' },
+    { kanji: '先', meaning_de: ['vorher', 'früher', 'frueher'], meaning_en: ['before', 'previous', 'ahead'], on: 'セン', kun: 'さき', romaji: 'sen', romaji_variants: ['saki'], level: 'A1' },
+    { kanji: '前', meaning_de: ['vor', 'vorher', 'vorne'], meaning_en: ['before', 'front', 'in front'], on: 'ゼン', kun: 'まえ', romaji: 'mae', romaji_variants: ['zen'], level: 'A1' },
+    { kanji: '後', meaning_de: ['nach', 'hinter', 'danach'], meaning_en: ['after', 'behind', 'later'], on: 'ゴ、コウ', kun: 'あと、うし(ろ)', romaji: 'ato', romaji_variants: ['go', 'kou', 'ushiro', 'kō'], level: 'A1' },
+    { kanji: '午', meaning_de: ['Mittag'], meaning_en: ['noon', 'midday'], on: 'ゴ', kun: '—', romaji: 'go', romaji_variants: [], level: 'A1' },
+    { kanji: '時', meaning_de: ['Zeit', 'Stunde', 'Uhr'], meaning_en: ['time', 'hour', 'clock'], on: 'ジ', kun: 'とき', romaji: 'ji', romaji_variants: ['toki'], level: 'A1' },
+    { kanji: '分', meaning_de: ['Minute', 'Teil', 'teilen'], meaning_en: ['minute', 'part', 'divide'], on: 'ブン、フン', kun: 'わ(かる)', romaji: 'fun', romaji_variants: ['bun', 'wakaru', 'pun'], level: 'A1' },
+    { kanji: '半', meaning_de: ['halb', 'Hälfte', 'Haelfte'], meaning_en: ['half'], on: 'ハン', kun: 'なか(ば)', romaji: 'han', romaji_variants: ['nakaba'], level: 'A1' },
+
+    /* ============ A1 — Kompass & Richtungen ============ */
+
+    { kanji: '東', meaning_de: ['Osten', 'Ost'], meaning_en: ['east'], on: 'トウ', kun: 'ひがし', romaji: 'higashi', romaji_variants: ['tou', 'tō'], level: 'A1' },
+    { kanji: '西', meaning_de: ['Westen', 'West'], meaning_en: ['west'], on: 'セイ、サイ', kun: 'にし', romaji: 'nishi', romaji_variants: ['sei', 'sai'], level: 'A1' },
+    { kanji: '南', meaning_de: ['Süden', 'Sued', 'Sueden'], meaning_en: ['south'], on: 'ナン', kun: 'みなみ', romaji: 'minami', romaji_variants: ['nan'], level: 'A1' },
+    { kanji: '北', meaning_de: ['Norden', 'Nord'], meaning_en: ['north'], on: 'ホク', kun: 'きた', romaji: 'kita', romaji_variants: ['hoku'], level: 'A1' },
+    { kanji: '右', meaning_de: ['rechts'], meaning_en: ['right'], on: 'ウ、ユウ', kun: 'みぎ', romaji: 'migi', romaji_variants: ['u', 'yuu', 'yū'], level: 'A1' },
+    { kanji: '左', meaning_de: ['links'], meaning_en: ['left'], on: 'サ', kun: 'ひだり', romaji: 'hidari', romaji_variants: ['sa'], level: 'A1' },
 
     /* ============ A1 — Grundbegriffe ============ */
 
@@ -49,31 +73,33 @@ const kanjiData = [
     { kanji: '下', meaning_de: ['unten', 'unter'], meaning_en: ['below', 'down', 'under'], on: 'カ、ゲ', kun: 'した、さ(がる)', romaji: 'shita', romaji_variants: ['ka', 'ge', 'sagaru'], level: 'A1' },
     { kanji: '中', meaning_de: ['Mitte', 'in', 'innen'], meaning_en: ['middle', 'inside', 'center'], on: 'チュウ', kun: 'なか', romaji: 'naka', romaji_variants: ['chuu', 'chū'], level: 'A1' },
     { kanji: '本', meaning_de: ['Buch', 'Ursprung'], meaning_en: ['book', 'origin'], on: 'ホン', kun: 'もと', romaji: 'hon', romaji_variants: ['moto'], level: 'A1' },
+    { kanji: '口', meaning_de: ['Mund'], meaning_en: ['mouth'], on: 'コウ、ク', kun: 'くち', romaji: 'kuchi', romaji_variants: ['kou', 'ku', 'kō'], level: 'A1' },
+    { kanji: '駅', meaning_de: ['Bahnhof', 'Station'], meaning_en: ['station'], on: 'エキ', kun: '—', romaji: 'eki', romaji_variants: [], level: 'A1' },
 
-    /* ============ A1 — Verben ============ */
+    /* ============ A1 — Verben & Taetigkeiten ============ */
 
     { kanji: '行', meaning_de: ['gehen'], meaning_en: ['go'], on: 'コウ、ギョウ', kun: 'い(く)', romaji: 'iku', romaji_variants: ['kou', 'gyou', 'kō', 'gyō'], level: 'A1' },
     { kanji: '来', meaning_de: ['kommen'], meaning_en: ['come'], on: 'ライ', kun: 'く(る)', romaji: 'kuru', romaji_variants: ['rai'], level: 'A1' },
     { kanji: '見', meaning_de: ['sehen', 'schauen'], meaning_en: ['see', 'look', 'watch'], on: 'ケン', kun: 'み(る)', romaji: 'miru', romaji_variants: ['ken'], level: 'A1' },
     { kanji: '食', meaning_de: ['essen'], meaning_en: ['eat', 'food'], on: 'ショク', kun: 'た(べる)', romaji: 'taberu', romaji_variants: ['shoku'], level: 'A1' },
+    { kanji: '飲', meaning_de: ['trinken'], meaning_en: ['drink'], on: 'イン', kun: 'の(む)', romaji: 'nomu', romaji_variants: ['in'], level: 'A1' },
+    { kanji: '買', meaning_de: ['kaufen'], meaning_en: ['buy', 'purchase'], on: 'バイ', kun: 'か(う)', romaji: 'kau', romaji_variants: ['bai'], level: 'A1' },
+    { kanji: '読', meaning_de: ['lesen'], meaning_en: ['read'], on: 'ドク、トク', kun: 'よ(む)', romaji: 'yomu', romaji_variants: ['doku', 'toku'], level: 'A1' },
+    { kanji: '書', meaning_de: ['schreiben'], meaning_en: ['write'], on: 'ショ', kun: 'か(く)', romaji: 'kaku', romaji_variants: ['sho'], level: 'A1' },
+    { kanji: '聞', meaning_de: ['hören', 'hoeren', 'fragen'], meaning_en: ['hear', 'listen', 'ask'], on: 'ブン、モン', kun: 'き(く)', romaji: 'kiku', romaji_variants: ['bun', 'mon'], level: 'A1' },
+    { kanji: '話', meaning_de: ['sprechen', 'Gespräch', 'Gespraech'], meaning_en: ['speak', 'talk', 'conversation'], on: 'ワ', kun: 'はな(す)', romaji: 'hanasu', romaji_variants: ['wa', 'hanashi'], level: 'A1' },
+    { kanji: '言', meaning_de: ['sagen', 'Wort'], meaning_en: ['say', 'word'], on: 'ゲン、ゴン', kun: 'い(う)', romaji: 'iu', romaji_variants: ['gen', 'gon'], level: 'A1' },
 
-    /* ============ A2 — Zeit ============ */
+    /* ============ A1 — Adjektive ============ */
 
-    { kanji: '年', meaning_de: ['Jahr'], meaning_en: ['year'], on: 'ネン', kun: 'とし', romaji: 'nen', romaji_variants: ['toshi'], level: 'A2' },
-    { kanji: '今', meaning_de: ['jetzt', 'heute'], meaning_en: ['now', 'present'], on: 'コン、キン', kun: 'いま', romaji: 'ima', romaji_variants: ['kon', 'kin'], level: 'A2' },
-    { kanji: '先', meaning_de: ['vorher', 'früher', 'frueher'], meaning_en: ['before', 'previous', 'ahead'], on: 'セン', kun: 'さき', romaji: 'sen', romaji_variants: ['saki'], level: 'A2' },
-    { kanji: '前', meaning_de: ['vor', 'vorher', 'vorne'], meaning_en: ['before', 'front', 'in front'], on: 'ゼン', kun: 'まえ', romaji: 'mae', romaji_variants: ['zen'], level: 'A2' },
-    { kanji: '後', meaning_de: ['nach', 'hinter', 'danach'], meaning_en: ['after', 'behind', 'later'], on: 'ゴ、コウ', kun: 'あと、うし(ろ)', romaji: 'ato', romaji_variants: ['go', 'kou', 'ushiro', 'kō'], level: 'A2' },
-    { kanji: '午', meaning_de: ['Mittag'], meaning_en: ['noon', 'midday'], on: 'ゴ', kun: '—', romaji: 'go', romaji_variants: [], level: 'A2' },
-    { kanji: '時', meaning_de: ['Zeit', 'Stunde', 'Uhr'], meaning_en: ['time', 'hour', 'clock'], on: 'ジ', kun: 'とき', romaji: 'ji', romaji_variants: ['toki'], level: 'A2' },
-    { kanji: '分', meaning_de: ['Minute', 'Teil', 'teilen'], meaning_en: ['minute', 'part', 'divide'], on: 'ブン、フン', kun: 'わ(かる)', romaji: 'fun', romaji_variants: ['bun', 'wakaru', 'pun'], level: 'A2' },
+    { kanji: '新', meaning_de: ['neu'], meaning_en: ['new'], on: 'シン', kun: 'あたら(しい)', romaji: 'shin', romaji_variants: ['atarashii', 'sin'], level: 'A1' },
+    { kanji: '古', meaning_de: ['alt'], meaning_en: ['old'], on: 'コ', kun: 'ふる(い)', romaji: 'furui', romaji_variants: ['ko'], level: 'A1' },
 
-    /* ============ A2 — Richtungen ============ */
+    /* ============ A1 — Essen ============ */
 
-    { kanji: '東', meaning_de: ['Osten', 'Ost'], meaning_en: ['east'], on: 'トウ', kun: 'ひがし', romaji: 'higashi', romaji_variants: ['tou', 'tō'], level: 'A2' },
-    { kanji: '西', meaning_de: ['Westen', 'West'], meaning_en: ['west'], on: 'セイ、サイ', kun: 'にし', romaji: 'nishi', romaji_variants: ['sei', 'sai'], level: 'A2' },
-    { kanji: '南', meaning_de: ['Süden', 'Sued', 'Sueden'], meaning_en: ['south'], on: 'ナン', kun: 'みなみ', romaji: 'minami', romaji_variants: ['nan'], level: 'A2' },
-    { kanji: '北', meaning_de: ['Norden', 'Nord'], meaning_en: ['north'], on: 'ホク', kun: 'きた', romaji: 'kita', romaji_variants: ['hoku'], level: 'A2' },
+    { kanji: '魚', meaning_de: ['Fisch'], meaning_en: ['fish'], on: 'ギョ', kun: 'さかな、うお', romaji: 'sakana', romaji_variants: ['gyo', 'uo'], level: 'A1' },
+    { kanji: '肉', meaning_de: ['Fleisch'], meaning_en: ['meat'], on: 'ニク', kun: '—', romaji: 'niku', romaji_variants: [], level: 'A1' },
+    { kanji: '卵', meaning_de: ['Ei'], meaning_en: ['egg'], on: 'ラン', kun: 'たまご', romaji: 'tamago', romaji_variants: ['ran'], level: 'A1' },
 
     /* ============ A2 — Familie ============ */
 
@@ -86,12 +112,6 @@ const kanjiData = [
 
     /* ============ A2 — Aktionen ============ */
 
-    { kanji: '買', meaning_de: ['kaufen'], meaning_en: ['buy', 'purchase'], on: 'バイ', kun: 'か(う)', romaji: 'kau', romaji_variants: ['bai'], level: 'A2' },
-    { kanji: '読', meaning_de: ['lesen'], meaning_en: ['read'], on: 'ドク、トク', kun: 'よ(む)', romaji: 'yomu', romaji_variants: ['doku', 'toku'], level: 'A2' },
-    { kanji: '書', meaning_de: ['schreiben'], meaning_en: ['write'], on: 'ショ', kun: 'か(く)', romaji: 'kaku', romaji_variants: ['sho'], level: 'A2' },
-    { kanji: '聞', meaning_de: ['hören', 'hoeren', 'fragen'], meaning_en: ['hear', 'listen', 'ask'], on: 'ブン、モン', kun: 'き(く)', romaji: 'kiku', romaji_variants: ['bun', 'mon'], level: 'A2' },
-    { kanji: '話', meaning_de: ['sprechen', 'Gespräch', 'Gespraech'], meaning_en: ['speak', 'talk', 'conversation'], on: 'ワ', kun: 'はな(す)', romaji: 'hanasu', romaji_variants: ['wa', 'hanashi'], level: 'A2' },
-    { kanji: '言', meaning_de: ['sagen', 'Wort'], meaning_en: ['say', 'word'], on: 'ゲン、ゴン', kun: 'い(う)', romaji: 'iu', romaji_variants: ['gen', 'gon'], level: 'A2' },
     { kanji: '出', meaning_de: ['ausgehen', 'herausgehen', 'hinausgehen'], meaning_en: ['go out', 'exit', 'leave'], on: 'シュツ', kun: 'で(る)、だ(す)', romaji: 'deru', romaji_variants: ['shutsu', 'dasu'], level: 'A2' },
     { kanji: '入', meaning_de: ['eintreten', 'hineingehen'], meaning_en: ['enter', 'go in'], on: 'ニュウ', kun: 'い(る)、はい(る)', romaji: 'hairu', romaji_variants: ['nyuu', 'iru', 'nyū'], level: 'A2' },
     { kanji: '休', meaning_de: ['ausruhen', 'Pause', 'frei haben'], meaning_en: ['rest', 'break', 'take a day off'], on: 'キュウ', kun: 'やす(む)', romaji: 'yasumu', romaji_variants: ['kyuu', 'kyū'], level: 'A2' },
@@ -99,23 +119,16 @@ const kanjiData = [
 
     /* ============ A2 — Koerper ============ */
 
-    { kanji: '口', meaning_de: ['Mund'], meaning_en: ['mouth'], on: 'コウ、ク', kun: 'くち', romaji: 'kuchi', romaji_variants: ['kou', 'ku', 'kō'], level: 'A2' },
     { kanji: '目', meaning_de: ['Auge'], meaning_en: ['eye'], on: 'モク、ボク', kun: 'め', romaji: 'me', romaji_variants: ['moku', 'boku'], level: 'A2' },
     { kanji: '手', meaning_de: ['Hand'], meaning_en: ['hand'], on: 'シュ', kun: 'て', romaji: 'te', romaji_variants: ['shu'], level: 'A2' },
     { kanji: '足', meaning_de: ['Fuß', 'Fuss', 'Bein'], meaning_en: ['foot', 'leg'], on: 'ソク', kun: 'あし', romaji: 'ashi', romaji_variants: ['soku'], level: 'A2' },
 
     /* ============ A2 — Weiteres ============ */
 
-    { kanji: '右', meaning_de: ['rechts'], meaning_en: ['right'], on: 'ウ、ユウ', kun: 'みぎ', romaji: 'migi', romaji_variants: ['u', 'yuu', 'yū'], level: 'A2' },
-    { kanji: '左', meaning_de: ['links'], meaning_en: ['left'], on: 'サ', kun: 'ひだり', romaji: 'hidari', romaji_variants: ['sa'], level: 'A2' },
     { kanji: '車', meaning_de: ['Auto', 'Wagen', 'Fahrzeug'], meaning_en: ['car', 'vehicle'], on: 'シャ', kun: 'くるま', romaji: 'kuruma', romaji_variants: ['sha'], level: 'A2' },
     { kanji: '電', meaning_de: ['Elektrizität', 'Strom', 'elektrisch'], meaning_en: ['electricity', 'electric'], on: 'デン', kun: '—', romaji: 'den', romaji_variants: [], level: 'A2' },
-    { kanji: '駅', meaning_de: ['Bahnhof', 'Station'], meaning_en: ['station'], on: 'エキ', kun: '—', romaji: 'eki', romaji_variants: [], level: 'A2' },
     { kanji: '学', meaning_de: ['lernen', 'Studium'], meaning_en: ['learn', 'study'], on: 'ガク', kun: 'まな(ぶ)', romaji: 'gaku', romaji_variants: ['manabu'], level: 'A2' },
     { kanji: '校', meaning_de: ['Schule'], meaning_en: ['school'], on: 'コウ', kun: '—', romaji: 'kou', romaji_variants: ['kō'], level: 'A2' },
-    { kanji: '百', meaning_de: ['hundert', '100'], meaning_en: ['hundred', '100'], on: 'ヒャク', kun: '—', romaji: 'hyaku', romaji_variants: [], level: 'A2' },
-    { kanji: '千', meaning_de: ['tausend', '1000'], meaning_en: ['thousand', '1000'], on: 'セン', kun: 'ち', romaji: 'sen', romaji_variants: ['chi'], level: 'A2' },
-    { kanji: '万', meaning_de: ['zehntausend', '10000'], meaning_en: ['ten thousand', '10000'], on: 'マン、バン', kun: '—', romaji: 'man', romaji_variants: ['ban'], level: 'A2' },
 
     /* ============ B1 — Starter ============ */
 
@@ -123,8 +136,6 @@ const kanjiData = [
     { kanji: '社', meaning_de: ['Firma', 'Gesellschaft'], meaning_en: ['company', 'society'], on: 'シャ', kun: 'やしろ', romaji: 'sha', romaji_variants: ['yashiro'], level: 'B1' },
     { kanji: '仕', meaning_de: ['dienen', 'Arbeit'], meaning_en: ['serve', 'work'], on: 'シ、ジ', kun: 'つか(える)', romaji: 'shi', romaji_variants: ['ji', 'tsukaeru', 'si'], level: 'B1' },
     { kanji: '事', meaning_de: ['Sache', 'Angelegenheit'], meaning_en: ['thing', 'matter', 'affair'], on: 'ジ、ズ', kun: 'こと', romaji: 'koto', romaji_variants: ['ji', 'zu'], level: 'B1' },
-    { kanji: '新', meaning_de: ['neu'], meaning_en: ['new'], on: 'シン', kun: 'あたら(しい)', romaji: 'shin', romaji_variants: ['atarashii', 'sin'], level: 'B1' },
-    { kanji: '古', meaning_de: ['alt'], meaning_en: ['old'], on: 'コ', kun: 'ふる(い)', romaji: 'furui', romaji_variants: ['ko'], level: 'B1' },
     { kanji: '長', meaning_de: ['lang', 'Chef', 'Leiter'], meaning_en: ['long', 'leader', 'chief'], on: 'チョウ', kun: 'なが(い)', romaji: 'nagai', romaji_variants: ['chou', 'chō'], level: 'B1' },
     { kanji: '高', meaning_de: ['hoch', 'teuer'], meaning_en: ['high', 'tall', 'expensive'], on: 'コウ', kun: 'たか(い)', romaji: 'takai', romaji_variants: ['kou', 'kō'], level: 'B1' },
     { kanji: '安', meaning_de: ['billig', 'günstig', 'guenstig', 'ruhig'], meaning_en: ['cheap', 'inexpensive', 'safe'], on: 'アン', kun: 'やす(い)', romaji: 'yasui', romaji_variants: ['an'], level: 'B1' },

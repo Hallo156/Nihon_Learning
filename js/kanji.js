@@ -199,7 +199,9 @@ function checkTextInput() {
         const allMeanings = [...currentQuestion.meaning_de, ...(currentQuestion.meaning_en || [])];
         isCorrect = allMeanings.some(m => m.toLowerCase() === input.toLowerCase());
     } else if (currentQuizType === 'de-kanji') {
-        isCorrect = input === currentQuestion.kanji;
+        // Akzeptiere Kanji ODER Romaji-Varianten
+        const allAnswers = [currentQuestion.kanji, currentQuestion.romaji, ...currentQuestion.romaji_variants];
+        isCorrect = allAnswers.some(a => a.toLowerCase() === input.toLowerCase());
     } else {
         const allReadings = [currentQuestion.romaji, ...currentQuestion.romaji_variants];
         isCorrect = allReadings.some(r => r.toLowerCase() === input.toLowerCase());

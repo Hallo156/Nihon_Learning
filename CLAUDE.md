@@ -20,7 +20,7 @@ js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
   kana.js                  Kana-Daten (6 Kategorien, ~230 Zeichen) + Quiz-Logik + Romaji-Varianten
-  kanji-data.js            Kanji-Daten nach Stufen: A1 (30), A2 (40), B1 (15), B2 (15) = 100 Kanji
+  kanji-data.js            Kanji-Daten nach Stufen: A1 (59), A2 (17), B1 (13), B2 (15) = 104 Kanji
   kanji.js                 Kanji-Quiz: 3 Typen, Stufenfilter, Spaced Repetition (70/30)
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz: 4 Fragetypen, dynamische Generierung, Segment-Filter, Spaced Repetition
@@ -68,7 +68,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `i18n.js`: ~152 Zeilen
 - `verb.js`: ~149 Zeilen
 - `kana.js`: ~192 Zeilen
-- `kanji-data.js`: ~153 Zeilen (reine Daten, ausgelagert wegen Groesse)
+- `kanji-data.js`: ~167 Zeilen (reine Daten, ausgelagert wegen Groesse)
 - `kanji.js`: ~303 Zeilen
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~295 Zeilen
@@ -92,7 +92,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Moduswechsel resettet Score + Queues
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
-- 100 Kanji in 4 Stufen: A1 (30), A2 (40), B1 (15 Starter), B2 (15 Starter)
+- 104 Kanji in 4 Stufen: A1 (59), A2 (17), B1 (13 Starter), B2 (15 Starter)
 - Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], level }`
 - 3 Quiz-Typen per Toggle: Kanji→Deutsch/English (MC+Text), Deutsch/English→Kanji (MC+Text), Kanji→Lesung (nur Text)
 - Stufenfilter: 4 Checkboxen (A1 default an), "Filter anwenden" resettet Quiz
