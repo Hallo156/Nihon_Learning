@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="kana.title">Interaktiver Kana Trainer</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/kana.css">
+</head>
+<body>
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container kana-trainer">
+        <h1 data-i18n="kana.title">Interaktiver Kana Trainer</h1>
+
+        <div class="filters">
+            <h3 data-i18n="kana.filterHead">Wähle die Kana-Typen zum Üben:</h3>
+            <div class="filter-group">
+                <label><input type="checkbox" id="hiraganaBasic" checked> <span data-i18n="kana.hiraBasic">Hiragana (Basis)</span></label>
+                <label><input type="checkbox" id="katakanaBasic" checked> <span data-i18n="kana.kataBasic">Katakana (Basis)</span></label>
+            </div>
+            <div class="filter-group">
+                <label><input type="checkbox" id="hiraganaDakuten"> <span data-i18n="kana.hiraDakuten">Hiragana (Dakuten/Handakuten)</span></label>
+                <label><input type="checkbox" id="katakanaDakuten"> <span data-i18n="kana.kataDakuten">Katakana (Dakuten/Handakuten)</span></label>
+            </div>
+            <div class="filter-group">
+                <label><input type="checkbox" id="hiraganaYoon"> <span data-i18n="kana.hiraYoon">Hiragana (Yoon)</span></label>
+                <label><input type="checkbox" id="katakanaYoon"> <span data-i18n="kana.kataYoon">Katakana (Yoon)</span></label>
+            </div>
+            <button id="applyFiltersButton" data-i18n="kana.applyBtn">Filter anwenden & Neu starten</button>
+            <div class="stats" id="statsDisplay"></div>
+        </div>
+
+        <div class="kana-display" id="kanaDisplay">あ</div>
+
+        <div class="input-area">
+            <input type="text" id="romajiInput" data-i18n-placeholder="kana.placeholder" placeholder="Romaji eingeben">
+            <button id="checkButton" data-i18n="btn.check">Prüfen</button>
+        </div>
+        <button id="nextButton" data-i18n="kana.nextChar">Nächstes Zeichen</button>
+
+        <div class="feedback" id="feedbackArea"></div>
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> | <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/kana.js"></script>
+</body>
+</html>

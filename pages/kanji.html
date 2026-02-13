@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="kanji.title">Kanji-Trainer</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/kanji.css">
+</head>
+<body>
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container kanji-trainer">
+        <h1 data-i18n="kanji.title">Kanji-Trainer</h1>
+
+        <!-- Quiz-Typ Toggle -->
+        <div class="quiz-type-toggle">
+            <button id="typeKanjiDe" class="active" data-i18n="kanji.typeKanjiDe">Kanji → Deutsch</button>
+            <button id="typeDeKanji" data-i18n="kanji.typeDeKanji">Deutsch → Kanji</button>
+            <button id="typeKanjiReading" data-i18n="kanji.typeReading">Kanji → Lesung</button>
+        </div>
+
+        <!-- Modus Toggle -->
+        <div class="mode-toggle">
+            <button id="modeRandom" class="active" data-i18n="btn.random">Zufällig</button>
+            <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
+        </div>
+
+        <!-- Stufenfilter -->
+        <div class="level-filters">
+            <label><input type="checkbox" id="levelA1" checked> A1</label>
+            <label><input type="checkbox" id="levelA2"> A2</label>
+            <label><input type="checkbox" id="levelB1"> B1</label>
+            <label><input type="checkbox" id="levelB2"> B2</label>
+            <button id="applyFilter" data-i18n="btn.applyFilter">Filter anwenden</button>
+        </div>
+
+        <!-- Anzeige (Kanji oder Bedeutung) -->
+        <div id="displayArea" class="kanji-display"></div>
+
+        <!-- Multiple-Choice -->
+        <div id="choicesArea" class="choices-area"></div>
+
+        <!-- Texteingabe -->
+        <div class="input-area">
+            <input type="text" id="textInput" data-i18n-placeholder="input.answer" placeholder="Antwort eingeben...">
+            <button id="checkButton" data-i18n="btn.check">Prüfen</button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback" id="feedbackArea"></div>
+
+        <!-- Naechste Frage -->
+        <button id="nextButton" data-i18n="btn.next">Nächste Frage</button>
+
+        <!-- Score -->
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> | <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/kanji-data.js"></script>
+    <script src="../js/kanji.js"></script>
+</body>
+</html>

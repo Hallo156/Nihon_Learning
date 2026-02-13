@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="numbers.title">Zahlen & Zähler</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/numbers.css">
+</head>
+<body class="numbers">
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container numbers-trainer">
+        <h1 data-i18n="numbers.title">Zahlen & Zähler</h1>
+
+        <!-- Ansicht-Toggle: Üben / Nachschlagen -->
+        <div class="view-toggle">
+            <button id="viewQuiz" class="active" data-i18n="numbers.viewQuiz">Üben</button>
+            <button id="viewReference" data-i18n="numbers.viewRef">Nachschlagen</button>
+        </div>
+
+        <!-- ===== QUIZ-ANSICHT ===== -->
+        <div id="quizView">
+
+            <!-- Modus Toggle -->
+            <div class="mode-toggle">
+                <button id="modeRandom" class="active" data-i18n="btn.random">Zufällig</button>
+                <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
+            </div>
+
+            <!-- Themen-Filter -->
+            <div class="segment-filters">
+                <div id="segmentFilters"></div>
+                <button id="applyFilter" class="filter-apply-btn" data-i18n="btn.applyFilter">Filter anwenden</button>
+            </div>
+
+            <!-- Frage-Anzeige -->
+            <div id="displayArea" class="question-display"></div>
+
+            <!-- Multiple-Choice Buttons -->
+            <div id="choicesArea" class="choices-area"></div>
+
+            <!-- Texteingabe -->
+            <div class="input-area" id="inputArea">
+                <input type="text" id="textInput" data-i18n-placeholder="input.answer" placeholder="Antwort eingeben...">
+                <button id="checkButton" data-i18n="btn.check">Prüfen</button>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedbackArea"></div>
+
+            <!-- Nächste Frage -->
+            <button id="nextButton" class="next-btn" data-i18n="btn.next">Nächste Frage</button>
+
+            <!-- Score -->
+            <div class="score">
+                <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> | <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+            </div>
+        </div>
+
+        <!-- ===== NACHSCHLAGEN-ANSICHT ===== -->
+        <div id="referenceView" style="display:none;">
+            <div id="referenceContent" class="reference-section"></div>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/numbers-data.js"></script>
+    <script src="../js/numbers.js"></script>
+</body>
+</html>

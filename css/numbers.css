@@ -1,0 +1,286 @@
+/* ===== Zahlen & Zähler spezifische Styles ===== */
+
+/* Container breiter fuer Lerninhalt */
+.numbers .container {
+    max-width: 900px;
+    text-align: center;
+}
+
+/* ===== Ansicht-Toggle (Üben / Nachschlagen) ===== */
+.numbers .view-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+.numbers .view-toggle button {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 15px;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.numbers .view-toggle button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.numbers .view-toggle button:hover:not(.active) {
+    background-color: #e8f0fe;
+}
+
+/* ===== Mode Toggle ===== */
+.numbers .mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+    max-width: 350px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.numbers .mode-toggle button {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.numbers .mode-toggle button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.numbers .mode-toggle button:hover:not(.active) {
+    background-color: #e8f0fe;
+}
+
+/* ===== Segment-Filter ===== */
+.numbers .segment-filters {
+    margin: 15px 0 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    text-align: left;
+}
+
+.numbers .segment-filters #segmentFilters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 15px;
+}
+
+.numbers .segment-filters label {
+    flex: 0 0 48%;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.numbers .segment-filters input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+}
+
+/* ===== Frage-Anzeige ===== */
+.numbers .question-display {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    min-height: 100px;
+}
+
+.numbers .segment-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    margin-bottom: 12px;
+}
+
+.numbers .prompt-text {
+    font-size: 18px;
+    color: #333;
+    margin: 8px 0;
+}
+
+.number-display {
+    font-size: 64px;
+    font-weight: bold;
+    color: #1a1a1a;
+    margin: 15px 0;
+    line-height: 1.2;
+}
+
+/* ===== Multiple-Choice ===== */
+.numbers .choices-area {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.numbers .choice-button {
+    padding: 12px 20px;
+    font-size: 18px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    min-width: 140px;
+}
+
+.numbers .choice-button:hover:not(:disabled) {
+    background-color: #2980b9;
+}
+
+.numbers .choice-button:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+.numbers .choice-button:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.numbers .choice-button.correct-choice {
+    background-color: #2e7d32 !important;
+    opacity: 1;
+}
+
+.numbers .choice-button.wrong-choice {
+    background-color: #c62828 !important;
+    opacity: 1;
+}
+
+/* ===== Texteingabe ===== */
+.numbers .input-area {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.numbers .input-area input[type="text"] {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    width: 60%;
+    max-width: 300px;
+    text-align: center;
+}
+
+/* ===== Nächste-Frage Button ===== */
+.numbers .next-btn {
+    padding: 12px 25px;
+    font-size: 17px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    display: none;
+}
+
+.numbers .next-btn:hover {
+    background-color: #27ae60;
+}
+
+/* ===== Feedback ===== */
+.numbers .feedback {
+    text-align: left;
+    line-height: 1.7;
+    padding: 12px;
+    font-size: 15px;
+}
+
+/* ===== Score ===== */
+.numbers .score {
+    margin-top: 15px;
+}
+
+/* ===== Nachschlagen / Referenz ===== */
+.numbers .reference-section {
+    text-align: left;
+}
+
+.numbers .ref-block {
+    margin-bottom: 10px;
+    border-left: 4px solid #007bff;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border-radius: 0 5px 5px 0;
+}
+
+.numbers .ref-block summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #0056b3;
+    font-size: 15px;
+    padding: 4px 0;
+}
+
+.numbers .ref-block summary:hover {
+    color: #007bff;
+}
+
+.numbers .ref-body {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* ===== Referenz-Tabellen ===== */
+.ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+}
+
+.ref-table th,
+.ref-table td {
+    padding: 6px 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.ref-table th {
+    background-color: #f0f2f5;
+    font-weight: bold;
+    color: #333;
+}
+
+.ref-table tr:hover {
+    background-color: #f8f9fa;
+}

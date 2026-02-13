@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="verb.title">Japanischer Verb-Trainer</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/verb.css">
+</head>
+<body>
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container verb-trainer">
+        <h1 data-i18n="verb.title">Japanischer Verb-Trainer</h1>
+
+        <div class="mode-toggle">
+            <button id="modeRandom" class="active" data-i18n="btn.random">Zufällig</button>
+            <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
+        </div>
+
+        <p data-i18n="verb.instruction">Vervollständige den Satz mit dem passenden Verb:</p>
+
+        <div class="question-area" id="questionArea"></div>
+
+        <div class="choices-area" id="choicesArea"></div>
+
+        <div class="feedback" id="feedbackArea"></div>
+
+        <button id="nextButton" data-i18n="btn.next">Nächste Frage</button>
+
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> | <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/verb.js"></script>
+</body>
+</html>

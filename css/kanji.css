@@ -1,0 +1,219 @@
+/* ===== Kanji-Trainer spezifische Styles ===== */
+
+/* ===== Kanji-Anzeige (gross, zentriert) ===== */
+.kanji-display {
+    font-size: 120px;
+    font-weight: bold;
+    color: #333;
+    margin: 25px 0;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    min-height: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Deutsch-Anzeige (bei Deutsch→Kanji) */
+.meaning-display {
+    font-size: 28px;
+    font-weight: bold;
+    color: #34495e;
+    margin: 25px 0;
+    padding: 20px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== Quiz-Type Toggle (3 Buttons) ===== */
+.quiz-type-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+.quiz-type-toggle button {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.quiz-type-toggle button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.quiz-type-toggle button:hover:not(.active) {
+    background-color: #e8f0fe;
+}
+
+/* ===== Mode Toggle (Zufaellig / Wiederholung) ===== */
+.mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+.mode-toggle button {
+    flex: 1;
+    padding: 10px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.mode-toggle button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.mode-toggle button:hover:not(.active) {
+    background-color: #e8f0fe;
+}
+
+/* ===== Multiple-Choice Buttons ===== */
+.choices-area {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.choice-button {
+    padding: 12px 20px;
+    font-size: 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    min-width: 120px;
+}
+
+.choice-button:hover {
+    background-color: #2980b9;
+}
+
+.choice-button:active {
+    transform: scale(0.98);
+}
+
+/* ===== Texteingabe ===== */
+.input-area {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.input-area input[type="text"] {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 18px;
+    width: 60%;
+    max-width: 250px;
+    text-align: center;
+}
+
+/* ===== Feedback (erweitert fuer Kanji-Details) ===== */
+.kanji-trainer .feedback {
+    min-height: 80px;
+    text-align: left;
+    line-height: 1.7;
+    font-size: 16px;
+}
+
+.feedback .kanji-info {
+    font-size: 14px;
+    color: #555;
+    margin-top: 5px;
+}
+
+.feedback .level-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    margin-left: 5px;
+}
+
+/* ===== Stufenfilter ===== */
+.level-filters {
+    margin: 15px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.level-filters label {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.level-filters input[type="checkbox"] {
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.level-filters button {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* ===== Naechste-Frage Button ===== */
+#nextButton {
+    padding: 12px 25px;
+    font-size: 17px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+    display: none;
+}
+
+#nextButton:hover {
+    background-color: #27ae60;
+}
+
+/* ===== Score ===== */
+.score {
+    margin-top: 15px;
+}

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(del \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\KanaTraining.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\TrainingAll.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\VerbTraining.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\VerbTrainingSemiRandom.html\")"
+    ]
+  }
+}
