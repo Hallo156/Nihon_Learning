@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* training-data.js — Daten fuer Vokabular & Grammatik Trainer.
    Reine Datendatei, keine Logik. Wird vor training.js geladen.
    Braucht: nichts (eigenstaendig) */

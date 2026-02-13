@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* kana.js — Kana-Trainer: Zeigt Hiragana/Katakana, Nutzer tippt Romaji.
    6 Kategorien per Checkbox-Filter waehlbar. Akzeptiert Romaji-Varianten (si/shi etc.).
    Braucht: common.js, i18n.js */

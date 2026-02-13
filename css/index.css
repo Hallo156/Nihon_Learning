@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* ===== Hauptmenu Styles ===== */
 
 .subtitle {
@@ -44,4 +46,12 @@
     color: #555;
     margin: 0;
     font-size: 0.95em;
+}
+
+/* ===== Credits Footer ===== */
+.credits {
+    margin-top: 30px;
+    font-size: 13px;
+    color: #999;
+    text-align: center;
 }

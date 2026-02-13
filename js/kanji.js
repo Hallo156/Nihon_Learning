@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* kanji.js — Kanji-Trainer: 3 Quiz-Typen, Stufenfilter, Spaced Repetition.
    Braucht: common.js, i18n.js, kanji-data.js */
 

@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* numbers.js — Zahlen & Zaehlwoerter Quiz-Motor.
    Braucht: common.js, i18n.js, numbers-data.js */
 

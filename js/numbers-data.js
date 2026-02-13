@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* numbers-data.js — Zahlen & Zaehlwoerter (助数詞): Segmente, Grundzahlen, Counter-Tabellen, Referenz.
    Braucht: common.js, i18n.js. Geladen vor numbers.js. */
 

@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* kanji-data.js — Kanji-Daten nach Stufen (A1-B2).
    Wird von kanji.js genutzt. Braucht: nichts (reine Daten). */
 

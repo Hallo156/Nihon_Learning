@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* training.js — Dynamischer Quiz-Motor fuer Vokabular & Grammatik.
    Braucht: common.js, i18n.js, training-data.js */
 

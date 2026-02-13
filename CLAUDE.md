@@ -1,6 +1,8 @@
 # Japanisch Lernprogramm
 
-Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS, kein Build-System.
+Erstellt von **Hi156** unter Verwendung von **Claude** (Anthropic).
+
+Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS, kein Build-System. Gehostet auf GitHub — laeuft auch lokal via `file://` ohne Server.
 
 ## Dateistruktur
 
@@ -40,7 +42,7 @@ pages/
 - **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → training-data.js → training.js
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
-- **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://).
+- **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
 - **Das Tool soll immer in Deutsch und Englisch verstaendlich sein.** Alle UI-Texte muessen ueber i18n.js (`t()`-Funktion und `data-i18n`-Attribute) in beiden Sprachen verfuegbar sein. Daten-Dateien (kanji-data.js, training-data.js, verb.js) muessen bilinguale Felder (`meaning_en`, `prompt_en`, `explanation_en`, etc.) enthalten.
 

@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* i18n.js — Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion.
    Geladen nach common.js, vor allen Modul-Scripts. */
 
@@ -35,6 +37,8 @@ const uiStrings = {
     'index.verb.desc':  { de: 'Sätze mit dem passenden Verb vervollständigen. Mit Zufalls- und Wiederholungsmodus.', en: 'Complete sentences with the correct verb. With random and spaced repetition modes.' },
     'index.kanji.title': { de: 'Kanji-Trainer',            en: 'Kanji Trainer' },
     'index.kanji.desc': { de: 'Kanji lesen, verstehen und übersetzen. Mit Stufenfilter (A1–B2) und Wiederholungsmodus.', en: 'Read, understand and translate Kanji. With level filter (A1–B2) and spaced repetition mode.' },
+
+    'index.credits':    { de: 'Erstellt von Hi156 unter Verwendung von Claude (Anthropic)', en: 'Created by Hi156 using Claude (Anthropic)' },
 
     // --- kana.html ---
     'kana.title':       { de: 'Interaktiver Kana Trainer',  en: 'Interactive Kana Trainer' },

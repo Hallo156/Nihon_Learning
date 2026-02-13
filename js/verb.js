@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* verb.js — Verb-Trainer: Satzluecken mit Multiple-Choice (15 Verben)
    Zwei Modi per Toggle: "Zufaellig" und "Wiederholung" (Spaced Repetition 70/30).
    Braucht: common.js, i18n.js */

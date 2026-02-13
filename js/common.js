@@ -1,3 +1,5 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
 /* common.js — Shared: shuffleArray, ScoreTracker, showFeedback/clearFeedback
    Wird von ALLEN Modulen als erstes <script> geladen. */
 
