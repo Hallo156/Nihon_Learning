@@ -114,7 +114,7 @@ const kanjiData = [
 
     { kanji: '出', meaning_de: ['ausgehen', 'herausgehen', 'hinausgehen'], meaning_en: ['go out', 'exit', 'leave'], on: 'シュツ', kun: 'で(る)、だ(す)', romaji: 'deru', romaji_variants: ['shutsu', 'dasu'], level: 'A2' },
     { kanji: '入', meaning_de: ['eintreten', 'hineingehen'], meaning_en: ['enter', 'go in'], on: 'ニュウ', kun: 'い(る)、はい(る)', romaji: 'hairu', romaji_variants: ['nyuu', 'iru', 'nyū'], level: 'A2' },
-    { kanji: '休', meaning_de: ['ausruhen', 'Pause', 'frei haben'], meaning_en: ['rest', 'break', 'take a day off'], on: 'キュウ', kun: 'やす(む)', romaji: 'yasumu', romaji_variants: ['kyuu', 'kyū'], level: 'A2' },
+    { kanji: '休', meaning_de: ['ausruhen', 'Pause', 'frei haben'], meaning_en: ['rest', 'break', 'take a day off'], on: 'キュウ', kun: 'やす(む)', romaji: 'yasumu', romaji_variants: ['kyuu', 'kyū'], level: 'A1' },
     { kanji: '立', meaning_de: ['stehen', 'aufstehen'], meaning_en: ['stand', 'stand up'], on: 'リツ', kun: 'た(つ)', romaji: 'tatsu', romaji_variants: ['ritsu'], level: 'A2' },
 
     /* ============ A2 — Koerper ============ */

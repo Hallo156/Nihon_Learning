@@ -1,0 +1,36 @@
+<!-- Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="kanjiList.title">Kanji-Liste</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/kanji-list.css">
+</head>
+<body>
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container kanji-list-page">
+        <h1 data-i18n="kanjiList.title">Kanji-Liste</h1>
+        <p class="subtitle" data-i18n="kanjiList.subtitle">Klicke auf eine Karte, um sie umzudrehen.</p>
+
+        <!-- Level-Filter -->
+        <div class="level-filters">
+            <label><input type="checkbox" id="levelA1" checked> A1</label>
+            <label><input type="checkbox" id="levelA2" checked> A2</label>
+            <label><input type="checkbox" id="levelB1" checked> B1</label>
+            <label><input type="checkbox" id="levelB2" checked> B2</label>
+            <button id="applyFilter" data-i18n="btn.applyFilter">Filter anwenden</button>
+        </div>
+
+        <!-- Kanji-Karten Container -->
+        <div id="kanjiCards"></div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/kanji-data.js"></script>
+    <script src="../js/kanji-list.js"></script>
+</body>
+</html>

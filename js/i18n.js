@@ -94,7 +94,14 @@ const uiStrings = {
     'numbers.counterIs':    { de: 'Der Zähler für {0} ist {1}.',        en: 'The counter for {0} is {1}.' },
     'numbers.readingIs':    { de: 'Die Lesung ist: {0} ({1})',          en: 'The reading is: {0} ({1})' },
     'index.numbers.title':  { de: 'Zahlen & Zähler',                    en: 'Numbers & Counters' },
-    'index.numbers.desc':   { de: 'Japanische Zahlen und Zählwörter (助数詞) lernen. Mit 10 Countern und Lautverschiebungen.', en: 'Learn Japanese numbers and counters (助数詞). With 10 counters and sound changes.' }
+    'index.numbers.desc':   { de: 'Japanische Zahlen und Zählwörter (助数詞) lernen. Mit 10 Countern und Lautverschiebungen.', en: 'Learn Japanese numbers and counters (助数詞). With 10 counters and sound changes.' },
+
+    // --- kanji-list.html ---
+    'index.kanjiList.title': { de: 'Kanji-Liste',                      en: 'Kanji List' },
+    'index.kanjiList.desc':  { de: 'Alle Kanji als Karteikarten nach Stufe sortiert. Zum Umdrehen klicken.', en: 'All Kanji as flashcards sorted by level. Click to flip.' },
+    'kanjiList.title':      { de: 'Kanji-Liste',                       en: 'Kanji List' },
+    'kanjiList.subtitle':   { de: 'Klicke auf eine Karte, um sie umzudrehen.', en: 'Click a card to flip it.' },
+    'kanjiList.noKanji':    { de: 'Keine Kanji für die ausgewählten Stufen.', en: 'No Kanji for the selected levels.' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */

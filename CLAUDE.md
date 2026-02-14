@@ -7,12 +7,13 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (5 Karten → Module)
+index.html                 Hauptmenue (6 Karten → Module)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle
   index.css                Karten-Grid fuers Hauptmenue
   kana.css                 Kana-Display (100px), Filter-Panel, Input-Bereich
   kanji.css                Kanji-Display (120px), Quiz-Type-Toggle, Level-Filter, Choices/Input
+  kanji-list.css           Flip-Card Styles, Level-Gruppen, Responsive Grid
   numbers.css              Zahlen-Display (64px), Counter-Tabellen, View/Mode-Toggle, MC-Buttons
   training.css             View-Toggle, Segment-Filter, Quiz-Display, MC-Buttons, Referenz-Panel
   verb.css                 Fragen-Bereich, Choice-Buttons, Mode-Toggle
@@ -20,8 +21,9 @@ js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
   kana.js                  Kana-Daten (6 Kategorien, ~230 Zeichen) + Quiz-Logik + Romaji-Varianten
-  kanji-data.js            Kanji-Daten nach Stufen: A1 (59), A2 (17), B1 (13), B2 (15) = 104 Kanji
+  kanji-data.js            Kanji-Daten nach Stufen: A1 (60), A2 (16), B1 (13), B2 (15) = 104 Kanji
   kanji.js                 Kanji-Quiz: 3 Typen, Stufenfilter, Spaced Repetition (70/30)
+  kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level gruppiert
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz: 4 Fragetypen, dynamische Generierung, Segment-Filter, Spaced Repetition
   training-data.js         Trainingsdaten: 10 Segmente, ~70 Fragen (MC/Fill/Translate), Referenz-Inhalte
@@ -30,6 +32,7 @@ js/
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
+  kanji-list.html          Kanji-Karteikarten (Flip-Cards nach Level, alle Stufen)
   numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlagen)
   training.html            Vokabular & Grammatik Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
@@ -39,6 +42,7 @@ pages/
 
 - **Alle JS-Dateien erwarten common.js als erstes Script.** Reihenfolge: `<script src="../js/common.js">` → `<script src="../js/i18n.js">` → ggf. Daten-Script → `<script src="../js/[modul].js">`
 - **kanji.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji.js
+- **kanji-list.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-list.js
 - **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → training-data.js → training.js
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
@@ -65,17 +69,20 @@ Dateien sollen **maximal 1000 Zeilen** haben. Falls eine Datei die Grenze uebers
 
 Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
-- `i18n.js`: ~152 Zeilen
+- `i18n.js`: ~166 Zeilen
 - `verb.js`: ~149 Zeilen
 - `kana.js`: ~192 Zeilen
 - `kanji-data.js`: ~167 Zeilen (reine Daten, ausgelagert wegen Groesse)
-- `kanji.js`: ~303 Zeilen
+- `kanji.js`: ~316 Zeilen
+- `kanji-list.js`: ~133 Zeilen
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~295 Zeilen
 - `training-data.js`: ~527 Zeilen (reine Daten: Segmente, Fragen, Referenz — bilingual)
 - `training.js`: ~279 Zeilen
 - `training.html`: ~73 Zeilen (dynamisches Skelett)
 - `numbers.html`: ~73 Zeilen (dynamisches Skelett)
+- `kanji-list.html`: ~31 Zeilen (Karteikarten-Skelett)
+- `kanji-list.css`: ~148 Zeilen (Flip-Card Styles)
 
 ## Module im Detail
 
@@ -92,13 +99,21 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Moduswechsel resettet Score + Queues
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
-- 104 Kanji in 4 Stufen: A1 (59), A2 (17), B1 (13 Starter), B2 (15 Starter)
+- 104 Kanji in 4 Stufen: A1 (60), A2 (16), B1 (13 Starter), B2 (15 Starter)
 - Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], level }`
 - 3 Quiz-Typen per Toggle: Kanji→Deutsch/English (MC+Text), Deutsch/English→Kanji (MC+Text), Kanji→Lesung (nur Text)
 - Stufenfilter: 4 Checkboxen (A1 default an), "Filter anwenden" resettet Quiz
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie verb.js)
 - Texteingabe: Enter = Pruefen, akzeptiert meaning_de + meaning_en-Varianten bzw. Romaji-Varianten
 - Feedback zeigt: Kanji, Level-Badge, Bedeutungen, On/Kun-yomi, Romaji
+
+### Kanji-Liste (`kanji-data.js` + `kanji-list.js` + `kanji-list.html`)
+- Flip-Cards: Vorderseite zeigt Kanji, Rueckseite zeigt Bedeutung + On/Kun-Lesung + Romaji
+- Gruppierung nach Level: A1, A2, B1, B2 mit Ueberschriften und Kanji-Anzahl
+- Level-Filter: 4 Checkboxen (alle default an), "Filter anwenden" rendert neu
+- Click zum Umdrehen (CSS 3D Transform, perspective)
+- Responsive Grid: auto-fill minmax(100px, 1fr)
+- i18n: Sprach-Toggle aktualisiert Bedeutungen + Level-Labels
 
 ### Zahlen & Zaehler (`numbers-data.js` + `numbers.js` + `numbers.html`)
 - 13 Segmente: 3 Grundzahlen-Bereiche (1-10, 11-100, 100-10000) + 10 Counter (つ, 人, 本, 枚, 匹, 台, 冊, 杯, 個, 回)
