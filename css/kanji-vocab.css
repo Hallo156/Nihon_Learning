@@ -1,0 +1,36 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* kanji-vocab.css — Kanji-Vokabular: Wort-Display Override.
+   Wird zusammen mit kanji.css geladen (kanji-vocab.html).
+   Alle geteilten Stile (quiz-type-toggle, choices-area, etc.) kommen aus kanji.css. */
+
+/* ===== Wort-Display (überschreibt kanji-display für mehrstellige Wörter) ===== */
+
+.word-display {
+    font-size: 64px;
+    font-weight: bold;
+    color: #333;
+    margin: 25px 0;
+    padding: 20px;
+    background-color: #e9ecef;
+    border-radius: 8px;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 4px;
+}
+
+/* Bedeutungs-Anzeige (bei Deutsch → Wort) */
+.kanji-vocab-trainer .meaning-display {
+    font-size: 26px;
+    color: #333;
+    background-color: #ecf0f1;
+    margin: 25px 0;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

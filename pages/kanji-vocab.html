@@ -1,0 +1,70 @@
+<!-- Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="kanjiVocab.title">Kanji-Vokabular</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/kanji.css">
+    <link rel="stylesheet" href="../css/kanji-vocab.css">
+</head>
+<body>
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container kanji-vocab-trainer">
+        <h1 data-i18n="kanjiVocab.title">Kanji-Vokabular</h1>
+
+        <!-- Quiz-Typ Toggle -->
+        <div class="quiz-type-toggle">
+            <button id="typeWordDe" class="active" data-i18n="kanjiVocab.typeWordDe">Wort → Deutsch</button>
+            <button id="typeDeWord" data-i18n="kanjiVocab.typeDeWord">Deutsch → Wort</button>
+            <button id="typeWordReading" data-i18n="kanjiVocab.typeWordReading">Wort → Lesung</button>
+        </div>
+
+        <!-- Modus Toggle -->
+        <div class="mode-toggle">
+            <button id="modeRandom" class="active" data-i18n="btn.random">Zufällig</button>
+            <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
+        </div>
+
+        <!-- Stufenfilter -->
+        <div class="level-filters">
+            <label><input type="checkbox" id="levelA1" checked> A1</label>
+            <label><input type="checkbox" id="levelA2"> A2</label>
+            <label><input type="checkbox" id="levelB1"> B1</label>
+            <label><input type="checkbox" id="levelB2"> B2</label>
+            <button id="applyFilter" data-i18n="btn.applyFilter">Filter anwenden</button>
+        </div>
+
+        <!-- Anzeige (Wort oder Bedeutung) -->
+        <div id="displayArea" class="word-display"></div>
+
+        <!-- Multiple-Choice -->
+        <div id="choicesArea" class="choices-area"></div>
+
+        <!-- Texteingabe -->
+        <div class="input-area">
+            <input type="text" id="textInput" data-i18n-placeholder="input.answer" placeholder="Antwort eingeben...">
+            <button id="checkButton" data-i18n="btn.check">Prüfen</button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback" id="feedbackArea"></div>
+
+        <!-- Naechste Frage -->
+        <button id="nextButton" data-i18n="btn.next">Nächste Frage</button>
+
+        <!-- Score -->
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> | <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/kanji-data.js"></script>
+    <script src="../js/kanji-vocab-data.js"></script>
+    <script src="../js/kanji-vocab.js"></script>
+</body>
+</html>

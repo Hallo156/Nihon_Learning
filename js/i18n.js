@@ -101,7 +101,21 @@ const uiStrings = {
     'index.kanjiList.desc':  { de: 'Alle Kanji als Karteikarten nach Stufe sortiert. Zum Umdrehen klicken.', en: 'All Kanji as flashcards sorted by level. Click to flip.' },
     'kanjiList.title':      { de: 'Kanji-Liste',                       en: 'Kanji List' },
     'kanjiList.subtitle':   { de: 'Klicke auf eine Karte, um sie umzudrehen.', en: 'Click a card to flip it.' },
-    'kanjiList.noKanji':    { de: 'Keine Kanji für die ausgewählten Stufen.', en: 'No Kanji for the selected levels.' }
+    'kanjiList.noKanji':    { de: 'Keine Kanji für die ausgewählten Stufen.', en: 'No Kanji for the selected levels.' },
+
+    // --- kanji-vocab.html ---
+    'index.kanjiVocab.title': { de: 'Kanji-Vokabular',                en: 'Kanji Vocabulary' },
+    'index.kanjiVocab.desc':  { de: 'Zusammengesetzte Wörter mit Kanji aus dem Datensatz. Dynamischer Stufenfilter.', en: 'Compound words using Kanji from the dataset. Dynamic level filter.' },
+    'kanjiVocab.title':       { de: 'Kanji-Vokabular',                en: 'Kanji Vocabulary' },
+    'kanjiVocab.typeWordDe':  { de: 'Wort → Deutsch',                 en: 'Word → English' },
+    'kanjiVocab.typeDeWord':  { de: 'Deutsch → Wort',                 en: 'English → Word' },
+    'kanjiVocab.typeWordReading': { de: 'Wort → Lesung',              en: 'Word → Reading' },
+    'kanjiVocab.phMeaning':   { de: 'Bedeutung eingeben...',          en: 'Enter meaning...' },
+    'kanjiVocab.phWord':      { de: 'Wort eingeben (Kanji/Kana/Romaji)...', en: 'Enter word (Kanji/Kana/Romaji)...' },
+    'kanjiVocab.phReading':   { de: 'Lesung (Kana/Romaji)...',        en: 'Reading (Kana/Romaji)...' },
+    'kanjiVocab.meaning':     { de: 'Bedeutung',                      en: 'Meaning' },
+    'kanjiVocab.reading':     { de: 'Lesung',                         en: 'Reading' },
+    'kanjiVocab.noVocab':     { de: 'Keine Vokabeln für die ausgewählten Stufen.', en: 'No vocabulary for the selected levels.' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */

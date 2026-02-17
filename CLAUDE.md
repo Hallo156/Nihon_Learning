@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (6 Karten → Module)
+index.html                 Hauptmenue (7 Karten → Module)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle
   index.css                Karten-Grid fuers Hauptmenue
@@ -17,6 +17,7 @@ css/
   numbers.css              Zahlen-Display (64px), Counter-Tabellen, View/Mode-Toggle, MC-Buttons
   training.css             View-Toggle, Segment-Filter, Quiz-Display, MC-Buttons, Referenz-Panel
   verb.css                 Fragen-Bereich, Choice-Buttons, Mode-Toggle
+  kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
@@ -29,6 +30,8 @@ js/
   training-data.js         Trainingsdaten: 10 Segmente, ~70 Fragen (MC/Fill/Translate), Referenz-Inhalte
   training.js              Dynamischer Quiz-Motor: Segment-Filter, Spaced Repetition (70/30), Ansicht-Toggle
   verb.js                  15 Verb-Daten + Quiz-Logik + Toggle Random/Semi-Random (Spaced Repetition 70/30)
+  kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
+  kanji-vocab.js           Kanji-Vokabular-Quiz: 3 Typen, dynamischer Stufenfilter via computeVocabLevel(), Spaced Repetition
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -36,6 +39,7 @@ pages/
   numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlagen)
   training.html            Vokabular & Grammatik Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
+  kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
 ```
 
 ## Architektur-Regeln
@@ -45,6 +49,7 @@ pages/
 - **kanji-list.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-list.js
 - **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → training-data.js → training.js
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
+- **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
@@ -69,7 +74,7 @@ Dateien sollen **maximal 1000 Zeilen** haben. Falls eine Datei die Grenze uebers
 
 Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
-- `i18n.js`: ~166 Zeilen
+- `i18n.js`: ~179 Zeilen
 - `verb.js`: ~149 Zeilen
 - `kana.js`: ~192 Zeilen
 - `kanji-data.js`: ~167 Zeilen (reine Daten, ausgelagert wegen Groesse)
@@ -79,10 +84,14 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `numbers.js`: ~295 Zeilen
 - `training-data.js`: ~527 Zeilen (reine Daten: Segmente, Fragen, Referenz — bilingual)
 - `training.js`: ~279 Zeilen
+- `kanji-vocab-data.js`: ~120 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
+- `kanji-vocab.js`: ~270 Zeilen
 - `training.html`: ~73 Zeilen (dynamisches Skelett)
 - `numbers.html`: ~73 Zeilen (dynamisches Skelett)
 - `kanji-list.html`: ~31 Zeilen (Karteikarten-Skelett)
+- `kanji-vocab.html`: ~65 Zeilen (Vokabular-Trainer-Skelett)
 - `kanji-list.css`: ~148 Zeilen (Flip-Card Styles)
+- `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
 
 ## Module im Detail
 
@@ -139,6 +148,19 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Texteingabe: Enter = Pruefen, Feedback mit Erklaerung nach Antwort
 - Loesungen erst nach Beantwortung sichtbar
 
+### Kanji-Vokabular (`kanji-vocab-data.js` + `kanji-vocab.js` + `kanji-vocab.html`)
+- ~55 zusammengesetzte Woerter (Kanji+Kanji, Kanji+Kana) relevant fuer A1/A2
+- Datenstruktur: `{ word, reading, romaji, romaji_variants[], meaning_de[], meaning_en[] }` — **kein `level`-Feld**
+- **Dynamischer Stufenfilter:** `computeVocabLevel(word)` berechnet Level zur Laufzeit aus `kanji-data.js`. Hoechster Level aller Kanji-Zeichen des Worts. Aendert sich automatisch wenn Kanji in `kanji-data.js` umgestuft werden.
+- 3 Quiz-Typen per Toggle: Wort→Deutsch/English (MC+Text), Deutsch/English→Wort (MC+Text), Wort→Lesung (nur Text)
+- Stufenfilter: 4 Checkboxen (A1 default an), "Filter anwenden" resettet Quiz
+- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus)
+- Texteingabe Wort→Bedeutung: akzeptiert meaning_de + meaning_en (case-insensitive)
+- Texteingabe Bedeutung→Wort: akzeptiert Kanji-Schreibung, Hiragana-Lesung, Romaji + Varianten
+- Texteingabe Wort→Lesung: akzeptiert Hiragana + Romaji + Varianten
+- Feedback zeigt: Wort, dynamischer Level-Badge, Hiragana-Lesung (Romaji), DE + EN Bedeutungen
+- HTML laedt kanji.css + kanji-vocab.css (Override fuer `.word-display` 64px)
+
 ## CSS-Design-System
 
 - Hintergrund: `#f0f2f5`, Container: weiss mit Shadow
@@ -156,4 +178,4 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Bei falsch:** Normales Verhalten (Feedback lesen, "Naechste Frage" klicken)
 - **Zentrale Logik** in `common.js`: `quickAnswerEnabled`, `isQuickAnswer()`, `toggleQuickAnswer()`, `injectQuickAnswerButton(container)`
 - **quickanswerchange Event:** `CustomEvent('quickanswerchange')` wird bei Toggle ausgeloest. Button-Text aktualisiert sich automatisch.
-- **Alle 5 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js
+- **Alle 6 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js
