@@ -144,4 +144,26 @@ const kanjiVocabData = [
     { word: '少ない',   reading: 'すくない',     romaji: 'sukunai',    romaji_variants: [],
       meaning_de: ['wenig', 'wenige'],            meaning_en: ['few', 'little', 'scarce'] },
 
+    /* ===== Geld & Orte (A1) ===== */
+    { word: '百円',     reading: 'ひゃくえん',   romaji: 'hyakuen',    romaji_variants: ['hyakuen'],
+      meaning_de: ['100 Yen', 'hundert Yen'],     meaning_en: ['100 yen', 'one hundred yen'] },
+    { word: '千円',     reading: 'せんえん',     romaji: 'senen',      romaji_variants: ["sen'en"],
+      meaning_de: ['1000 Yen', 'tausend Yen'],    meaning_en: ['1000 yen', 'one thousand yen'] },
+    { word: '万円',     reading: 'まんえん',     romaji: 'manen',      romaji_variants: ["man'en"],
+      meaning_de: ['10.000 Yen', 'zehntausend Yen'], meaning_en: ['10,000 yen', 'ten thousand yen'] },
+    { word: '東京',     reading: 'とうきょう',   romaji: 'toukyou',    romaji_variants: ['tokyo', 'tōkyō'],
+      meaning_de: ['Tokio', 'Tokyo'],             meaning_en: ['Tokyo'] },
+
+    /* ===== Verben als Verbindungen (A1 / B1) ===== */
+    { word: '会います',  reading: 'あいます',    romaji: 'aimasu',     romaji_variants: [],
+      meaning_de: ['treffen', 'begegnen'],        meaning_en: ['to meet', 'to see someone'] },
+    { word: '休みます',  reading: 'やすみます',  romaji: 'yasumimasu', romaji_variants: [],
+      meaning_de: ['sich ausruhen', 'frei haben', 'Urlaub machen'],
+      meaning_en: ['to rest', 'to take a day off', 'to be absent'] },
+    { word: '飲み食い',  reading: 'のみくい',    romaji: 'nomikui',    romaji_variants: [],
+      meaning_de: ['Essen und Trinken'],          meaning_en: ['eating and drinking'] },
+    { word: '書き言葉',  reading: 'かきことば',  romaji: 'kakikotoba', romaji_variants: [],
+      meaning_de: ['Schriftsprache', 'geschriebene Sprache'],
+      meaning_en: ['written language'] },
+
 ];

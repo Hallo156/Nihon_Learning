@@ -15,8 +15,7 @@ const trainingSegments = [
     { id: 'verb_past',   label: 'Vergangenheit: Verben',           label_en: 'Past Tense: Verbs',               checked: false },
     { id: 'i_adj_past',  label: 'Vergangenheit: い-Adjektive',     label_en: 'Past Tense: い-Adjectives',       checked: false },
     { id: 'na_adj_past', label: 'Vergangenheit: な-Adjektive',     label_en: 'Past Tense: な-Adjectives',       checked: false },
-    { id: 'negation',    label: 'Negation (どこにも/なにも)',       label_en: 'Negation (どこにも/なにも)',       checked: false },
-    { id: 'kanji_vocab', label: 'Kanji-Vokabular',                 label_en: 'Kanji Vocabulary',                checked: false }
+    { id: 'negation',    label: 'Negation (どこにも/なにも)',       label_en: 'Negation (どこにも/なにも)',       checked: false }
 ];
 
 /* ============ FRAGEN-POOL ============
@@ -302,44 +301,6 @@ const trainingQuestions = [
       correct: ['Ich mache nichts.'], choices: ['Ich gehe nirgendwohin.', 'Ich mache nichts.', 'Ich esse nichts.', 'Ich kaufe nichts.'],
       choices_en: ['I don\'t go anywhere.', 'I don\'t do anything.', 'I don\'t eat anything.', 'I don\'t buy anything.'], correct_en: ['I don\'t do anything.'],
       explanation: 'なにも + Negativ = nichts (tun)', explanation_en: 'なにも + negative = nothing / not anything' },
-
-    // ──────── KANJI-VOKABULAR ────────
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Wie liest man 百円?', prompt_en: 'How do you read 百円?',
-      correct: ['hyakuen'], choices: ['hyakuen', 'sen\'en', 'ichien', 'goen'],
-      explanation: '百円 (hyakuen) = 100 Yen', explanation_en: '百円 (hyakuen) = 100 Yen' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Was bedeutet 千円?', prompt_en: 'What does 千円 mean?',
-      correct: ['1.000 Yen'], choices: ['1.000 Yen', '100 Yen', '10.000 Yen', '500 Yen'],
-      explanation: '千円 (sen\'en) = 1.000 Yen', explanation_en: '千円 (sen\'en) = 1,000 Yen' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Wie liest man 東京?', prompt_en: 'How do you read 東京?',
-      correct: ['Tōkyō', 'Tokyo', 'Toukyou'], choices: ['Tōkyō', 'Ōsaka', 'Kyōto', 'Nagoya'],
-      explanation: '東京 (Tōkyō) = Tokio', explanation_en: '東京 (Tōkyō) = Tokyo' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Was bedeutet 行きます?', prompt_en: 'What does 行きます mean?',
-      correct: ['gehen'], choices: ['gehen', 'kommen', 'kaufen', 'treffen'],
-      choices_en: ['to go', 'to come', 'to buy', 'to meet'], correct_en: ['to go'],
-      explanation: '行きます (ikimasu) = gehen', explanation_en: '行きます (ikimasu) = to go' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Was bedeutet 買います?', prompt_en: 'What does 買います mean?',
-      correct: ['kaufen'], choices: ['kaufen', 'gehen', 'essen', 'trinken'],
-      choices_en: ['to buy', 'to go', 'to eat', 'to drink'], correct_en: ['to buy'],
-      explanation: '買います (kaimasu) = kaufen', explanation_en: '買います (kaimasu) = to buy' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Was bedeutet 会います?', prompt_en: 'What does 会います mean?',
-      correct: ['treffen'], choices: ['treffen', 'kaufen', 'gehen', 'kommen'],
-      choices_en: ['to meet', 'to buy', 'to go', 'to come'], correct_en: ['to meet'],
-      explanation: '会います (aimasu) = treffen', explanation_en: '会います (aimasu) = to meet' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Was bedeutet 休みます?', prompt_en: 'What does 休みます mean?',
-      correct: ['sich ausruhen'], choices: ['sich ausruhen', 'arbeiten', 'lernen', 'spielen'],
-      choices_en: ['to rest', 'to work', 'to study', 'to play'], correct_en: ['to rest'],
-      explanation: '休みます (yasumimasu) = sich ausruhen, Urlaub machen', explanation_en: '休みます (yasumimasu) = to rest, to take a day off' },
-    { segment: 'kanji_vocab', type: 'mc',
-      prompt: 'Wie liest man 口?', prompt_en: 'How do you read 口?',
-      correct: ['kuchi'], choices: ['kuchi', 'me', 'mimi', 'te'],
-      explanation: '口 (kuchi) = Mund', explanation_en: '口 (kuchi) = mouth' }
 ];
 
 /* ============ REFERENZ-INHALTE (Nachschlagen) ============ */
@@ -493,36 +454,6 @@ const trainingReference = {
             '<li><strong>どこにもいきません (doko ni mo ikimasen):</strong> I don\'t go anywhere.</li>' +
             '<li><strong>なにもしません (nani mo shimasen):</strong> I don\'t do anything.</li>' +
             '<li>These structures express complete negation.</li>' +
-            '</ul>'
-    },
-    kanji_vocab: {
-        title: 'Kanji-Vokabular',
-        title_en: 'Kanji Vocabulary',
-        html: '<ul>' +
-            '<li>百円 (hyakuen) — 100 Yen</li>' +
-            '<li>千円 (sen\'en) — 1.000 Yen</li>' +
-            '<li>一万円 (ichiman\'en) — 10.000 Yen</li>' +
-            '<li>口 (kuchi) — Mund</li>' +
-            '<li>行きます (ikimasu) — gehen</li>' +
-            '<li>来ます (kimasu) — kommen</li>' +
-            '<li>会います (aimasu) — treffen</li>' +
-            '<li>買います (kaimasu) — kaufen</li>' +
-            '<li>休みます (yasumimasu) — sich ausruhen</li>' +
-            '<li>日本 (Nihon) — Japan</li>' +
-            '<li>東京 (Tōkyō) — Tokio</li>' +
-            '</ul>',
-        html_en: '<ul>' +
-            '<li>百円 (hyakuen) — 100 Yen</li>' +
-            '<li>千円 (sen\'en) — 1,000 Yen</li>' +
-            '<li>一万円 (ichiman\'en) — 10,000 Yen</li>' +
-            '<li>口 (kuchi) — mouth</li>' +
-            '<li>行きます (ikimasu) — to go</li>' +
-            '<li>来ます (kimasu) — to come</li>' +
-            '<li>会います (aimasu) — to meet</li>' +
-            '<li>買います (kaimasu) — to buy</li>' +
-            '<li>休みます (yasumimasu) — to rest</li>' +
-            '<li>日本 (Nihon) — Japan</li>' +
-            '<li>東京 (Tōkyō) — Tokyo</li>' +
             '</ul>'
     }
 };

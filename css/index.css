@@ -7,13 +7,29 @@
     margin-bottom: 30px;
 }
 
+/* ===== Modul-Gruppen-Überschriften ===== */
+.module-group-heading {
+    font-size: 1em;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-bottom: 1px solid #dde;
+    padding-bottom: 6px;
+    margin-top: 30px;
+    margin-bottom: 12px;
+    max-width: 700px;
+    width: 100%;
+}
+
 .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
     max-width: 700px;
     width: 100%;
-    margin-top: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 .card {
