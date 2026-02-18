@@ -33,6 +33,64 @@
     margin-left: 8px;
 }
 
+/* ===== Kategorie-Abschnitt (collapsible) ===== */
+.category-section {
+    margin-bottom: 14px;
+    border: 1px solid #d0d9ff;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.category-summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #f0f4ff;
+    cursor: pointer;
+    user-select: none;
+    font-weight: bold;
+    color: #0056b3;
+    font-size: 0.95em;
+    border-bottom: 1px solid transparent;
+    transition: background-color 0.2s;
+    list-style: none;
+}
+
+.category-summary::-webkit-details-marker { display: none; }
+
+.cat-arrow {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-right: 2px solid #007bff;
+    border-bottom: 2px solid #007bff;
+    transform: rotate(-45deg);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    margin-right: 2px;
+}
+
+.category-section[open] > .category-summary .cat-arrow {
+    transform: rotate(45deg);
+}
+
+.category-section[open] > .category-summary {
+    border-bottom-color: #d0d9ff;
+}
+
+.category-summary:hover { background-color: #e0e8ff; }
+
+.category-name { flex: 1; }
+
+.category-count {
+    font-size: 0.75em;
+    font-weight: normal;
+    color: #888;
+}
+
+.category-section .cards-grid { padding: 14px; }
+
 /* ===== Karten-Grid ===== */
 .cards-grid {
     display: grid;

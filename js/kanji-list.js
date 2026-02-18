@@ -1,6 +1,8 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
-/* kanji-list.js — Kanji-Karteikarten: Flip-Cards nach Level gruppiert.
+/* kanji-list.js — Kanji-Karteikarten: Flip-Cards, nach Level und Kategorie gruppiert.
+   Kategorien sind ausklappbar (<details>/<summary>). Aufklapppzustand wird in
+   sessionStorage gespeichert (bleibt bei Sprach-/Levelwechsel erhalten).
    Braucht: common.js, i18n.js, kanji-data.js */
 
 /* ============ HELFER: Sprach-abhängige Felder ============ */
@@ -28,7 +30,47 @@ function getLevelLabel(level) {
     return entry ? (currentLang === 'en' ? entry.en : entry.de) : level;
 }
 
-/* ============ FILTER ============ */
+/* ============ KATEGORIE-REIHENFOLGE ============ */
+
+const categoryOrder = {
+    'A1': [
+        'kanjiList.cat.zahlen',
+        'kanjiList.cat.wochentage',
+        'kanjiList.cat.zeit',
+        'kanjiList.cat.kompass',
+        'kanjiList.cat.grundbegriffe',
+        'kanjiList.cat.verben',
+        'kanjiList.cat.adjektive',
+        'kanjiList.cat.essen',
+        'kanjiList.cat.familie',
+        'kanjiList.cat.schule',
+        'kanjiList.cat.gesellschaft'
+    ],
+    'A2': [
+        'kanjiList.cat.aktionen',
+        'kanjiList.cat.koerper',
+        'kanjiList.cat.weiteres',
+        'kanjiList.cat.konzepte',
+        'kanjiList.cat.fortgeschritten'
+    ],
+    'B1': [],
+    'B2': []
+};
+
+/* ============ SESSIONSSTORAGE: AUFKLAPPPZUSTAND ============ */
+
+function getCatStorageKey(level, catKey) {
+    return 'catOpen_' + level + '_' + catKey;
+}
+
+function saveCatState(level, catKey, isOpen) {
+    sessionStorage.setItem(getCatStorageKey(level, catKey), isOpen ? '1' : '0');
+}
+
+function loadCatState(level, catKey, defaultOpen) {
+    const val = sessionStorage.getItem(getCatStorageKey(level, catKey));
+    return val === null ? defaultOpen : val === '1';
+}
 
 /* ============ KARTEN RENDERN ============ */
 
@@ -55,16 +97,61 @@ function renderCards() {
         heading.innerHTML = getLevelLabel(level) + ' <span class="level-count">(' + kanjiInLevel.length + ')</span>';
         group.appendChild(heading);
 
-        // Karten-Grid
-        const grid = document.createElement('div');
-        grid.className = 'cards-grid';
+        // Kategorien innerhalb des Levels
+        const catKeys = categoryOrder[level] || [];
+        let isFirstCat = true;
 
-        kanjiInLevel.forEach(k => {
-            const card = createFlipCard(k);
-            grid.appendChild(card);
+        catKeys.forEach(catKey => {
+            const kanjiInCat = kanjiInLevel.filter(k => k.category === catKey);
+            if (kanjiInCat.length === 0) return;
+
+            const details = document.createElement('details');
+            details.className = 'category-section';
+
+            // Aufklapppzustand laden (Standard: erste Kategorie offen)
+            if (loadCatState(level, catKey, isFirstCat)) {
+                details.setAttribute('open', '');
+            }
+            isFirstCat = false;
+
+            // Zustand bei Toggle speichern
+            details.addEventListener('toggle', () => {
+                saveCatState(level, catKey, details.open);
+            });
+
+            // Summary (Kategorie-Kopfzeile)
+            const summary = document.createElement('summary');
+            summary.className = 'category-summary';
+
+            const arrow = document.createElement('span');
+            arrow.className = 'cat-arrow';
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'category-name';
+            nameSpan.textContent = t(catKey);
+
+            const countSpan = document.createElement('span');
+            countSpan.className = 'category-count';
+            countSpan.textContent = '(' + kanjiInCat.length + ')';
+
+            summary.appendChild(arrow);
+            summary.appendChild(nameSpan);
+            summary.appendChild(countSpan);
+            details.appendChild(summary);
+
+            // Karten-Grid
+            const grid = document.createElement('div');
+            grid.className = 'cards-grid';
+
+            kanjiInCat.forEach(k => {
+                const card = createFlipCard(k);
+                grid.appendChild(card);
+            });
+
+            details.appendChild(grid);
+            group.appendChild(details);
         });
 
-        group.appendChild(grid);
         cardsContainer.appendChild(group);
     });
 
@@ -100,7 +187,7 @@ function createFlipCard(k) {
     badge.textContent = k.level;
     front.appendChild(badge);
 
-    // --- Rueckseite: Details ---
+    // --- Rückseite: Details ---
     const back = document.createElement('div');
     back.className = 'flip-card-back';
 
@@ -116,7 +203,7 @@ function createFlipCard(k) {
 
     const reading = document.createElement('div');
     reading.className = 'back-reading';
-    reading.textContent = "On: " + k.on + " | Kun: " + k.kun;
+    reading.textContent = 'On: ' + k.on + ' | Kun: ' + k.kun;
     back.appendChild(reading);
 
     const romaji = document.createElement('div');

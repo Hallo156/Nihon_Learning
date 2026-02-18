@@ -24,9 +24,9 @@ js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
   kana.js                  Kana-Daten (6 Kategorien, ~230 Zeichen) + Quiz-Logik + Romaji-Varianten
-  kanji-data.js            Kanji-Daten nach Stufen: A1 (73), A2 (35) = 108 Kanji
+  kanji-data.js            Kanji-Daten nach Stufen: A1 (73), A2 (35) = 108 Kanji; mit category-Feld (i18n-Key)
   kanji.js                 Kanji-Quiz: 3 Typen, Stufenfilter, Spaced Repetition (70/30)
-  kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level gruppiert
+  kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level + Kategorie gruppiert, Kategorien ausklappbar (sessionStorage)
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz: 4 Fragetypen, dynamische Generierung, Segment-Filter, Spaced Repetition
   training-data.js         Trainingsdaten: 10 Segmente, ~70 Fragen (MC/Fill/Translate), Referenz-Inhalte
@@ -80,9 +80,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `i18n.js`: ~179 Zeilen
 - `verb.js`: ~149 Zeilen
 - `kana.js`: ~199 Zeilen
-- `kanji-data.js`: ~175 Zeilen (reine Daten: A1=73, A2=35 — B1/B2 zu A2, mehrere zu A1 umgestuft, 円 neu hinzugefügt)
+- `kanji-data.js`: ~175 Zeilen (reine Daten: A1=73, A2=35 — B1/B2 zu A2, mehrere zu A1 umgestuft, 円 hinzugefügt, category-Feld)
 - `kanji.js`: ~316 Zeilen
-- `kanji-list.js`: ~133 Zeilen
+- `kanji-list.js`: ~228 Zeilen (Kategorie-Rendering, categoryOrder, sessionStorage-Helfer)
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~295 Zeilen
 - `training-data.js`: ~490 Zeilen (reine Daten: 9 Segmente Grammatik, Fragen, Referenz — bilingual; kanji_vocab-Segment entfernt)
@@ -97,7 +97,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
 - `verb.css`: ~45 Zeilen (nur Verb-spezifisch, inkl. vertikale Buttons-Ausnahme)
 - `kanji.css`: ~95 Zeilen (nur Kanji-spezifisch)
-- `kanji-list.css`: ~175 Zeilen (Flip-Card Styles)
+- `kanji-list.css`: ~225 Zeilen (Flip-Card Styles + Kategorie-Abschnitt: .category-section, .category-summary, .cat-arrow)
 - `training.css`: ~70 Zeilen (nur Training-spezifisch)
 - `numbers.css`: ~57 Zeilen (nur Numbers-spezifisch)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
@@ -119,7 +119,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
 - 108 Kanji in 2 Stufen: A1 (73), A2 (35)
-- Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], level }`
+- Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], category, level }`
 - 3 Quiz-Typen per Toggle: Kanji→Deutsch/English (MC+Text), Deutsch/English→Kanji (MC+Text), Kanji→Lesung (nur Text)
 - Stufenfilter: **global** via Level-Toggle-Bar (rechts oben), kein lokaler Filter mehr
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie verb.js)
@@ -128,11 +128,16 @@ Aktueller Stand (alle unter 1000 Zeilen):
 
 ### Kanji-Liste (`kanji-data.js` + `kanji-list.js` + `kanji-list.html`)
 - Flip-Cards: Vorderseite zeigt Kanji, Rueckseite zeigt Bedeutung + On/Kun-Lesung + Romaji
-- Gruppierung nach Level: A1, A2, B1, B2 mit Ueberschriften und Kanji-Anzahl
+- Hierarchie: Level-Gruppe → Kategorie-Abschnitt → Karten-Grid
+- **A1-Kategorien (11):** Zahlen, Wochentage, Zeit, Kompass & Richtungen, Grundbegriffe, Verben & Tätigkeiten, Adjektive, Essen, Familie, Schule & Bildung, Land & Gesellschaft
+- **A2-Kategorien (5):** Aktionen, Körper, Weiteres, Konzepte & Adjektive, Fortgeschrittene Konzepte
+- Kategorien ausklappbar via `<details>/<summary>` — erste Kategorie pro Level standard-offen
+- Aufklapppzustand per `sessionStorage` gespeichert (bleibt bei Sprach-/Levelwechsel erhalten; reset bei Seiten-Reload)
+- `category`-Feld in `kanji-data.js`: i18n-Key (z.B. `'kanjiList.cat.zahlen'`) — 16 Kategorie-Keys in `i18n.js`
 - Level-Filter: **global** via Level-Toggle-Bar, reagiert auf `levelchange`-Event
 - Click zum Umdrehen (CSS 3D Transform, perspective)
 - Responsive Grid: auto-fill minmax(100px, 1fr)
-- i18n: Sprach-Toggle aktualisiert Bedeutungen + Level-Labels
+- i18n: Sprach-Toggle aktualisiert Bedeutungen, Level-Labels und Kategorienamen
 
 ### Zahlen & Zaehler (`numbers-data.js` + `numbers.js` + `numbers.html`)
 - 13 Segmente: 3 Grundzahlen-Bereiche (1-10, 11-100, 100-10000) + 10 Counter (つ, 人, 本, 枚, 匹, 台, 冊, 杯, 個, 回)
