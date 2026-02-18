@@ -66,6 +66,7 @@ pages/
 - **Toggle-Button:** Wird per JS in `i18n.js` injiziert (`.lang-toggle`, feste Position rechts oben). Zeigt "EN" wenn aktuell DE, und "DE" wenn aktuell EN.
 - **localStorage:** Sprachpraeferenz wird unter Key `'lang'` gespeichert (default: `'de'`).
 - **Bilinguale Datenfelder:** Daten-Dateien haben `_en`-Varianten (z.B. `meaning_en[]`, `prompt_en`, `explanation_en`, `label_en`, `title_en`, `html_en`). Helfer-Funktionen in Modul-Scripts (z.B. `getMeaning()`, `getPrompt()`) waehlen je nach `currentLang`.
+- **Globaler Level-Filter:** `getActiveLevels()` in `i18n.js` liefert aktuell aktive Levels (localStorage-Key `'levels'`, default `['A1']`). `CustomEvent('levelchange')` wird bei Toggle ausgeloest. Kanji-Trainer, Kanji-Liste und Kanji-Vokabular hoeren darauf. Toggle-Bar wird per JS injiziert (`.level-toggle-bar`, fixiert rechts oben unter dem Sprach-Toggle).
 
 ## Zeilengrenze
 
@@ -79,7 +80,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `i18n.js`: ~179 Zeilen
 - `verb.js`: ~149 Zeilen
 - `kana.js`: ~199 Zeilen
-- `kanji-data.js`: ~167 Zeilen (reine Daten, ausgelagert wegen Groesse)
+- `kanji-data.js`: ~167 Zeilen (reine Daten: A1=60, A2=44 — B1/B2 wurden zu A2 umgestuft)
 - `kanji.js`: ~316 Zeilen
 - `kanji-list.js`: ~133 Zeilen
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
@@ -117,10 +118,10 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Moduswechsel resettet Score + Queues
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
-- 104 Kanji in 4 Stufen: A1 (60), A2 (16), B1 (13 Starter), B2 (15 Starter)
+- 104 Kanji in 2 Stufen: A1 (60), A2 (44 — ehemals A2/B1/B2 zusammengefasst)
 - Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], level }`
 - 3 Quiz-Typen per Toggle: Kanji→Deutsch/English (MC+Text), Deutsch/English→Kanji (MC+Text), Kanji→Lesung (nur Text)
-- Stufenfilter: 4 Checkboxen (A1 default an), "Filter anwenden" resettet Quiz
+- Stufenfilter: **global** via Level-Toggle-Bar (rechts oben), kein lokaler Filter mehr
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie verb.js)
 - Texteingabe: Enter = Pruefen, akzeptiert meaning_de + meaning_en-Varianten bzw. Romaji-Varianten
 - Feedback zeigt: Kanji, Level-Badge, Bedeutungen, On/Kun-yomi, Romaji
@@ -128,7 +129,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 ### Kanji-Liste (`kanji-data.js` + `kanji-list.js` + `kanji-list.html`)
 - Flip-Cards: Vorderseite zeigt Kanji, Rueckseite zeigt Bedeutung + On/Kun-Lesung + Romaji
 - Gruppierung nach Level: A1, A2, B1, B2 mit Ueberschriften und Kanji-Anzahl
-- Level-Filter: 4 Checkboxen (alle default an), "Filter anwenden" rendert neu
+- Level-Filter: **global** via Level-Toggle-Bar, reagiert auf `levelchange`-Event
 - Click zum Umdrehen (CSS 3D Transform, perspective)
 - Responsive Grid: auto-fill minmax(100px, 1fr)
 - i18n: Sprach-Toggle aktualisiert Bedeutungen + Level-Labels
@@ -162,7 +163,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Datenstruktur: `{ word, reading, romaji, romaji_variants[], meaning_de[], meaning_en[] }` — **kein `level`-Feld**
 - **Dynamischer Stufenfilter:** `computeVocabLevel(word)` berechnet Level zur Laufzeit aus `kanji-data.js`. Hoechster Level aller Kanji-Zeichen des Worts. Aendert sich automatisch wenn Kanji in `kanji-data.js` umgestuft werden.
 - 3 Quiz-Typen per Toggle: Wort→Deutsch/English (MC+Text), Deutsch/English→Wort (MC+Text), Wort→Lesung (nur Text)
-- Stufenfilter: 4 Checkboxen (A1 default an), "Filter anwenden" resettet Quiz
+- Stufenfilter: **global** via Level-Toggle-Bar, reagiert auf `levelchange`-Event
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus)
 - Texteingabe Wort→Bedeutung: akzeptiert meaning_de + meaning_en (case-insensitive)
 - Texteingabe Bedeutung→Wort: akzeptiert Kanji-Schreibung, Hiragana-Lesung, Romaji + Varianten
@@ -179,6 +180,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Sprach-Toggle: `.lang-toggle` (fixiert, rechts oben, blaue Pill-Form)
 - Quick Answer Toggle: `.quick-answer-toggle` (Pill-Form, grau=aus, orange=an)
 - **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`
+- **Globaler Level-Toggle** in `common.css`: `.level-toggle-bar` (fixiert, rechts oben unter Sprach-Toggle), `.level-toggle-btn` / `.level-toggle-btn.active`
 - **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
 - **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers` — als CSS-Scope-Anker fuer modul-spezifische Overrides
 

@@ -12,7 +12,6 @@ function getMeaning(k) {
 /* ============ DOM ============ */
 
 const cardsContainer = document.getElementById('kanjiCards');
-const applyFilterBtn = document.getElementById('applyFilter');
 
 /* ============ LEVEL-REIHENFOLGE & LABELS ============ */
 
@@ -31,23 +30,10 @@ function getLevelLabel(level) {
 
 /* ============ FILTER ============ */
 
-function getSelectedLevels() {
-    const levels = [];
-    if (document.getElementById('levelA1').checked) levels.push('A1');
-    if (document.getElementById('levelA2').checked) levels.push('A2');
-    if (document.getElementById('levelB1').checked) levels.push('B1');
-    if (document.getElementById('levelB2').checked) levels.push('B2');
-    return levels;
-}
-
 /* ============ KARTEN RENDERN ============ */
 
 function renderCards() {
-    const levels = getSelectedLevels();
-    if (levels.length === 0) {
-        document.getElementById('levelA1').checked = true;
-        levels.push('A1');
-    }
+    const levels = getActiveLevels();
 
     cardsContainer.innerHTML = '';
 
@@ -146,9 +132,8 @@ function createFlipCard(k) {
 
 /* ============ EVENT LISTENER ============ */
 
-applyFilterBtn.addEventListener('click', renderCards);
-
 document.addEventListener('langchange', renderCards);
+document.addEventListener('levelchange', renderCards);
 
 /* ============ INIT ============ */
 

@@ -176,8 +176,51 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         injectLangToggle();
         applyLanguageToHTML();
+        injectLevelToggle();
     });
 } else {
     injectLangToggle();
     applyLanguageToHTML();
+    injectLevelToggle();
+}
+
+/* ============ GLOBALER LEVEL-FILTER ============ */
+
+const AVAILABLE_LEVELS = ['A1', 'A2', 'B1', 'B2'];
+let activeLevels = JSON.parse(localStorage.getItem('levels') || '["A1"]');
+
+function getActiveLevels() { return activeLevels; }
+
+function toggleLevel(level) {
+    if (activeLevels.includes(level)) {
+        if (activeLevels.length === 1) return; // mindestens 1 aktiv
+        activeLevels = activeLevels.filter(l => l !== level);
+    } else {
+        activeLevels = [...activeLevels, level];
+    }
+    localStorage.setItem('levels', JSON.stringify(activeLevels));
+    updateLevelToggleUI();
+    document.dispatchEvent(new CustomEvent('levelchange', { detail: { levels: activeLevels } }));
+}
+
+function updateLevelToggleUI() {
+    AVAILABLE_LEVELS.forEach(level => {
+        const btn = document.getElementById('levelToggle_' + level);
+        if (btn) btn.classList.toggle('active', activeLevels.includes(level));
+    });
+}
+
+function injectLevelToggle() {
+    const wrapper = document.createElement('div');
+    wrapper.id = 'levelToggleBar';
+    wrapper.className = 'level-toggle-bar';
+    AVAILABLE_LEVELS.forEach(level => {
+        const btn = document.createElement('button');
+        btn.id = 'levelToggle_' + level;
+        btn.className = 'level-toggle-btn' + (activeLevels.includes(level) ? ' active' : '');
+        btn.textContent = level;
+        btn.addEventListener('click', () => toggleLevel(level));
+        wrapper.appendChild(btn);
+    });
+    document.body.appendChild(wrapper);
 }

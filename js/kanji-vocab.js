@@ -56,24 +56,13 @@ const typeDeWordBtn = document.getElementById('typeDeWord');
 const typeWordReadingBtn = document.getElementById('typeWordReading');
 const modeRandomBtn = document.getElementById('modeRandom');
 const modeSemiBtn = document.getElementById('modeSemiRandom');
-const applyFilterBtn = document.getElementById('applyFilter');
 
 /* ============ STUFENFILTER ============ */
 
-function getSelectedLevels() {
-    const levels = [];
-    if (document.getElementById('levelA1').checked) levels.push('A1');
-    if (document.getElementById('levelA2').checked) levels.push('A2');
-    if (document.getElementById('levelB1').checked) levels.push('B1');
-    if (document.getElementById('levelB2').checked) levels.push('B2');
-    return levels;
-}
-
 function applyLevelFilter() {
-    const levels = getSelectedLevels();
+    const levels = getActiveLevels();
     filteredVocab = kanjiVocabData.filter(v => levels.includes(computeVocabLevel(v.word)));
     if (filteredVocab.length === 0) {
-        document.getElementById('levelA1').checked = true;
         filteredVocab = kanjiVocabData.filter(v => computeVocabLevel(v.word) === 'A1');
     }
     resetQuiz();
@@ -338,7 +327,7 @@ typeWordReadingBtn.addEventListener('click', () => switchQuizType('word-reading'
 modeRandomBtn.addEventListener('click', () => switchMode('random'));
 modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
 
-applyFilterBtn.addEventListener('click', applyLevelFilter);
+document.addEventListener('levelchange', applyLevelFilter);
 
 /* ============ INIT ============ */
 

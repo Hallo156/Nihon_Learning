@@ -34,24 +34,13 @@ const typeDeKanjiBtn = document.getElementById('typeDeKanji');
 const typeKanjiReadingBtn = document.getElementById('typeKanjiReading');
 const modeRandomBtn = document.getElementById('modeRandom');
 const modeSemiBtn = document.getElementById('modeSemiRandom');
-const applyFilterBtn = document.getElementById('applyFilter');
 
 /* ============ STUFENFILTER ============ */
 
-function getSelectedLevels() {
-    const levels = [];
-    if (document.getElementById('levelA1').checked) levels.push('A1');
-    if (document.getElementById('levelA2').checked) levels.push('A2');
-    if (document.getElementById('levelB1').checked) levels.push('B1');
-    if (document.getElementById('levelB2').checked) levels.push('B2');
-    return levels;
-}
-
 function applyLevelFilter() {
-    const levels = getSelectedLevels();
+    const levels = getActiveLevels();
     filteredKanji = kanjiData.filter(k => levels.includes(k.level));
     if (filteredKanji.length === 0) {
-        document.getElementById('levelA1').checked = true;
         filteredKanji = kanjiData.filter(k => k.level === 'A1');
     }
     resetQuiz();
@@ -304,7 +293,7 @@ typeKanjiReadingBtn.addEventListener('click', () => switchQuizType('kanji-readin
 modeRandomBtn.addEventListener('click', () => switchMode('random'));
 modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
 
-applyFilterBtn.addEventListener('click', applyLevelFilter);
+document.addEventListener('levelchange', applyLevelFilter);
 
 /* ============ INIT ============ */
 
