@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (7 Karten → Module)
+index.html                 Hauptmenue (8 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -20,6 +20,7 @@ css/
   training.css             Frage-Anzeige (training-spezifisch), Feedback, Container-Override (900px)
   verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
+  simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
@@ -34,6 +35,8 @@ js/
   verb.js                  15 Verb-Daten + Quiz-Logik + Toggle Random/Semi-Random (Spaced Repetition 70/30)
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz: 3 Typen, dynamischer Stufenfilter via computeVocabLevel(), Spaced Repetition
+  simulation-data.js       Simulations-Daten: 3 Szenen (Kleidung, Essen, Moebel), Multiline-Dialoge mit Luecken (bilingual)
+  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), Spaced Repetition (70/30)
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -42,6 +45,7 @@ pages/
   training.html            Grammatik-Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
+  simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
 ```
 
 ## Architektur-Regeln
@@ -52,6 +56,7 @@ pages/
 - **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → training-data.js → training.js
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
 - **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
+- **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → simulation-data.js → simulation.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
@@ -101,6 +106,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~70 Zeilen (nur Training-spezifisch)
 - `numbers.css`: ~57 Zeilen (nur Numbers-spezifisch)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
+- `simulation-data.js`: ~225 Zeilen (reine Daten: 3 Szenen, Multiline-Dialoge bilingual)
+- `simulation.js`: ~240 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition)
+- `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
 
 ## Module im Detail
 
@@ -187,7 +195,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`
 - **Globaler Level-Toggle** in `common.css`: `.level-toggle-bar` (fixiert, rechts oben unter Sprach-Toggle), `.level-toggle-btn` / `.level-toggle-btn.active`
 - **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
-- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers` — als CSS-Scope-Anker fuer modul-spezifische Overrides
+- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation` — als CSS-Scope-Anker fuer modul-spezifische Overrides
 
 ## Quick Answer (Schnell-Modus)
 
@@ -197,4 +205,18 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Bei falsch:** Normales Verhalten (Feedback lesen, "Naechste Frage" klicken)
 - **Zentrale Logik** in `common.js`: `quickAnswerEnabled`, `isQuickAnswer()`, `toggleQuickAnswer()`, `injectQuickAnswerButton(container)`
 - **quickanswerchange Event:** `CustomEvent('quickanswerchange')` wird bei Toggle ausgeloest. Button-Text aktualisiert sich automatisch.
-- **Alle 6 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js
+- **Alle 7 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js
+
+### Einkaufs-Simulation (`simulation-data.js` + `simulation.js` + `simulation.html`)
+- 3 Szenen (A1-Fokus): Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen
+- Multiline-Dialog: feste Zeilen (Sprecher sichtbar) + Lueckenzeilen (aktive Luecke hervorgehoben)
+- Eingabe-Modus Toggle: "Multiple Choice" (Buttons) oder "Texteingabe" (Romaji/Kana/Kanji)
+- Lückenfortschritt: Lücken werden der Reihe nach freigeschaltet, bereits gefuellte Luecken gruen dargestellt
+- Szenenwahl per Checkbox-Filter + "Filter anwenden"-Button
+- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie andere Module)
+- Feedback nach jeder Luecke: Erklaerung (DE/EN) + richtige Antwort bei Fehler
+- Quick Answer: nach richtiger Antwort 400ms Delay, dann automatisch naechste Luecke
+- Sprecher-Labels: "Verkäufer" / "Kunde" (i18n), Bubbles links/rechts je nach Sprecher
+- Datenstruktur: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en }`
+- i18n-Keys: `sim.*` (13 Eintraege in i18n.js)
+- Index-Gruppe: "Simulation" (`index.group.simulation`)

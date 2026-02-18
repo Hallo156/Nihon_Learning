@@ -1,0 +1,196 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* simulation.css — Einkaufs-Simulation: Dialog-Layout und Bubble-Styles */
+
+/* ===== Container Override ===== */
+.simulation .container {
+    max-width: 800px;
+}
+
+/* ===== Szenen-Filter ===== */
+.scene-filters {
+    margin: 10px 0 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    justify-content: center;
+    font-size: 14px;
+}
+.scene-filters label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+/* ===== Eingabe-Modus Toggle ===== */
+.input-mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin: 10px auto 16px;
+    max-width: 320px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+.input-mode-toggle button {
+    flex: 1;
+    padding: 7px 16px;
+    font-size: 14px;
+    background: #fff;
+    color: #007bff;
+    border: none;
+    border-radius: 0;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.input-mode-toggle button.active {
+    background: #007bff;
+    color: #fff;
+}
+.input-mode-toggle button:hover:not(.active) {
+    background: #e8f0fe;
+}
+
+/* ===== Dialog-Container ===== */
+#dialogContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 10px 0 14px;
+    text-align: left;
+}
+
+/* ===== Dialog-Zeile ===== */
+.dialog-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+/* Verkäufer: links ausgerichtet */
+.dialog-row--ten {
+    flex-direction: row;
+}
+
+/* Kunde: rechts ausgerichtet */
+.dialog-row--kyaku {
+    flex-direction: row-reverse;
+}
+
+/* ===== Sprecher-Label ===== */
+.dialog-speaker {
+    font-size: 11px;
+    font-weight: bold;
+    color: #888;
+    min-width: 46px;
+    text-align: center;
+    padding-top: 6px;
+    flex-shrink: 0;
+}
+
+/* ===== Sprechblase ===== */
+.dialog-bubble {
+    max-width: 82%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 16px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dialog-row--ten .dialog-bubble {
+    background: #e9f0ff;
+    border-bottom-left-radius: 4px;
+}
+.dialog-row--kyaku .dialog-bubble {
+    background: #f0f9e8;
+    border-bottom-right-radius: 4px;
+}
+
+/* ===== Text innerhalb Bubble ===== */
+.dialog-jp {
+    font-size: 17px;
+    color: #222;
+}
+.dialog-tr {
+    font-size: 13px;
+    color: #777;
+}
+
+/* ===== Lücken-Styles ===== */
+.dialog-blank {
+    display: inline-block;
+    min-width: 60px;
+    border-bottom: 2px solid #aaa;
+    color: #bbb;
+    font-size: 15px;
+    text-align: center;
+    margin: 0 3px;
+    padding: 0 4px;
+}
+.active-blank {
+    border-bottom-color: #007bff;
+    color: #007bff;
+    animation: pulse-blank 1s infinite alternate;
+}
+@keyframes pulse-blank {
+    from { opacity: 1; }
+    to   { opacity: 0.5; }
+}
+.blank-filled {
+    display: inline-block;
+    background: #c8e6c9;
+    color: #2e7d32;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 0 5px;
+    margin: 0 2px;
+}
+.blank-wrong {
+    display: inline-block;
+    background: #ffcdd2;
+    color: #c62828;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 0 5px;
+    margin: 0 2px;
+    text-decoration: line-through;
+}
+
+/* ===== MC-Antworten innerhalb der Bubble ===== */
+.sim-choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 8px;
+}
+.sim-choices .choice-button {
+    font-size: 15px;
+    padding: 7px 14px;
+    border-radius: 8px;
+}
+
+/* ===== Text-Eingabe innerhalb der Bubble ===== */
+.sim-text-input {
+    display: flex;
+    gap: 7px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+.sim-text-input input {
+    flex: 1;
+    min-width: 120px;
+    padding: 7px 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+.sim-text-input .choice-button {
+    padding: 7px 14px;
+    font-size: 15px;
+    min-width: unset;
+}
