@@ -106,7 +106,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~70 Zeilen (nur Training-spezifisch)
 - `numbers.css`: ~57 Zeilen (nur Numbers-spezifisch)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
-- `simulation-data.js`: ~225 Zeilen (reine Daten: 3 Szenen, Multiline-Dialoge bilingual)
+- `simulation-data.js`: ~510 Zeilen (reine Daten: 6 Szenen je 2x Kleidung/Essen/Moebel, Multiline-Dialoge bilingual)
 - `simulation.js`: ~240 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
 
@@ -208,9 +208,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Alle 7 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js
 
 ### Einkaufs-Simulation (`simulation-data.js` + `simulation.js` + `simulation.html`)
-- 3 Szenen (A1-Fokus): Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen
+- 6 Szenen (A1-Fokus): je 2x Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen
 - Multiline-Dialog: feste Zeilen (Sprecher sichtbar) + Lueckenzeilen (aktive Luecke hervorgehoben)
-- Eingabe-Modus Toggle: "Multiple Choice" (Buttons) oder "Texteingabe" (Romaji/Kana/Kanji)
+- Eingabe-Modus Toggle: "Multiple Choice" (Buttons) oder "Gemischt" (Romaji/Kana/Kanji)
 - Lückenfortschritt: Lücken werden der Reihe nach freigeschaltet, bereits gefuellte Luecken gruen dargestellt
 - Szenenwahl per Checkbox-Filter + "Filter anwenden"-Button
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie andere Module)
@@ -220,3 +220,15 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Datenstruktur: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en }`
 - i18n-Keys: `sim.*` (13 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation" (`index.group.simulation`)
+
+## Regeln fuer Dialogdaten (Simulation + kuenftige Dialoge)
+
+### Eindeutigkeit der Antworten (Prioritaet: hoch)
+Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entweder:
+1. **Alle gueltigen Varianten ins `correct[]`-Array** aufnehmen (z.B. Kana + Romaji + Schreibvarianten), ODER
+2. **Die `choices[]` so einschraenken**, dass nur die eine korrekte Option sinnvoll ist — die falschen Optionen muessen aus einem anderen Wortfeld stammen (z.B. Obst statt andere Farben, Moebel statt andere Kleidungsstuecke).
+
+**Nie** mehrere thematisch gleichwertige Optionen als Choices anbieten, wenn der Dialog nur eine davon erlaubt (Beispiel: nicht alle Farben als Choices wenn der Dialog auf „blau" festgelegt ist).
+
+### mcOnly-Pflicht bei offenem Vokabular
+Luecken, bei denen auf A1-Niveau viele verschiedene Woerter grammatisch passen wuerden (z.B. „Ich suche ___", „Haben Sie ___ in ___?"), **muessen** `mcOnly: true` erhalten. Texteingabe waere hier unfair, da der Lernende die spezifisch im Dialog erwartete Antwort nicht erraten kann. Faustregel: Wenn die Luecke ein Nomen/Adjektiv ist das den Dialog-Ablauf festlegt, immer `mcOnly: true` setzen.

@@ -52,22 +52,51 @@ let incorrectScenes  = [];
 
 /* ============ SZENENCHECKBOXEN ============ */
 
+// Baut eine Liste eindeutiger Kategorien (label/label_en) mit allen zugehörigen IDs
+function buildSceneGroups() {
+    const groups = [];
+    simulationScenes.forEach(scene => {
+        const labelKey = scene.label + '|' + scene.label_en;
+        const existing = groups.find(g => g.labelKey === labelKey);
+        if (existing) {
+            existing.ids.push(scene.id);
+        } else {
+            groups.push({
+                labelKey,
+                label:    scene.label,
+                label_en: scene.label_en,
+                checked:  scene.checked,
+                ids:      [scene.id],
+            });
+        }
+    });
+    return groups;
+}
+
 function buildSceneCheckboxes() {
     sceneFiltersDiv.innerHTML = '';
-    simulationScenes.forEach(scene => {
-        const label = document.createElement('label');
-        const cb    = document.createElement('input');
-        cb.type     = 'checkbox';
-        cb.value    = scene.id;
-        cb.checked  = scene.checked;
-        label.appendChild(cb);
-        label.appendChild(document.createTextNode(' ' + getSceneLabel(scene)));
-        sceneFiltersDiv.appendChild(label);
+    buildSceneGroups().forEach(group => {
+        const labelEl = document.createElement('label');
+        const cb      = document.createElement('input');
+        cb.type       = 'checkbox';
+        // value = alle IDs der Gruppe, kommasepariert
+        cb.value      = group.ids.join(',');
+        cb.checked    = group.checked;
+        labelEl.appendChild(cb);
+        labelEl.appendChild(document.createTextNode(
+            ' ' + (currentLang === 'en' && group.label_en ? group.label_en : group.label)
+        ));
+        sceneFiltersDiv.appendChild(labelEl);
     });
 }
 
 function getSelectedScenes() {
-    return Array.from(sceneFiltersDiv.querySelectorAll('input[type=checkbox]:checked')).map(cb => cb.value);
+    // Gibt alle einzelnen Szenen-IDs der angehakten Gruppen zurück
+    const ids = [];
+    sceneFiltersDiv.querySelectorAll('input[type=checkbox]:checked').forEach(cb => {
+        cb.value.split(',').forEach(id => ids.push(id));
+    });
+    return ids;
 }
 
 function applySceneFilter() {
@@ -206,7 +235,7 @@ function renderBlankLine(container, line, blankPos, trVisible) {
         container.appendChild(textAfter);
 
         if (!answered) {
-            if (inputMode === 'mc') {
+            if (inputMode === 'mc' || line.mcOnly) {
                 renderMCChoices(container, line);
             } else {
                 renderTextInput(container, line);
@@ -272,7 +301,7 @@ function handleChoice(choice, line) {
     const correct = isCorrect(choice, line);
     document.querySelectorAll('.sim-choices .choice-button').forEach(btn => {
         btn.disabled = true;
-        if (btn.textContent === line.correct[0]) {
+        if (isCorrect(btn.textContent, line)) {
             btn.classList.add('correct-choice');
         } else if (btn.textContent === choice && !correct) {
             btn.classList.add('wrong-choice');

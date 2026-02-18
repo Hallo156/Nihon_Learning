@@ -138,11 +138,11 @@ const uiStrings = {
 
     // --- simulation.html ---
     'index.simulation.title': { de: 'Einkaufs-Simulation',  en: 'Shopping Simulation' },
-    'index.simulation.desc':  { de: 'Dialoge beim Einkaufen: Kleidung, Essen und Möbel. Lücken per Multiple Choice oder Texteingabe ausfüllen.', en: 'Shopping dialogues: clothes, food and furniture. Fill in the gaps by multiple choice or text input.' },
+    'index.simulation.desc':  { de: 'Dialoge beim Einkaufen: Kleidung, Essen und Möbel. Lücken per Multiple Choice oder gemischt ausfüllen.', en: 'Shopping dialogues: clothes, food and furniture. Fill in the gaps by multiple choice or mixed mode.' },
     'index.group.simulation': { de: 'Simulation',           en: 'Simulation' },
     'sim.title':              { de: 'Einkaufs-Simulation',  en: 'Shopping Simulation' },
     'sim.inputMC':            { de: 'Multiple Choice',      en: 'Multiple Choice' },
-    'sim.inputText':          { de: 'Texteingabe',          en: 'Text Input' },
+    'sim.inputText':          { de: 'Gemischt',              en: 'Mixed' },
     'sim.speaker.staff':      { de: 'Verkäufer',            en: 'Staff' },
     'sim.speaker.customer':   { de: 'Kunde',                en: 'Customer' },
     'sim.nextBlank':          { de: 'Nächste Lücke',        en: 'Next Gap' },

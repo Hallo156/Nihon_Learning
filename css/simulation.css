@@ -11,10 +11,16 @@
 .scene-filters {
     margin: 10px 0 14px;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+.scene-filter-labels {
+    display: flex;
     flex-wrap: wrap;
     gap: 6px 18px;
     justify-content: center;
-    font-size: 14px;
 }
 .scene-filters label {
     display: flex;
