@@ -32,14 +32,14 @@ const uiStrings = {
     'index.group.scripts':  { de: 'Schriftzeichen',        en: 'Writing Systems' },
     'index.group.grammar':  { de: 'Grammatik',             en: 'Grammar' },
     'index.group.numbers':  { de: 'Zahlen & Vokabular',   en: 'Numbers & Vocabulary' },
-    'index.kana.title': { de: 'Kana Trainer',               en: 'Kana Trainer' },
+    'index.kana.title': { de: 'Kana-Trainer',               en: 'Kana Trainer' },
     'index.kana.desc':  { de: 'Hiragana und Katakana lesen und erkennen lernen. Mit Filtern für Basis, Dakuten und Yoon.', en: 'Learn to read and recognize Hiragana and Katakana. With filters for basic, Dakuten and Yoon.' },
     'index.training.title': { de: 'Grammatik-Trainer',     en: 'Grammar Trainer' },
     'index.training.desc':  { de: 'Grammatikübungen zu Partikeln, Verben, Adjektiven und Satzstrukturen.', en: 'Grammar exercises on particles, verbs, adjectives and sentence structures.' },
     'index.verb.title': { de: 'Verb-Trainer',              en: 'Verb Trainer' },
-    'index.verb.desc':  { de: 'Sätze mit dem passenden Verb vervollständigen. Mit Zufalls- und Wiederholungsmodus.', en: 'Complete sentences with the correct verb. With random and spaced repetition modes.' },
+    'index.verb.desc':  { de: 'Sätze mit dem passenden Verb vervollständigen.', en: 'Complete sentences with the correct verb.' },
     'index.kanji.title': { de: 'Kanji-Trainer',            en: 'Kanji Trainer' },
-    'index.kanji.desc': { de: 'Kanji lesen, verstehen und übersetzen. Mit Stufenfilter (A1–B2) und Wiederholungsmodus.', en: 'Read, understand and translate Kanji. With level filter (A1–B2) and spaced repetition mode.' },
+    'index.kanji.desc': { de: 'Kanji lesen, verstehen und übersetzen. Verschiedene Fragetypen und Quizmodi.', en: 'Read, understand and translate Kanji. Multiple question types and quiz modes.' },
 
     'index.credits':    { de: 'Erstellt von Hi156 unter Verwendung von Claude (Anthropic)', en: 'Created by Hi156 using Claude (Anthropic)' },
 
@@ -124,7 +124,7 @@ const uiStrings = {
 
     // --- kanji-vocab.html ---
     'index.kanjiVocab.title': { de: 'Kanji-Vokabular',                en: 'Kanji Vocabulary' },
-    'index.kanjiVocab.desc':  { de: 'Zusammengesetzte Wörter mit Kanji aus dem Datensatz. Dynamischer Stufenfilter.', en: 'Compound words using Kanji from the dataset. Dynamic level filter.' },
+    'index.kanjiVocab.desc':  { de: 'Zusammengesetzte Wörter mit Kanji aus dem Datensatz üben.', en: 'Practice compound words using Kanji from the dataset.' },
     'kanjiVocab.title':       { de: 'Kanji-Vokabular',                en: 'Kanji Vocabulary' },
     'kanjiVocab.typeWordDe':  { de: 'Wort → Deutsch',                 en: 'Word → English' },
     'kanjiVocab.typeDeWord':  { de: 'Deutsch → Wort',                 en: 'English → Word' },
