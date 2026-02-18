@@ -80,7 +80,7 @@ const uiStrings = {
     'verb.meaningLabel': { de: 'Bedeutung',                 en: 'Meaning' },
 
     // --- training.html ---
-    'training.title':   { de: 'Vokabular & Grammatik',     en: 'Vocabulary & Grammar' },
+    'training.title':   { de: 'Grammatik-Trainer',          en: 'Grammar Trainer' },
     'training.viewQuiz': { de: 'Üben',                      en: 'Practice' },
     'training.viewRef': { de: 'Nachschlagen',               en: 'Reference' },
     'training.correctIs': { de: 'Richtig:',                 en: 'Correct:' },

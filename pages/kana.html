@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/kana.css">
 </head>
-<body>
+<body class="kana">
     <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
 
     <div class="container kana-trainer">
@@ -28,17 +28,17 @@
                 <label><input type="checkbox" id="hiraganaYoon"> <span data-i18n="kana.hiraYoon">Hiragana (Yoon)</span></label>
                 <label><input type="checkbox" id="katakanaYoon"> <span data-i18n="kana.kataYoon">Katakana (Yoon)</span></label>
             </div>
-            <button id="applyFiltersButton" data-i18n="kana.applyBtn">Filter anwenden & Neu starten</button>
+            <button id="applyFilter" data-i18n="kana.applyBtn">Filter anwenden & Neu starten</button>
             <div class="stats" id="statsDisplay"></div>
         </div>
 
         <div class="kana-display" id="kanaDisplay">あ</div>
 
-        <div class="input-area">
-            <input type="text" id="romajiInput" data-i18n-placeholder="kana.placeholder" placeholder="Romaji eingeben">
+        <div class="input-area" id="inputArea">
+            <input type="text" id="textInput" data-i18n-placeholder="kana.placeholder" placeholder="Romaji eingeben">
             <button id="checkButton" data-i18n="btn.check">Prüfen</button>
         </div>
-        <button id="nextButton" data-i18n="kana.nextChar">Nächstes Zeichen</button>
+        <button id="nextButton" class="next-btn" data-i18n="kana.nextChar">Nächstes Zeichen</button>
 
         <div class="feedback" id="feedbackArea"></div>
         <div class="score">

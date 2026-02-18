@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/kanji.css">
 </head>
-<body>
+<body class="kanji">
     <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
 
     <div class="container kanji-trainer">
@@ -43,7 +43,7 @@
         <div id="choicesArea" class="choices-area"></div>
 
         <!-- Texteingabe -->
-        <div class="input-area">
+        <div class="input-area" id="inputArea">
             <input type="text" id="textInput" data-i18n-placeholder="input.answer" placeholder="Antwort eingeben...">
             <button id="checkButton" data-i18n="btn.check">Prüfen</button>
         </div>
@@ -52,7 +52,7 @@
         <div class="feedback" id="feedbackArea"></div>
 
         <!-- Naechste Frage -->
-        <button id="nextButton" data-i18n="btn.next">Nächste Frage</button>
+        <button id="nextButton" class="next-btn" data-i18n="btn.next">Nächste Frage</button>
 
         <!-- Score -->
         <div class="score">

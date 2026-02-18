@@ -9,14 +9,16 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ```
 index.html                 Hauptmenue (7 Karten → Module)
 css/
-  common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle
-  index.css                Karten-Grid fuers Hauptmenue
-  kana.css                 Kana-Display (100px), Filter-Panel, Input-Bereich
-  kanji.css                Kanji-Display (120px), Quiz-Type-Toggle, Level-Filter, Choices/Input
+  common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
+                           next-btn, mode-toggle, view-toggle, choices-area/choice-button,
+                           input-area, level-filters, segment-filters, ref-block/ref-body, ref-table
+  index.css                Karten-Grid + Gruppen-Ueberschriften fuers Hauptmenue
+  kana.css                 Kana-Display (100px), Filter-Panel (kana-spezifisch)
+  kanji.css                Kanji-Display (120px), Meaning-Display, Quiz-Type-Toggle, Feedback-Extras
   kanji-list.css           Flip-Card Styles, Level-Gruppen, Responsive Grid
-  numbers.css              Zahlen-Display (64px), Counter-Tabellen, View/Mode-Toggle, MC-Buttons
-  training.css             View-Toggle, Segment-Filter, Quiz-Display, MC-Buttons, Referenz-Panel
-  verb.css                 Fragen-Bereich, Choice-Buttons, Mode-Toggle
+  numbers.css              Zahlen-Display (64px), Frage-Anzeige (numbers-spezifisch), Feedback
+  training.css             Frage-Anzeige (training-spezifisch), Feedback, Container-Override (900px)
+  verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
@@ -37,7 +39,7 @@ pages/
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
   kanji-list.html          Kanji-Karteikarten (Flip-Cards nach Level, alle Stufen)
   numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlagen)
-  training.html            Vokabular & Grammatik Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
+  training.html            Grammatik-Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
 ```
@@ -76,21 +78,27 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
 - `i18n.js`: ~179 Zeilen
 - `verb.js`: ~149 Zeilen
-- `kana.js`: ~192 Zeilen
+- `kana.js`: ~199 Zeilen
 - `kanji-data.js`: ~167 Zeilen (reine Daten, ausgelagert wegen Groesse)
 - `kanji.js`: ~316 Zeilen
 - `kanji-list.js`: ~133 Zeilen
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~295 Zeilen
-- `training-data.js`: ~527 Zeilen (reine Daten: Segmente, Fragen, Referenz — bilingual)
+- `training-data.js`: ~490 Zeilen (reine Daten: 9 Segmente Grammatik, Fragen, Referenz — bilingual; kanji_vocab-Segment entfernt)
 - `training.js`: ~279 Zeilen
-- `kanji-vocab-data.js`: ~120 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
+- `kanji-vocab-data.js`: ~128 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
 - `kanji-vocab.js`: ~270 Zeilen
 - `training.html`: ~73 Zeilen (dynamisches Skelett)
 - `numbers.html`: ~73 Zeilen (dynamisches Skelett)
-- `kanji-list.html`: ~31 Zeilen (Karteikarten-Skelett)
-- `kanji-vocab.html`: ~65 Zeilen (Vokabular-Trainer-Skelett)
-- `kanji-list.css`: ~148 Zeilen (Flip-Card Styles)
+- `kanji-list.html`: ~36 Zeilen (Karteikarten-Skelett)
+- `kanji-vocab.html`: ~70 Zeilen (Vokabular-Trainer-Skelett)
+- `common.css`: ~310 Zeilen (inkl. alle Shared Quiz-Elemente)
+- `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
+- `verb.css`: ~45 Zeilen (nur Verb-spezifisch, inkl. vertikale Buttons-Ausnahme)
+- `kanji.css`: ~95 Zeilen (nur Kanji-spezifisch)
+- `kanji-list.css`: ~175 Zeilen (Flip-Card Styles)
+- `training.css`: ~70 Zeilen (nur Training-spezifisch)
+- `numbers.css`: ~57 Zeilen (nur Numbers-spezifisch)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
 
 ## Module im Detail
@@ -100,6 +108,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Romaji-Varianten akzeptiert: Hepburn (shi) + Kunrei-shiki (si) + Yoon-Varianten (sha/sya)
 - Bei Richtig: 800ms Delay, dann auto-naechstes Zeichen
 - Enter-Taste = Pruefen
+- **IDs (vereinheitlicht):** Texteingabe `#textInput` (war `romajiInput`), Filter-Button `#applyFilter` (war `applyFiltersButton`)
 
 ### Verb-Trainer (`verb.js` + `verb.html`)
 - 15 Verben im ます-Form, je mit Lueckensatz + Uebersetzung (DE + EN)
@@ -138,8 +147,8 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Ansicht-Toggle: "Ueben" (Quiz) / "Nachschlagen" (Counter-Tabellen als klappbare details/summary)
 - Texteingabe: Enter = Pruefen, akzeptiert Kana + Romaji
 
-### Vokabular & Grammatik (`training-data.js` + `training.js` + `training.html`)
-- 10 Themen-Segmente: Partikel, Existenzsatz, Positionen, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation, Kanji-Vokabular
+### Grammatik-Trainer (`training-data.js` + `training.js` + `training.html`)
+- 9 Themen-Segmente (Grammatik): Partikel, Existenzsatz, Positionen, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
 - Checkbox-Filter fuer Segmentauswahl (Partikel default an), "Filter anwenden" resettet Quiz
 - ~70 Fragen in 3 Typen: MC (Multiple Choice), Fill (Lueckentext), Translate (Uebersetzung)
 - Datenstruktur: `{ segment, type, prompt, prompt_en?, prompt_jp?, correct[], choices?, choices_en?, correct_en?, explanation, explanation_en? }`
@@ -169,6 +178,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Alle Module nutzen `.feedback.correct` / `.feedback.incorrect` aus common.css
 - Sprach-Toggle: `.lang-toggle` (fixiert, rechts oben, blaue Pill-Form)
 - Quick Answer Toggle: `.quick-answer-toggle` (Pill-Form, grau=aus, orange=an)
+- **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`
+- **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
+- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers` — als CSS-Scope-Anker fuer modul-spezifische Overrides
 
 ## Quick Answer (Schnell-Modus)
 

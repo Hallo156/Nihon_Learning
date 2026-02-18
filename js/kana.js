@@ -84,7 +84,7 @@ const score = new ScoreTracker('correctCount', 'incorrectCount');
 /* ============ DOM ============ */
 
 const kanaDisplay = document.getElementById('kanaDisplay');
-const romajiInput = document.getElementById('romajiInput');
+const textInput = document.getElementById('textInput');
 const checkButton = document.getElementById('checkButton');
 const nextButton = document.getElementById('nextButton');
 const feedbackArea = document.getElementById('feedbackArea');
@@ -96,7 +96,7 @@ const hiraganaDakutenCheckbox = document.getElementById('hiraganaDakuten');
 const katakanaDakutenCheckbox = document.getElementById('katakanaDakuten');
 const hiraganaYoonCheckbox = document.getElementById('hiraganaYoon');
 const katakanaYoonCheckbox = document.getElementById('katakanaYoon');
-const applyFiltersButton = document.getElementById('applyFiltersButton');
+const applyFilterBtn = document.getElementById('applyFilter');
 
 /* ============ FILTER-LOGIK ============ */
 
@@ -127,10 +127,10 @@ function loadNextKana() {
     currentKana = activeKanaList[Math.floor(Math.random() * activeKanaList.length)];
     kanaDisplay.textContent = currentKana ? currentKana.kana : '-';
 
-    romajiInput.value = '';
+    textInput.value = '';
     feedbackArea.textContent = '';
     feedbackArea.className = 'feedback';
-    romajiInput.focus();
+    textInput.focus();
 }
 
 /* ============ ANTWORT PRUEFEN (mit Romaji-Varianten) ============ */
@@ -142,7 +142,7 @@ function checkAnswer() {
         return;
     }
 
-    const userAnswer = romajiInput.value.trim().toLowerCase();
+    const userAnswer = textInput.value.trim().toLowerCase();
     let acceptedAnswers = [currentKana.romaji.toLowerCase()];
 
     // Kunrei-shiki Varianten: し=si, ち=ti, つ=tu, ふ=hu, じ/ぢ=di, ず/づ=du
@@ -183,11 +183,11 @@ document.addEventListener('langchange', () => {
 
 checkButton.addEventListener('click', checkAnswer);
 nextButton.addEventListener('click', loadNextKana);
-applyFiltersButton.addEventListener('click', function () {
+applyFilterBtn.addEventListener('click', function () {
     score.reset();
     loadNextKana();
 });
-romajiInput.addEventListener('keypress', function (event) {
+textInput.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') checkAnswer();
 });
 

@@ -16,33 +16,8 @@
     justify-content: center;
 }
 
-.input-area {
-    margin: 20px 0;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.input-area input[type="text"] {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 18px;
-    width: 60%;
-    max-width: 200px;
-    text-align: center;
-}
-
 .kana-trainer .feedback {
     font-size: 18px;
-}
-
-#nextButton {
-    background-color: #28a745;
-}
-
-#nextButton:hover {
-    background-color: #1e7e34;
 }
 
 /* ===== Filter ===== */
