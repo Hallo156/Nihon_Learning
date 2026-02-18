@@ -75,6 +75,7 @@ const kanjiData = [
     { kanji: '本', meaning_de: ['Buch', 'Ursprung'], meaning_en: ['book', 'origin'], on: 'ホン', kun: 'もと', romaji: 'hon', romaji_variants: ['moto'], level: 'A1' },
     { kanji: '口', meaning_de: ['Mund'], meaning_en: ['mouth'], on: 'コウ、ク', kun: 'くち', romaji: 'kuchi', romaji_variants: ['kou', 'ku', 'kō'], level: 'A1' },
     { kanji: '駅', meaning_de: ['Bahnhof', 'Station'], meaning_en: ['station'], on: 'エキ', kun: '—', romaji: 'eki', romaji_variants: [], level: 'A1' },
+    { kanji: '円', meaning_de: ['Yen', 'Kreis', 'rund'], meaning_en: ['yen', 'circle', 'round'], on: 'エン', kun: 'まる(い)', romaji: 'en', romaji_variants: ['marui'], level: 'A1' },
 
     /* ============ A1 — Verben & Taetigkeiten ============ */
 
@@ -101,14 +102,14 @@ const kanjiData = [
     { kanji: '肉', meaning_de: ['Fleisch'], meaning_en: ['meat'], on: 'ニク', kun: '—', romaji: 'niku', romaji_variants: [], level: 'A1' },
     { kanji: '卵', meaning_de: ['Ei'], meaning_en: ['egg'], on: 'ラン', kun: 'たまご', romaji: 'tamago', romaji_variants: ['ran'], level: 'A1' },
 
-    /* ============ A2 — Familie ============ */
+    /* ============ A1 — Familie ============ */
 
-    { kanji: '男', meaning_de: ['Mann', 'männlich', 'maennlich'], meaning_en: ['man', 'male'], on: 'ダン、ナン', kun: 'おとこ', romaji: 'otoko', romaji_variants: ['dan', 'nan'], level: 'A2' },
-    { kanji: '女', meaning_de: ['Frau', 'weiblich'], meaning_en: ['woman', 'female'], on: 'ジョ、ニョ', kun: 'おんな', romaji: 'onna', romaji_variants: ['jo', 'nyo', 'jyo'], level: 'A2' },
-    { kanji: '子', meaning_de: ['Kind'], meaning_en: ['child'], on: 'シ、ス', kun: 'こ', romaji: 'ko', romaji_variants: ['shi', 'su', 'si'], level: 'A2' },
-    { kanji: '友', meaning_de: ['Freund'], meaning_en: ['friend'], on: 'ユウ', kun: 'とも', romaji: 'tomo', romaji_variants: ['yuu', 'yū'], level: 'A2' },
-    { kanji: '父', meaning_de: ['Vater'], meaning_en: ['father'], on: 'フ', kun: 'ちち', romaji: 'chichi', romaji_variants: ['fu'], level: 'A2' },
-    { kanji: '母', meaning_de: ['Mutter'], meaning_en: ['mother'], on: 'ボ', kun: 'はは', romaji: 'haha', romaji_variants: ['bo'], level: 'A2' },
+    { kanji: '男', meaning_de: ['Mann', 'männlich', 'maennlich'], meaning_en: ['man', 'male'], on: 'ダン、ナン', kun: 'おとこ', romaji: 'otoko', romaji_variants: ['dan', 'nan'], level: 'A1' },
+    { kanji: '女', meaning_de: ['Frau', 'weiblich'], meaning_en: ['woman', 'female'], on: 'ジョ、ニョ', kun: 'おんな', romaji: 'onna', romaji_variants: ['jo', 'nyo', 'jyo'], level: 'A1' },
+    { kanji: '子', meaning_de: ['Kind'], meaning_en: ['child'], on: 'シ、ス', kun: 'こ', romaji: 'ko', romaji_variants: ['shi', 'su', 'si'], level: 'A1' },
+    { kanji: '友', meaning_de: ['Freund'], meaning_en: ['friend'], on: 'ユウ', kun: 'とも', romaji: 'tomo', romaji_variants: ['yuu', 'yū'], level: 'A1' },
+    { kanji: '父', meaning_de: ['Vater'], meaning_en: ['father'], on: 'フ', kun: 'ちち', romaji: 'chichi', romaji_variants: ['fu'], level: 'A1' },
+    { kanji: '母', meaning_de: ['Mutter'], meaning_en: ['mother'], on: 'ボ', kun: 'はは', romaji: 'haha', romaji_variants: ['bo'], level: 'A1' },
 
     /* ============ A2 — Aktionen ============ */
 
@@ -123,14 +124,21 @@ const kanjiData = [
     { kanji: '手', meaning_de: ['Hand'], meaning_en: ['hand'], on: 'シュ', kun: 'て', romaji: 'te', romaji_variants: ['shu'], level: 'A2' },
     { kanji: '足', meaning_de: ['Fuß', 'Fuss', 'Bein'], meaning_en: ['foot', 'leg'], on: 'ソク', kun: 'あし', romaji: 'ashi', romaji_variants: ['soku'], level: 'A2' },
 
+    /* ============ A1 — Schule & Bildung ============ */
+
+    { kanji: '学', meaning_de: ['lernen', 'Studium'], meaning_en: ['learn', 'study'], on: 'ガク', kun: 'まな(ぶ)', romaji: 'gaku', romaji_variants: ['manabu'], level: 'A1' },
+    { kanji: '校', meaning_de: ['Schule'], meaning_en: ['school'], on: 'コウ', kun: '—', romaji: 'kou', romaji_variants: ['kō'], level: 'A1' },
+
     /* ============ A2 — Weiteres ============ */
 
     { kanji: '車', meaning_de: ['Auto', 'Wagen', 'Fahrzeug'], meaning_en: ['car', 'vehicle'], on: 'シャ', kun: 'くるま', romaji: 'kuruma', romaji_variants: ['sha'], level: 'A2' },
     { kanji: '電', meaning_de: ['Elektrizität', 'Strom', 'elektrisch'], meaning_en: ['electricity', 'electric'], on: 'デン', kun: '—', romaji: 'den', romaji_variants: [], level: 'A2' },
-    { kanji: '学', meaning_de: ['lernen', 'Studium'], meaning_en: ['learn', 'study'], on: 'ガク', kun: 'まな(ぶ)', romaji: 'gaku', romaji_variants: ['manabu'], level: 'A2' },
-    { kanji: '校', meaning_de: ['Schule'], meaning_en: ['school'], on: 'コウ', kun: '—', romaji: 'kou', romaji_variants: ['kō'], level: 'A2' },
 
-    /* ============ B1 — Starter ============ */
+    /* ============ A1 — Land & Gesellschaft ============ */
+
+    { kanji: '国', meaning_de: ['Land', 'Staat'], meaning_en: ['country', 'nation'], on: 'コク', kun: 'くに', romaji: 'kuni', romaji_variants: ['koku'], level: 'A1' },
+
+    /* ============ A2 — Konzepte & Adjektive ============ */
 
     { kanji: '会', meaning_de: ['treffen', 'Versammlung', 'Gesellschaft'], meaning_en: ['meet', 'meeting', 'society'], on: 'カイ、エ', kun: 'あ(う)', romaji: 'au', romaji_variants: ['kai', 'e'], level: 'A2' },
     { kanji: '社', meaning_de: ['Firma', 'Gesellschaft'], meaning_en: ['company', 'society'], on: 'シャ', kun: 'やしろ', romaji: 'sha', romaji_variants: ['yashiro'], level: 'A2' },
@@ -144,9 +152,8 @@ const kanjiData = [
     { kanji: '思', meaning_de: ['denken', 'glauben'], meaning_en: ['think', 'believe'], on: 'シ', kun: 'おも(う)', romaji: 'omou', romaji_variants: ['shi', 'si'], level: 'A2' },
     { kanji: '知', meaning_de: ['wissen', 'kennen'], meaning_en: ['know'], on: 'チ', kun: 'し(る)', romaji: 'shiru', romaji_variants: ['chi'], level: 'A2' },
     { kanji: '教', meaning_de: ['lehren', 'unterrichten'], meaning_en: ['teach', 'instruct'], on: 'キョウ', kun: 'おし(える)', romaji: 'oshieru', romaji_variants: ['kyou', 'kyō'], level: 'A2' },
-    { kanji: '国', meaning_de: ['Land', 'Staat'], meaning_en: ['country', 'nation'], on: 'コク', kun: 'くに', romaji: 'kuni', romaji_variants: ['koku'], level: 'A2' },
 
-    /* ============ B2 — Starter ============ */
+    /* ============ A2 — Fortgeschrittene Konzepte ============ */
 
     { kanji: '経', meaning_de: ['Erfahrung', 'Wirtschaft', 'durchlaufen'], meaning_en: ['experience', 'economy', 'pass through'], on: 'ケイ、キョウ', kun: 'へ(る)', romaji: 'kei', romaji_variants: ['kyou', 'heru', 'kyō'], level: 'A2' },
     { kanji: '済', meaning_de: ['Wirtschaft', 'erledigt', 'helfen'], meaning_en: ['economy', 'finish', 'settle'], on: 'サイ、セイ', kun: 'す(む)', romaji: 'sai', romaji_variants: ['sei', 'sumu'], level: 'A2' },
