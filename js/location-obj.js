@@ -9,8 +9,8 @@ let currentMode = 'random';          // 'random' | 'semi-random'
 let currentQuizType = 'beschreiben'; // 'beschreiben' | 'zeigen'
 let currentPos = null;
 let answered = false;
-let remainingQuestions = [];
-let incorrectQuestions = [];
+let remainingQuestions = [];  // noch nicht gezeigte Fragen dieser Runde
+let retryQuestions = [];      // falsch beantwortet → Wiederholung am Ende der Runde
 
 const score = new ScoreTracker('correctCount', 'incorrectCount');
 
@@ -156,12 +156,16 @@ function pickNextPosition() {
     if (currentMode === 'random') {
         return locationObjPositions[Math.floor(Math.random() * locationObjPositions.length)];
     }
-    // 70/30 Spaced Repetition
-    if (incorrectQuestions.length > 0 && Math.random() < 0.3) {
-        return incorrectQuestions[Math.floor(Math.random() * incorrectQuestions.length)];
-    }
+    // Wiederholung: jede Frage einmal pro Runde, falsche am Ende nochmal
     if (remainingQuestions.length === 0) {
-        remainingQuestions = [...locationObjPositions];
+        // Runde beendet — falsch beantwortete als neue Runde einsetzen
+        if (retryQuestions.length > 0) {
+            remainingQuestions = [...retryQuestions];
+            retryQuestions = [];
+        } else {
+            // Alles richtig → neue Runde mit allen Fragen
+            remainingQuestions = [...locationObjPositions];
+        }
         shuffleArray(remainingQuestions);
     }
     return remainingQuestions.pop();
@@ -305,7 +309,7 @@ function finishAnswer(isCorrect) {
     if (isCorrect) {
         score.addCorrect();
         if (currentMode === 'semi-random') {
-            incorrectQuestions = incorrectQuestions.filter(p => p.id !== currentPos.id);
+            retryQuestions = retryQuestions.filter(p => p.id !== currentPos.id);
         }
         const msg = `<strong>${t('feedback.correct')}</strong><br>
             <span style="font-size:18px;font-family:'Hiragino Sans','Meiryo',sans-serif;">${currentPos.jp}</span>
@@ -314,8 +318,8 @@ function finishAnswer(isCorrect) {
         showFeedback('feedbackArea', msg, true, true);
     } else {
         score.addIncorrect();
-        if (currentMode === 'semi-random' && !incorrectQuestions.find(p => p.id === currentPos.id)) {
-            incorrectQuestions.push(currentPos);
+        if (currentMode === 'semi-random' && !retryQuestions.find(p => p.id === currentPos.id)) {
+            retryQuestions.push(currentPos);
         }
         const msg = `<strong>${t('feedback.wrong')}</strong> ${t('feedback.correctIs')}<br>
             <span style="font-size:18px;font-family:'Hiragino Sans','Meiryo',sans-serif;">${currentPos.jp}</span>
@@ -336,7 +340,7 @@ function finishAnswer(isCorrect) {
 function resetQuiz() {
     remainingQuestions = [...locationObjPositions];
     shuffleArray(remainingQuestions);
-    incorrectQuestions = [];
+    retryQuestions = [];
     score.reset();
     loadQuestion();
 }
