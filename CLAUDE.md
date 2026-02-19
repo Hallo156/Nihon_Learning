@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (8 Karten → Module, inkl. Simulation-Gruppe)
+index.html                 Hauptmenue (10 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -21,6 +21,8 @@ css/
   verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
   simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
+  location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
+  location-map.css         SVG-Karte, Richtungsbuttons 2x2-Grid, Gebaeude-Choices (Stadtkarte)
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
@@ -37,6 +39,10 @@ js/
   kanji-vocab.js           Kanji-Vokabular-Quiz: 3 Typen, dynamischer Stufenfilter via computeVocabLevel(), Spaced Repetition
   simulation-data.js       Simulations-Daten: 3 Szenen (Kleidung, Essen, Moebel), Multiline-Dialoge mit Luecken (bilingual)
   simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), Spaced Repetition (70/30)
+  location-obj-data.js     9 Positionen mit SVG-Koordinaten (ballCx/Cy, hitX/Y/W/H), JP/DE/EN, Romaji
+  location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), Spaced Repetition
+  location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
+  location-map.js          SVG-Karte-Builder, Nav-Minispiel (vertauschte Richtungsbuttons), Desc-Quiz, Spaced Repetition
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -46,6 +52,8 @@ pages/
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
+  location-obj.html        Gegenstand-Position (SVG-Szene, Beschreiben + Zeigen, Score)
+  location-map.html        Stadtkarte (SVG-Karte, Navigation + Beschreibungs-Quiz, Score)
 ```
 
 ## Architektur-Regeln
@@ -57,6 +65,8 @@ pages/
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
 - **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
 - **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → simulation-data.js → simulation.js
+- **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → location-obj-data.js → location-obj.js
+- **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → location-map-data.js → location-map.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
@@ -109,6 +119,12 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `simulation-data.js`: ~510 Zeilen (reine Daten: 6 Szenen je 2x Kleidung/Essen/Moebel, Multiline-Dialoge bilingual)
 - `simulation.js`: ~240 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
+- `location-obj-data.js`: ~75 Zeilen (9 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji)
+- `location-obj.js`: ~195 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz-Logik, Spaced Repetition)
+- `location-obj.css`: ~90 Zeilen (Szene, Hit-Areas, Ball, Display-Bereich)
+- `location-map-data.js`: ~165 Zeilen (8 Gebaeude, directionData, 8 Nav-Fragen, 12 Desc-Fragen)
+- `location-map.js`: ~275 Zeilen (SVG-Karte, Nav-Minispiel vertauschte Buttons, Desc-Quiz, Spaced Repetition)
+- `location-map.css`: ~185 Zeilen (Karte, Richtungsbuttons 2x2, Gebaeude-Choices, Schritt-Log, Finalize-Button)
 
 ## Module im Detail
 
@@ -195,7 +211,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`
 - **Globaler Level-Toggle** in `common.css`: `.level-toggle-bar` (fixiert, rechts oben unter Sprach-Toggle), `.level-toggle-btn` / `.level-toggle-btn.active`
 - **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
-- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation` — als CSS-Scope-Anker fuer modul-spezifische Overrides
+- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation`, `.location-obj`, `.location-map` — als CSS-Scope-Anker fuer modul-spezifische Overrides
 
 ## Quick Answer (Schnell-Modus)
 
@@ -205,7 +221,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Bei falsch:** Normales Verhalten (Feedback lesen, "Naechste Frage" klicken)
 - **Zentrale Logik** in `common.js`: `quickAnswerEnabled`, `isQuickAnswer()`, `toggleQuickAnswer()`, `injectQuickAnswerButton(container)`
 - **quickanswerchange Event:** `CustomEvent('quickanswerchange')` wird bei Toggle ausgeloest. Button-Text aktualisiert sich automatisch.
-- **Alle 7 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js
+- **Alle 9 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js, location-obj.js, location-map.js
 
 ### Einkaufs-Simulation (`simulation-data.js` + `simulation.js` + `simulation.html`)
 - 6 Szenen (A1-Fokus): je 2x Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen
@@ -229,6 +245,31 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 2. **Die `choices[]` so einschraenken**, dass nur die eine korrekte Option sinnvoll ist — die falschen Optionen muessen aus einem anderen Wortfeld stammen (z.B. Obst statt andere Farben, Moebel statt andere Kleidungsstuecke).
 
 **Nie** mehrere thematisch gleichwertige Optionen als Choices anbieten, wenn der Dialog nur eine davon erlaubt (Beispiel: nicht alle Farben als Choices wenn der Dialog auf „blau" festgelegt ist).
+
+### Gegenstand-Position (`location-obj-data.js` + `location-obj.js` + `location-obj.html`)
+- SVG-Szene (viewBox 500×360): Tisch (テーブル), Box (箱), Regal (棚) als fixe Objekte; roter Ball (ボール) an wechselnden Positionen
+- 9 Positionen: auf/unter dem Tisch, neben/vor/hinter der Box, neben/vor dem Regal, zwischen Box+Tisch, auf dem Regal
+- Datenstruktur: `{ id, jp, romaji, de, en, ballCx, ballCy, hitX, hitY, hitW, hitH }`
+- 2 Quiz-Typen per Toggle: **Beschreiben** (Ball sichtbar → 4 MC-Buttons mit JP-Phrasen) / **Zeigen** (JP-Phrase sichtbar → transparente Hit-Areas auf SVG, Klick auswerten)
+- SVG komplett inline als String (kein fetch, laeuft auf file://)
+- Modi: "Zufaellig" / "Wiederholung" (70/30 Algorithmus)
+- Quick Answer: 400ms auto-advance bei richtig
+- i18n-Keys: `locObj.*` (7 Eintraege in i18n.js)
+- Index-Gruppe: "Simulation"
+
+### Stadtkarte (`location-map-data.js` + `location-map.js` + `location-map.html`)
+- SVG-Karte (viewBox 610×390): 3×3-Strassengitter mit 8 farbigen Gebaeuden als Rechtecke + JP-Kanji + Romaji-Labels
+- 8 Gebaeude: 駅 (Bahnhof), 学校 (Schule), コンビニ (Konbini), 病院 (Krankenhaus), 公園 (Park), 銀行 (Bank), 郵便局 (Postamt), 図書館 (Bibliothek)
+- Datenstruktur Gebaeude: `{ id, jp, romaji, de, en, color, col, row, x, y, w, h }`
+- 2 Modi per Toggle:
+  - **Navigation**: 8 scripted Routen (steps[]: migi/hidari/massugu/modoru), Richtungsbuttons 2×2-Grid werden bei jeder Frage/jedem Schritt neu gemischt (shuffleArray) — Lernender muss みぎ/ひだり/まっすぐ/もどる kennen
+  - **Beschreiben**: 12 Fragen (Gebaeude hervorgehoben, Frage "Was ist rechts/links/ueber/unter X?"), 4 MC-Buttons mit Gebaeude-JP+DE/EN
+- Highlight: hervorgehobenes Gebaeude mit goldenem Stroke + Glow-Filter (SVG `<filter>`)
+- Start-Marker: weisser Kreis mit "S" auf dem Startgebaeude (Nav-Modus)
+- Getrennte Spaced-Repetition-Pools fuer Nav und Desc (beim Typwechsel erhalten)
+- Quick Answer: 400ms auto-advance
+- i18n-Keys: `locMap.*` (12 Eintraege in i18n.js)
+- Index-Gruppe: "Simulation"
 
 ### mcOnly-Pflicht bei offenem Vokabular
 Luecken, bei denen auf A1-Niveau viele verschiedene Woerter grammatisch passen wuerden (z.B. „Ich suche ___", „Haben Sie ___ in ___?"), **muessen** `mcOnly: true` erhalten. Texteingabe waere hier unfair, da der Lernende die spezifisch im Dialog erwartete Antwort nicht erraten kann. Faustregel: Wenn die Luecke ein Nomen/Adjektiv ist das den Dialog-Ablauf festlegt, immer `mcOnly: true` setzen.

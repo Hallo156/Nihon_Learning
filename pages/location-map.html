@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="locMap.title">Stadtkarte</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/location-map.css">
+</head>
+<body class="location-map">
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+    <div class="container location-map-trainer">
+        <h1 data-i18n="locMap.title">Stadtkarte</h1>
+
+        <!-- Wiederholungs-Modus -->
+        <div class="mode-toggle">
+            <button id="modeRandom" class="active" data-i18n="btn.random">Zufällig</button>
+            <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
+        </div>
+
+        <!-- Quiz-Typ: Navigation / Beschreiben -->
+        <div class="mode-toggle" id="quizTypeToggle">
+            <button id="typeNav" class="active" data-i18n="locMap.typeNav">Navigation</button>
+            <button id="typeDesc" data-i18n="locMap.typeDesc">Beschreiben</button>
+        </div>
+
+        <!-- SVG-Karte -->
+        <div id="mapContainer"></div>
+
+        <!-- Aufgaben-Prompt -->
+        <div id="mapPrompt"></div>
+
+        <!-- Navigation: Schritt-Fortschritt -->
+        <div id="navStepDisplay" style="display:none;"></div>
+
+        <!-- Navigation: Schritt-Log -->
+        <div id="navStepLog" class="step-log" style="display:none;"></div>
+
+        <!-- Navigation: Richtungsbuttons (2×2-Grid) -->
+        <div id="dirButtonGrid" style="display:none;"></div>
+
+        <!-- Navigation: Finalisieren-Button -->
+        <div style="text-align:center;">
+            <button id="finalizeButton" class="finalize-btn" style="display:none;" data-i18n="locMap.finalize">Hier bin ich!</button>
+        </div>
+
+        <!-- Beschreiben: Gebäude-Choices -->
+        <div id="buildingChoices" style="display:none;"></div>
+
+        <!-- Feedback -->
+        <div class="feedback" id="feedbackArea"></div>
+        <button id="nextButton" class="next-btn" style="display:none;" data-i18n="btn.next">Nächste Frage</button>
+
+        <!-- Score -->
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> |
+            <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/location-map-data.js"></script>
+    <script src="../js/location-map.js"></script>
+</body>
+</html>

@@ -146,7 +146,37 @@ const uiStrings = {
     'sim.speaker.staff':      { de: 'Verkäufer',            en: 'Staff' },
     'sim.speaker.customer':   { de: 'Kunde',                en: 'Customer' },
     'sim.nextBlank':          { de: 'Nächste Lücke',        en: 'Next Gap' },
-    'sim.noScene':            { de: 'Bitte eine Szene auswählen.', en: 'Please select a scene.' }
+    'sim.noScene':            { de: 'Bitte eine Szene auswählen.', en: 'Please select a scene.' },
+
+    // --- location-obj.html (Gegenstand-Position) ---
+    'index.locObj.title':        { de: 'Gegenstand-Position',    en: 'Object Position' },
+    'index.locObj.desc':         { de: 'Beschreibe, wo der Ball liegt, oder klicke auf die richtige Stelle im Bild.', en: 'Describe where the ball is, or click the correct location in the scene.' },
+    'locObj.title':              { de: 'Gegenstand-Position',    en: 'Object Position' },
+    'locObj.typeBeschreiben':    { de: 'Beschreiben',            en: 'Describe' },
+    'locObj.typeZeigen':         { de: 'Zeigen',                 en: 'Point' },
+    'locObj.promptBeschreiben':  { de: 'Wo ist der Ball?',       en: 'Where is the ball?' },
+    'locObj.promptZeigen':       { de: 'Klicke auf die richtige Stelle:', en: 'Click the correct location:' },
+    'locObj.clickInstruction':   { de: 'Klicke auf die Stelle, die die japanische Phrase beschreibt.', en: 'Click the location described by the Japanese phrase.' },
+
+    // --- location-map.html (Stadtkarte) ---
+    'index.locMap.title':        { de: 'Stadtkarte',             en: 'City Map' },
+    'index.locMap.desc':         { de: 'Navigiere durch die Stadt oder beschreibe die Position von Gebäuden.', en: 'Navigate through the city or describe the position of buildings.' },
+    'locMap.title':              { de: 'Stadtkarte',             en: 'City Map' },
+    'locMap.typeNav':            { de: 'Navigation',             en: 'Navigation' },
+    'locMap.typeDesc':           { de: 'Beschreiben',            en: 'Describe' },
+    'locMap.navPrompt':          { de: 'Gehe von {0} zur {1}',  en: 'Go from {0} to {1}' },
+    'locMap.stepOf':             { de: 'Schritt {0} von {1}',   en: 'Step {0} of {1}' },
+    'locMap.wrongDir':           { de: 'Falsche Richtung!',      en: 'Wrong direction!' },
+    'locMap.navSuccess':         { de: 'Ziel erreicht!',         en: 'Destination reached!' },
+    'locMap.correctSeq':         { de: 'Richtige Reihenfolge: {0}', en: 'Correct sequence: {0}' },
+    'locMap.dir.migi':           { de: 'rechts',                      en: 'right' },
+    'locMap.dir.hidari':         { de: 'links',                       en: 'left' },
+    'locMap.dir.massugu':        { de: 'geradeaus',                   en: 'straight' },
+    'locMap.dir.modoru':         { de: 'zurück',                      en: 'back' },
+    'locMap.finalize':           { de: 'Hier bin ich!',               en: "I'm here!" },
+    'locMap.tooManySteps':       { de: 'Zu viele Schritte! (max. 6)', en: 'Too many steps! (max. 6)' },
+    'locMap.stepLog':            { de: 'Schritte:',                   en: 'Steps:' },
+    'locMap.outOfBounds':        { de: 'Karte verlassen — nicht möglich!', en: 'Out of bounds — not possible!' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */

@@ -1,0 +1,99 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* location-obj.css — Gegenstand-Position: SVG-Szene, Hit-Areas, Ball-Styles */
+
+/* ===== Container ===== */
+.location-obj .container { max-width: 600px; }
+
+/* ===== SVG-Szene ===== */
+#sceneContainer {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 15px;
+    border: 2px solid #d0d4e0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f4f6fb;
+}
+
+#sceneContainer svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ===== SVG-Beschriftungen ===== */
+.scene-label {
+    font-size: 13px;
+    fill: #555;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    pointer-events: none;
+}
+
+.scene-label-small {
+    font-size: 10px;
+    fill: #888;
+    font-family: sans-serif;
+    pointer-events: none;
+}
+
+.ball-label {
+    font-size: 10px;
+    fill: #b03020;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    pointer-events: none;
+}
+
+/* ===== Ball ===== */
+.scene-ball {
+    filter: drop-shadow(0 2px 4px rgba(200, 50, 30, 0.4));
+}
+
+/* ===== Hit-Areas (Zeigen-Modus) ===== */
+.hit-area {
+    cursor: pointer;
+    transition: fill 0.15s, stroke 0.15s;
+    fill: rgba(0, 123, 255, 0.06);
+    stroke: rgba(0, 123, 255, 0.2);
+    stroke-width: 1.5;
+}
+
+.hit-area:hover {
+    fill: rgba(0, 123, 255, 0.18);
+    stroke: rgba(0, 123, 255, 0.5);
+}
+
+.hit-area.correct-hit {
+    fill: rgba(46, 125, 50, 0.30);
+    stroke: #2e7d32;
+    stroke-width: 2;
+}
+
+.hit-area.wrong-hit {
+    fill: rgba(198, 40, 40, 0.22);
+    stroke: #c62828;
+    stroke-width: 2;
+}
+
+/* ===== Quiz-Typ-Toggle ===== */
+#quizTypeToggle {
+    margin: 8px auto 12px;
+}
+
+/* ===== Anzeige-Bereich (JP-Phrase bei Zeigen-Modus) ===== */
+#displayArea {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0056b3;
+    margin: 8px 0 4px;
+    min-height: 32px;
+    text-align: center;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+/* ===== Anweisung Zeigen ===== */
+#zeigenInstruction {
+    font-size: 13px;
+    color: #888;
+    margin: 0 0 10px;
+}

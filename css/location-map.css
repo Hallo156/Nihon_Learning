@@ -1,0 +1,245 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* location-map.css — Stadtkarte: SVG-Karte, Richtungsbuttons, Gebäude-Choices */
+
+/* ===== Container ===== */
+.location-map .container { max-width: 700px; }
+
+/* ===== SVG-Karte ===== */
+#mapContainer {
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto 15px;
+    border: 2px solid #c8c8c8;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #dde8ee;
+}
+
+#mapContainer svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ===== SVG-Gebäudebeschriftungen ===== */
+.building-label-jp {
+    font-size: 17px;
+    fill: #fff;
+    font-weight: bold;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    pointer-events: none;
+}
+
+.building-label-sub {
+    font-size: 10px;
+    fill: rgba(255, 255, 255, 0.85);
+    font-family: sans-serif;
+    pointer-events: none;
+}
+
+/* ===== Quiz-Typ-Toggle ===== */
+#quizTypeToggle {
+    margin: 8px auto 12px;
+}
+
+/* ===== Navigation: Prompt ===== */
+#mapPrompt {
+    margin: 8px 0 6px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+#mapPrompt .prompt-jp {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+    color: #0056b3;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+#mapPrompt .prompt-sub {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* ===== Navigation: Schritt-Anzeige ===== */
+#navStepDisplay {
+    font-size: 13px;
+    color: #777;
+    margin: 4px 0 12px;
+    text-align: center;
+}
+
+/* ===== Schritt-Log ===== */
+.step-log {
+    font-size: 13px;
+    color: #555;
+    text-align: center;
+    margin: 0 auto 10px;
+    max-width: 500px;
+    min-height: 22px;
+    padding: 4px 8px;
+    background: #f0f2f5;
+    border-radius: 6px;
+    border: 1px solid #dde;
+}
+
+.step-log-label {
+    font-weight: bold;
+    color: #444;
+    margin-right: 4px;
+}
+
+.step-log-steps {
+    color: #007bff;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+    font-size: 14px;
+}
+
+.step-log-empty {
+    color: #aaa;
+}
+
+/* ===== Finalisieren-Button ===== */
+.finalize-btn {
+    display: inline-block;
+    margin: 4px auto 12px;
+    padding: 10px 28px;
+    background: #e67e22;
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+}
+
+.finalize-btn:hover:not(:disabled) {
+    background: #ca6f1e;
+}
+
+.finalize-btn:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.finalize-btn:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* ===== Richtungsbutton-Grid (2×2) ===== */
+#dirButtonGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 260px;
+    margin: 0 auto 12px;
+}
+
+.dir-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 10px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    min-height: 58px;
+    line-height: 1.2;
+}
+
+.dir-button:hover:not(:disabled) {
+    background: #2980b9;
+}
+
+.dir-button:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+.dir-button:disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.dir-button.correct-flash {
+    background: #2e7d32 !important;
+}
+
+.dir-button.wrong-flash {
+    background: #c62828 !important;
+}
+
+.dir-jp {
+    font-size: 19px;
+    font-weight: bold;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+.dir-sub {
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 2px;
+}
+
+/* ===== Beschreibungs-Modus: Gebäude-Choices ===== */
+#buildingChoices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin: 8px 0 12px;
+}
+
+.building-choice-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    min-width: 110px;
+    min-height: 60px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s;
+    line-height: 1.3;
+}
+
+.building-choice-btn:hover:not(:disabled) {
+    background: #2980b9;
+}
+
+.building-choice-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.building-choice-btn.correct-choice {
+    background: #2e7d32 !important;
+}
+
+.building-choice-btn.wrong-choice {
+    background: #c62828 !important;
+}
+
+.bcb-jp {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+.bcb-sub {
+    font-size: 11px;
+    opacity: 0.85;
+    margin-top: 2px;
+}
