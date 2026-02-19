@@ -353,12 +353,12 @@ function handleDescAnswer(isCorrect, clickedBtn, choicesEl) {
         score.addCorrect();
         if (currentMode === 'semi-random') incorrectDesc = incorrectDesc.filter(q => q.id !== currentDescQ.id);
         const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
-        showFeedback('feedbackArea', `<strong>${t('feedback.correct')}</strong><br><em>${exp}</em>`, true);
+        showFeedback('feedbackArea', `<strong>${t('feedback.correct')}</strong><br><em>${exp}</em>`, true, true);
     } else {
         score.addIncorrect();
         if (currentMode === 'semi-random' && !incorrectDesc.find(q => q.id === currentDescQ.id)) incorrectDesc.push(currentDescQ);
         const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
-        showFeedback('feedbackArea', `<strong>${t('feedback.wrong')}</strong><br><em>${exp}</em>`, false);
+        showFeedback('feedbackArea', `<strong>${t('feedback.wrong')}</strong><br><em>${exp}</em>`, false, true);
     }
 
     if (isCorrect && isQuickAnswer()) setTimeout(loadQuestion, 400);
