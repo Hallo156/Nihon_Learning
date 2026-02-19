@@ -176,7 +176,9 @@ const uiStrings = {
     'locMap.finalize':           { de: 'Hier bin ich!',               en: "I'm here!" },
     'locMap.tooManySteps':       { de: 'Zu viele Schritte! (max. 6)', en: 'Too many steps! (max. 6)' },
     'locMap.stepLog':            { de: 'Schritte:',                   en: 'Steps:' },
-    'locMap.outOfBounds':        { de: 'Karte verlassen — nicht möglich!', en: 'Out of bounds — not possible!' }
+    'locMap.outOfBounds':        { de: 'Karte verlassen — nicht möglich!', en: 'Out of bounds — not possible!' },
+    'locMap.toggleRomaji':       { de: 'Romaji',                          en: 'Romaji' },
+    'locMap.toggleTranslation':  { de: 'Übersetzung',                     en: 'Translation' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */

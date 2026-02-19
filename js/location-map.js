@@ -37,6 +37,54 @@ let incorrectDesc = [];
 
 const score = new ScoreTracker('correctCount', 'incorrectCount');
 
+/* ============ SICHTBARKEITS-TOGGLES ============ */
+
+let showRomaji      = localStorage.getItem('locMap.showRomaji')      !== 'false';
+let showTranslation = localStorage.getItem('locMap.showTranslation') !== 'false';
+
+function injectVisibilityToggles(container) {
+    const wrap = document.createElement('div');
+    wrap.className = 'map-vis-toggles';
+
+    const btnR = document.createElement('button');
+    btnR.id = 'toggleRomaji';
+    btnR.className = 'map-vis-btn' + (showRomaji ? ' active' : '');
+    btnR.textContent = '👁 ' + t('locMap.toggleRomaji');
+    btnR.addEventListener('click', () => {
+        showRomaji = !showRomaji;
+        localStorage.setItem('locMap.showRomaji', String(showRomaji));
+        btnR.classList.toggle('active', showRomaji);
+        refreshPromptVisibility();
+    });
+
+    const btnT = document.createElement('button');
+    btnT.id = 'toggleTranslation';
+    btnT.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
+    btnT.textContent = '👁 ' + t('locMap.toggleTranslation');
+    btnT.addEventListener('click', () => {
+        showTranslation = !showTranslation;
+        localStorage.setItem('locMap.showTranslation', String(showTranslation));
+        btnT.classList.toggle('active', showTranslation);
+        refreshPromptVisibility();
+    });
+
+    wrap.appendChild(btnR);
+    wrap.appendChild(btnT);
+    container.insertBefore(wrap, document.getElementById('mapContainer'));
+
+    document.addEventListener('langchange', () => {
+        btnR.textContent = '👁 ' + t('locMap.toggleRomaji');
+        btnT.textContent = '👁 ' + t('locMap.toggleTranslation');
+    });
+}
+
+function refreshPromptVisibility() {
+    const romEl = document.querySelector('#mapPrompt .prompt-romaji');
+    const subEl = document.querySelector('#mapPrompt .prompt-sub');
+    if (romEl) romEl.style.display = showRomaji      ? 'block' : 'none';
+    if (subEl) subEl.style.display = showTranslation ? 'block' : 'none';
+}
+
 /* ============ NAVIGATIONS-GENERATOR ============ */
 
 function generateNavQuestion() {
@@ -156,6 +204,7 @@ function renderNavUI() {
         <span class="prompt-sub">${currentLang === 'en'
             ? `Navigate to the ${targetB.en}! (reach any corner)`
             : `Gehe ${targetB.de_nav}! (erreiche eine Ecke)`}</span>`;
+    refreshPromptVisibility();
 
     // Schritt-Zähler
     updateNavStepUI();
@@ -316,6 +365,7 @@ function loadDesc() {
         <span class="prompt-jp">${currentDescQ.question_jp}</span>
         <span class="prompt-romaji">${currentDescQ.question_romaji}</span>
         <span class="prompt-sub">${qText}</span>`;
+    refreshPromptVisibility();
 
     document.getElementById('navStepDisplay').style.display = 'none';
     document.getElementById('navStepLog').style.display = 'none';
@@ -428,6 +478,7 @@ document.addEventListener('langchange', loadQuestion);
 /* ============ INIT ============ */
 
 injectQuickAnswerButton(document.querySelector('.location-map-trainer'));
+injectVisibilityToggles(document.querySelector('.location-map-trainer'));
 remainingDesc = [...descQuestions];
 shuffleArray(remainingDesc);
 loadNav();
