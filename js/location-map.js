@@ -152,9 +152,10 @@ function renderNavUI() {
     const promptEl = document.getElementById('mapPrompt');
     promptEl.innerHTML = `
         <span class="prompt-jp">${targetB.jp} <span style="font-size:14px;color:#666;">の近くへ行ってください</span></span>
+        <span class="prompt-romaji">${targetB.romaji} no chikaku e itte kudasai</span>
         <span class="prompt-sub">${currentLang === 'en'
             ? `Navigate to the ${targetB.en}! (reach any corner)`
-            : `Gehe zum ${targetB.de}! (erreiche eine Ecke)`}</span>`;
+            : `Gehe ${targetB.de_nav}! (erreiche eine Ecke)`}</span>`;
 
     // Schritt-Zähler
     updateNavStepUI();
@@ -313,6 +314,7 @@ function loadDesc() {
     const qText = currentLang === 'en' ? currentDescQ.question_en : currentDescQ.question_de;
     promptEl.innerHTML = `
         <span class="prompt-jp">${currentDescQ.question_jp}</span>
+        <span class="prompt-romaji">${currentDescQ.question_romaji}</span>
         <span class="prompt-sub">${qText}</span>`;
 
     document.getElementById('navStepDisplay').style.display = 'none';
