@@ -31,7 +31,8 @@ const locationObjPositions = [
         de: 'neben der Box',
         en: 'beside the box',
         ballCx: 145, ballCy: 262,
-        hitX: 118, hitY: 242, hitW: 46, hitH: 46
+        hitX: 112, hitY: 238, hitW: 60, hitH: 54,
+        alsoAccept: ['zwischen']
     },
     {
         id: 'vor_box',
@@ -48,8 +49,8 @@ const locationObjPositions = [
         romaji: 'hako no ushiro ni',
         de: 'hinter der Box',
         en: 'behind the box',
-        ballCx: 70, ballCy: 218,
-        hitX: 44, hitY: 198, hitW: 52, hitH: 46
+        ballCx: 70, ballCy: 249,
+        hitX: 44, hitY: 220, hitW: 52, hitH: 46
     },
     {
         id: 'neben_regal',
@@ -76,7 +77,8 @@ const locationObjPositions = [
         de: 'zwischen Box und Tisch',
         en: 'between the box and table',
         ballCx: 132, ballCy: 262,
-        hitX: 106, hitY: 242, hitW: 46, hitH: 46
+        hitX: 112, hitY: 238, hitW: 60, hitH: 54,
+        alsoAccept: ['neben_box']
     },
     {
         id: 'auf_regal',
@@ -86,5 +88,14 @@ const locationObjPositions = [
         en: 'on the shelf',
         ballCx: 430, ballCy: 116,
         hitX: 404, hitY: 96, hitW: 52, hitH: 46
+    },
+    {
+        id: 'in_regal',
+        jp: '棚の中に',
+        romaji: 'tana no naka ni',
+        de: 'im Regal',
+        en: 'in the shelf',
+        ballCx: 430, ballCy: 205,
+        hitX: 404, hitY: 188, hitW: 52, hitH: 38
     }
 ];

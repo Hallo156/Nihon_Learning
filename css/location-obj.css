@@ -75,6 +75,36 @@
     stroke-width: 2;
 }
 
+/* ===== Sichtbarkeits-Toggles (Romaji / Übersetzung) ===== */
+.obj-vis-toggles {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 0 auto 10px;
+}
+
+.obj-vis-btn {
+    padding: 5px 14px;
+    border: 2px solid #bbb;
+    border-radius: 20px;
+    background: #f0f2f5;
+    color: #888;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.obj-vis-btn.active {
+    background: #e8f0fe;
+    color: #0056b3;
+    border-color: #007bff;
+}
+
+.obj-vis-btn:hover {
+    border-color: #007bff;
+    color: #0056b3;
+}
+
 /* ===== Quiz-Typ-Toggle ===== */
 #quizTypeToggle {
     margin: 8px auto 12px;
@@ -89,6 +119,42 @@
     min-height: 32px;
     text-align: center;
     font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+/* ===== Romaji + Übersetzung unter JP-Anzeige (Zeigen-Modus) ===== */
+.display-romaji {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    margin: 0 0 2px;
+    letter-spacing: 0.02em;
+}
+
+.display-translation {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    margin: 0 0 4px;
+}
+
+/* ===== Romaji + Übersetzung in Choice-Buttons (Beschreiben-Modus) ===== */
+.choice-jp {
+    display: block;
+    font-family: 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+.choice-romaji {
+    font-size: 11px;
+    opacity: 0.8;
+    font-style: italic;
+    margin-top: 1px;
+}
+
+.choice-translation {
+    font-size: 11px;
+    opacity: 0.75;
+    margin-top: 1px;
 }
 
 /* ===== Anweisung Zeigen ===== */

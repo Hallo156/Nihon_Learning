@@ -157,6 +157,8 @@ const uiStrings = {
     'locObj.promptBeschreiben':  { de: 'Wo ist der Ball?',       en: 'Where is the ball?' },
     'locObj.promptZeigen':       { de: 'Klicke auf die richtige Stelle:', en: 'Click the correct location:' },
     'locObj.clickInstruction':   { de: 'Klicke auf die Stelle, die die japanische Phrase beschreibt.', en: 'Click the location described by the Japanese phrase.' },
+    'locObj.toggleRomaji':       { de: 'Romaji',                  en: 'Romaji' },
+    'locObj.toggleTranslation':  { de: 'Übersetzung',             en: 'Translation' },
 
     // --- location-map.html (Stadtkarte) ---
     'index.locMap.title':        { de: 'Stadtkarte',             en: 'City Map' },

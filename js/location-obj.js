@@ -14,63 +14,131 @@ let incorrectQuestions = [];
 
 const score = new ScoreTracker('correctCount', 'incorrectCount');
 
+/* ============ SICHTBARKEITS-TOGGLES ============ */
+
+let showRomaji      = localStorage.getItem('locObj.showRomaji')      !== 'false';
+let showTranslation = localStorage.getItem('locObj.showTranslation') !== 'false';
+
+function injectVisibilityToggles(container) {
+    const wrap = document.createElement('div');
+    wrap.className = 'obj-vis-toggles';
+
+    const btnR = document.createElement('button');
+    btnR.id = 'toggleRomaji';
+    btnR.className = 'obj-vis-btn' + (showRomaji ? ' active' : '');
+    btnR.textContent = '👁 ' + t('locObj.toggleRomaji');
+    btnR.addEventListener('click', () => {
+        showRomaji = !showRomaji;
+        localStorage.setItem('locObj.showRomaji', String(showRomaji));
+        btnR.classList.toggle('active', showRomaji);
+        refreshVisibility();
+    });
+
+    const btnT = document.createElement('button');
+    btnT.id = 'toggleTranslation';
+    btnT.className = 'obj-vis-btn' + (showTranslation ? ' active' : '');
+    btnT.textContent = '👁 ' + t('locObj.toggleTranslation');
+    btnT.addEventListener('click', () => {
+        showTranslation = !showTranslation;
+        localStorage.setItem('locObj.showTranslation', String(showTranslation));
+        btnT.classList.toggle('active', showTranslation);
+        refreshVisibility();
+    });
+
+    wrap.appendChild(btnR);
+    wrap.appendChild(btnT);
+    // Vor die SVG-Szene einfügen
+    container.insertBefore(wrap, document.getElementById('sceneContainer'));
+
+    document.addEventListener('langchange', () => {
+        btnR.textContent = '👁 ' + t('locObj.toggleRomaji');
+        btnT.textContent = '👁 ' + t('locObj.toggleTranslation');
+    });
+}
+
+function refreshVisibility() {
+    // Zeigen-Modus: Romaji + Übersetzung unter dem displayArea
+    const romEl = document.getElementById('displayRomaji');
+    const transEl = document.getElementById('displayTranslation');
+    if (romEl)   romEl.style.display   = showRomaji      ? 'block' : 'none';
+    if (transEl) transEl.style.display = showTranslation ? 'block' : 'none';
+    // Beschreiben-Modus: Romaji in den Choice-Buttons
+    document.querySelectorAll('.choice-romaji').forEach(el => {
+        el.style.display = showRomaji ? 'block' : 'none';
+    });
+    // Beschreiben-Modus: Übersetzung in den Choice-Buttons
+    document.querySelectorAll('.choice-translation').forEach(el => {
+        el.style.display = showTranslation ? 'block' : 'none';
+    });
+}
+
 /* ============ SVG-BUILDER ============ */
 
+function buildBall(pos) {
+    let s = '';
+    // Schatten (nur wenn nicht verdeckt)
+    if (pos.id !== 'hinter_box' && pos.id !== 'in_regal') {
+        s += `<ellipse cx="${pos.ballCx}" cy="${pos.ballCy + 22}" rx="16" ry="5" fill="rgba(0,0,0,0.12)"/>`;
+    }
+    s += `<circle cx="${pos.ballCx}" cy="${pos.ballCy}" r="18" fill="#e74c3c" class="scene-ball"/>`;
+    s += `<circle cx="${pos.ballCx - 6}" cy="${pos.ballCy - 6}" r="5" fill="rgba(255,255,255,0.4)"/>`;
+    s += `<text x="${pos.ballCx}" y="${pos.ballCy + 36}" class="ball-label" text-anchor="middle">ボール</text>`;
+    return s;
+}
+
 function buildSceneSVG(activePosId, showHitAreas) {
+    const pos = activePosId ? locationObjPositions.find(p => p.id === activePosId) : null;
+
+    // Positionen, bei denen der Ball hinter einem Objekt liegt
+    const ballBehindBox   = pos && pos.id === 'hinter_box';
+    const ballInShelf     = pos && pos.id === 'in_regal';
+
     let s = '<svg viewBox="0 0 500 360" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;">';
 
-    // --- Hintergrund ---
+    // === EBENE 1: Hintergrund + Boden ===
     s += '<rect x="0" y="0" width="500" height="360" fill="#f4f6fb"/>';
-
-    // --- Boden-Linie ---
     s += '<line x1="0" y1="340" x2="500" y2="340" stroke="#ccc" stroke-width="2"/>';
 
-    // --- TISCH ---
-    // Tischplatte
-    s += '<rect x="150" y="200" width="200" height="18" rx="3" fill="#c8a070"/>';
-    // Tischbeine
+    // === EBENE 2: Hintere Tischbeine (Ball kann dahinter liegen → immer zuerst) ===
     s += '<rect x="168" y="218" width="14" height="70" rx="2" fill="#a07848"/>';
     s += '<rect x="318" y="218" width="14" height="70" rx="2" fill="#a07848"/>';
-    // Label
-    s += '<text x="250" y="196" class="scene-label" text-anchor="middle">テーブル</text>';
 
-    // --- BOX ---
+    // === EBENE 3: Ball hinter der Box (Ball VOR Tischbeinen, aber UNTER Box) ===
+    if (ballBehindBox && pos) s += buildBall(pos);
+
+    // === EBENE 4: Box (verdeckt Ball wenn hinter_box) ===
+    // Nur untere Hälfte verdeckt den Ball → Box vollständig zeichnen
     s += '<rect x="30" y="240" width="80" height="60" rx="4" fill="#e8c870"/>';
-    // Schachtel-Kanten
     s += '<line x1="30" y1="255" x2="110" y2="255" stroke="#c8a840" stroke-width="1.5"/>';
     s += '<line x1="70" y1="240" x2="70" y2="300" stroke="#c8a840" stroke-width="1.5"/>';
-    // Label
     s += '<text x="70" y="235" class="scene-label" text-anchor="middle">箱</text>';
     s += '<text x="70" y="223" class="scene-label-small" text-anchor="middle">hako</text>';
 
-    // --- REGAL ---
-    // Pfosten links und rechts
+    // === EBENE 5: Tischplatte (über Tischbeinen) ===
+    s += '<rect x="150" y="200" width="200" height="18" rx="3" fill="#c8a070"/>';
+    s += '<text x="250" y="196" class="scene-label" text-anchor="middle">テーブル</text>';
+
+    // === EBENE 6: Regal-Pfosten (Ball im Regal liegt DAHINTER) ===
     s += '<rect x="394" y="130" width="8" height="180" rx="2" fill="#8090a8"/>';
     s += '<rect x="458" y="130" width="8" height="180" rx="2" fill="#8090a8"/>';
-    // Drei Bretter
+
+    // === EBENE 7: Ball im Regal (zwischen Brett bei y=180 und Brett bei y=230) ===
+    if (ballInShelf && pos) s += buildBall(pos);
+
+    // === EBENE 8: Regal-Bretter (verdecken Ball im Regal von unten) ===
     s += '<rect x="390" y="130" width="80" height="12" rx="2" fill="#a0b4cc"/>';
     s += '<rect x="390" y="180" width="80" height="12" rx="2" fill="#a0b4cc"/>';
     s += '<rect x="390" y="230" width="80" height="12" rx="2" fill="#a0b4cc"/>';
-    // Label
     s += '<text x="430" y="125" class="scene-label" text-anchor="middle">棚</text>';
     s += '<text x="430" y="113" class="scene-label-small" text-anchor="middle">tana</text>';
 
-    // --- BALL (nur im Beschreiben-Modus oder wenn activePosId gesetzt) ---
-    if (activePosId) {
-        const pos = locationObjPositions.find(p => p.id === activePosId);
-        if (pos) {
-            // Schatten
-            s += `<ellipse cx="${pos.ballCx}" cy="${pos.ballCy + 22}" rx="16" ry="5" fill="rgba(0,0,0,0.12)"/>`;
-            // Ball
-            s += `<circle cx="${pos.ballCx}" cy="${pos.ballCy}" r="18" fill="#e74c3c" class="scene-ball"/>`;
-            // Glanzpunkt
-            s += `<circle cx="${pos.ballCx - 6}" cy="${pos.ballCy - 6}" r="5" fill="rgba(255,255,255,0.4)"/>`;
-            // Label
-            s += `<text x="${pos.ballCx}" y="${pos.ballCy + 36}" class="ball-label" text-anchor="middle">ボール</text>`;
-        }
-    }
+    // === EBENE 9: Normaler Ball (alle anderen Positionen) ===
+    if (pos && !ballBehindBox && !ballInShelf) s += buildBall(pos);
 
-    // --- HIT-AREAS (nur Zeigen-Modus) ---
+    // === EBENE 10: Vorderes Tischbein über dem Ball (bei unter_tisch teilweise) ===
+    // (Tischbeine sind schmal genug, kein extra Overlay nötig)
+
+    // === HIT-AREAS (Zeigen-Modus, immer ganz oben) ===
     if (showHitAreas) {
         locationObjPositions.forEach(p => {
             s += `<rect id="hit_${p.id}" x="${p.hitX}" y="${p.hitY}" width="${p.hitW}" height="${p.hitH}"
@@ -124,7 +192,16 @@ function loadBeschreiben() {
     document.getElementById('zeigenInstruction').style.display = 'none';
 
     // 4 MC-Choices: korrekt + 3 falsche
-    const others = locationObjPositions.filter(p => p.id !== currentPos.id);
+    // Ausschluss visuell mehrdeutiger Paare als Falsch-Option:
+    // neben_box ↔ zwischen: Ballposition sieht ähnlich aus → gegenseitig ausschließen
+    const EXCLUDE_AS_DISTRACTOR = {
+        'neben_box': 'zwischen',
+        'zwischen':  'neben_box'
+    };
+    const excludeId = EXCLUDE_AS_DISTRACTOR[currentPos.id];
+    const others = locationObjPositions.filter(p =>
+        p.id !== currentPos.id && p.id !== excludeId
+    );
     shuffleArray(others);
     const choices = [currentPos, ...others.slice(0, 3)];
     shuffleArray(choices);
@@ -134,7 +211,11 @@ function loadBeschreiben() {
     choices.forEach(pos => {
         const btn = document.createElement('button');
         btn.className = 'choice-button';
-        btn.textContent = pos.jp;
+        const trans = currentLang === 'en' ? pos.en : pos.de;
+        btn.innerHTML = `<span class="choice-jp">${pos.jp}</span>` +
+            `<span class="choice-romaji" style="display:${showRomaji ? 'block' : 'none'}">${pos.romaji}</span>` +
+            `<span class="choice-translation" style="display:${showTranslation ? 'block' : 'none'}">${trans}</span>`;
+        btn.dataset.posId = pos.id;
         btn.addEventListener('click', () => {
             if (answered) return;
             handleBeschreibenAnswer(pos.id === currentPos.id, btn, choicesEl);
@@ -149,7 +230,7 @@ function handleBeschreibenAnswer(isCorrect, clickedBtn, choicesEl) {
     // Buttons einfärben
     Array.from(choicesEl.querySelectorAll('.choice-button')).forEach(btn => {
         btn.disabled = true;
-        if (btn.textContent === currentPos.jp) {
+        if (btn.dataset.posId === currentPos.id) {
             btn.classList.add('correct-choice');
         } else if (btn === clickedBtn && !isCorrect) {
             btn.classList.add('wrong-choice');
@@ -166,9 +247,15 @@ function loadZeigen() {
     // Kein Ball im Zeigen-Modus
     sceneEl.innerHTML = buildSceneSVG(null, true);
 
-    // JP-Phrase anzeigen
+    // JP-Phrase + Romaji + Übersetzung anzeigen
     const displayEl = document.getElementById('displayArea');
     displayEl.textContent = currentPos.jp;
+    const romEl = document.getElementById('displayRomaji');
+    romEl.textContent = currentPos.romaji;
+    romEl.style.display = showRomaji ? 'block' : 'none';
+    const transEl = document.getElementById('displayTranslation');
+    transEl.textContent = currentLang === 'en' ? currentPos.en : currentPos.de;
+    transEl.style.display = showTranslation ? 'block' : 'none';
     const instrEl = document.getElementById('zeigenInstruction');
     instrEl.style.display = 'block';
 
@@ -186,18 +273,23 @@ function loadZeigen() {
 
 function handleZeigenAnswer(clickedPosId, clickedEl, svg) {
     answered = true;
-    const isCorrect = clickedPosId === currentPos.id;
+
+    // Auch alsoAccept-IDs als richtig werten
+    const accepted = [currentPos.id, ...(currentPos.alsoAccept || [])];
+    const isCorrect = accepted.includes(clickedPosId);
 
     // Alle Hit-Areas deaktivieren
     svg.querySelectorAll('.hit-area').forEach(el => {
         el.style.pointerEvents = 'none';
     });
 
-    // Richtiges Feld grün markieren
-    const correctEl = svg.querySelector(`#hit_${currentPos.id}`);
-    if (correctEl) correctEl.classList.add('correct-hit');
+    // Alle akzeptierten Felder grün markieren
+    accepted.forEach(id => {
+        const el = svg.querySelector(`#hit_${id}`);
+        if (el) el.classList.add('correct-hit');
+    });
 
-    // Falsches Feld rot (falls nicht das richtige geklickt)
+    // Falsches Feld rot (falls nicht eines der richtigen geklickt)
     if (!isCorrect) {
         clickedEl.classList.add('wrong-hit');
     }
@@ -219,7 +311,7 @@ function finishAnswer(isCorrect) {
             <span style="font-size:18px;font-family:'Hiragino Sans','Meiryo',sans-serif;">${currentPos.jp}</span>
             <span style="color:#555;font-size:13px;"> (${currentPos.romaji})</span><br>
             <em>${currentLang === 'en' ? currentPos.en : currentPos.de}</em>`;
-        showFeedback('feedbackArea', msg, true);
+        showFeedback('feedbackArea', msg, true, true);
     } else {
         score.addIncorrect();
         if (currentMode === 'semi-random' && !incorrectQuestions.find(p => p.id === currentPos.id)) {
@@ -229,7 +321,7 @@ function finishAnswer(isCorrect) {
             <span style="font-size:18px;font-family:'Hiragino Sans','Meiryo',sans-serif;">${currentPos.jp}</span>
             <span style="color:#555;font-size:13px;"> (${currentPos.romaji})</span><br>
             <em>${currentLang === 'en' ? currentPos.en : currentPos.de}</em>`;
-        showFeedback('feedbackArea', msg, false);
+        showFeedback('feedbackArea', msg, false, true);
     }
 
     if (isCorrect && isQuickAnswer()) {
@@ -290,6 +382,7 @@ document.addEventListener('langchange', loadQuestion);
 /* ============ INIT ============ */
 
 injectQuickAnswerButton(document.querySelector('.location-obj-trainer'));
+injectVisibilityToggles(document.querySelector('.location-obj-trainer'));
 remainingQuestions = [...locationObjPositions];
 shuffleArray(remainingQuestions);
 loadQuestion();
