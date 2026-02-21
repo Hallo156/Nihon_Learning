@@ -180,7 +180,17 @@ const uiStrings = {
     'locMap.stepLog':            { de: 'Schritte:',                   en: 'Steps:' },
     'locMap.outOfBounds':        { de: 'Karte verlassen — nicht möglich!', en: 'Out of bounds — not possible!' },
     'locMap.toggleRomaji':       { de: 'Romaji',                          en: 'Romaji' },
-    'locMap.toggleTranslation':  { de: 'Übersetzung',                     en: 'Translation' }
+    'locMap.toggleTranslation':  { de: 'Übersetzung',                     en: 'Translation' },
+
+    // --- transport.html (Verkehr & Fortbewegung) ---
+    'index.transport.title': { de: 'Verkehr & Fortbewegung',  en: 'Transport & Travel' },
+    'index.transport.desc':  { de: 'Reisewege Schritt für Schritt nachvollziehen: Zug, U-Bahn, Bus, Taxi, Auto, Fahrrad und zu Fuß.', en: 'Trace journeys step by step: train, subway, bus, taxi, car, bicycle and on foot.' },
+    'transport.title':       { de: 'Verkehr & Fortbewegung',  en: 'Transport & Travel' },
+    'transport.inputMC':     { de: 'Multiple Choice',          en: 'Multiple Choice' },
+    'transport.inputText':   { de: 'Texteingabe',              en: 'Text Input' },
+    'transport.toggleRomaji':       { de: 'Romaji',            en: 'Romaji' },
+    'transport.toggleTranslation':  { de: 'Übersetzung',       en: 'Translation' },
+    'transport.noRoute':     { de: 'Bitte eine Schwierigkeit auswählen.', en: 'Please select a difficulty.' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */

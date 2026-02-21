@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(del \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\KanaTraining.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\TrainingAll.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\VerbTraining.html\" \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\VerbTrainingSemiRandom.html\")",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(Get-Content \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\js\\\\transport-data.js\")",
+      "Bash(Measure-Object -Line)",
+      "Bash(Select-Object Lines:*)",
+      "Bash(Get-Content \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\js\\\\transport.js\")",
+      "Bash(Get-Content \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\css\\\\transport.css\")"
     ]
   }
 }

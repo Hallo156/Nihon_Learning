@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (10 Karten → Module, inkl. Simulation-Gruppe)
+index.html                 Hauptmenue (11 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -23,6 +23,7 @@ css/
   simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
   location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
   location-map.css         SVG-Karte, Richtungsbuttons 2x2-Grid, Gebaeude-Choices (Stadtkarte)
+  transport.css            Ketten-Visualisierung (Punkte/Striche), Transport-Icons, Lücken-Animation
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
@@ -43,6 +44,8 @@ js/
   location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), Spaced Repetition
   location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
   location-map.js          SVG-Karte-Builder, Nav-Minispiel (vertauschte Richtungsbuttons), Desc-Quiz, Spaced Repetition
+  transport-data.js        Transport-Daten: 12 Orte, 8 Transportmittel, 9 Routen (einfach/mittel/komplex), bilingual
+  transport.js             Ketten-Quiz: Visualisierung, Lücken-Erkennung, MC + Texteingabe, Spaced Repetition (70/30)
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -54,6 +57,7 @@ pages/
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
   location-obj.html        Gegenstand-Position (SVG-Szene, Beschreiben + Zeigen, Score)
   location-map.html        Stadtkarte (SVG-Karte, Navigation + Beschreibungs-Quiz, Score)
+  transport.html           Verkehr & Fortbewegung (Ketten-Quiz, Schwierigkeitsfilter, MC + Texteingabe, Score)
 ```
 
 ## Architektur-Regeln
@@ -67,6 +71,7 @@ pages/
 - **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → simulation-data.js → simulation.js
 - **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → location-obj-data.js → location-obj.js
 - **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → location-map-data.js → location-map.js
+- **transport.js braucht transport-data.js.** Reihenfolge: common.js → i18n.js → transport-data.js → transport.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
@@ -125,6 +130,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `location-map-data.js`: ~165 Zeilen (8 Gebaeude, directionData, 8 Nav-Fragen, 12 Desc-Fragen)
 - `location-map.js`: ~275 Zeilen (SVG-Karte, Nav-Minispiel vertauschte Buttons, Desc-Quiz, Spaced Repetition)
 - `location-map.css`: ~185 Zeilen (Karte, Richtungsbuttons 2x2, Gebaeude-Choices, Schritt-Log, Finalize-Button)
+- `transport-data.js`: ~960 Zeilen (12 Orte, 8 Transportmittel, 14 Routen inkl. 5 のります/おります-Routen, sentenceOptions, bilingual)
+- `transport.js`: ~690 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition, Visibility-Toggles, Verb-Fragen-Support)
+- `transport.css`: ~460 Zeilen (Kette, Punkte/Striche, SVG-Icons in CSS, Lücken-Animation, Satz-Buttons)
 
 ## Module im Detail
 
@@ -269,6 +277,22 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - Getrennte Spaced-Repetition-Pools fuer Nav und Desc (beim Typwechsel erhalten)
 - Quick Answer: 400ms auto-advance
 - i18n-Keys: `locMap.*` (12 Eintraege in i18n.js)
+- Index-Gruppe: "Simulation"
+
+### Verkehr & Fortbewegung (`transport-data.js` + `transport.js` + `transport.html`)
+- **Ketten-Visualisierung:** Abwechselnde Punkte (Orte) und Striche (Transportmittel) horizontal scrollbar
+- 12 Orte (`transportPlaces`): いえ, えき, がっこう, くうこう, びょういん, こうえん, スーパー, バス停, 地下鉄の駅, ホテル, 会社, コンビニ — je mit Emoji-Icon, Kanji, Romaji, DE/EN
+- 8 Transportmittel (`transportModes`): あるいて, でんしゃ, ちかてつ, バス, タクシー, くるま, ひこうき, じてんしゃ — je mit inline SVG-Icon, Farbe, Romaji
+- 14 Routen-Szenarien in 3 Schwierigkeiten: einfach (1 Schritt), mittel (2 Schritte), komplex (3 Schritte) + 5 のります/おります-Verb-Routen
+- **Lücken:** Unbekannte Transportmittel als animiertes ???-Icon; nach Beantwortung aufgedeckt (CSS-Animation)
+- Eingabe-Modus Toggle: "Multiple Choice" (4 Transport-Buttons mit SVG-Icon) / "Texteingabe" (Kana oder Romaji)
+- Schwierigkeits-Filter: Checkboxen (Einfach / Mittel / Komplex), "Filter anwenden" resettet Quiz
+- Visibility-Toggles: Romaji / Übersetzung ein-/ausblenden (localStorage, wie locObj/locMap)
+- Modi: "Zufällig" / "Wiederholung" (70/30 Spaced Repetition)
+- Quick Answer: 400ms auto-advance bei richtig
+- Datenstruktur Route: `{ id, label:{de,en}, difficulty, nodes:[{type:'place'|'transport',id}], questions:[{stepIndex,type,prompt_de,prompt_en,promptArgs,correct[],correctId,choices[],sentenceOptions[],explanation_de,explanation_en}] }`
+- **Verb-Fragen** (のります/おります): `correctId:'norimasu'|'orimasu'` — sentenceOptions.modeId matcht correctId; JS-Fallback holt Fahrzeug-Icon aus Ketten-Node; Texteingabe akzeptiert kurze Kana/Romaji ODER vollständigen Satz
+- i18n-Keys: `transport.*` (8 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation"
 
 ### mcOnly-Pflicht bei offenem Vokabular
