@@ -32,6 +32,35 @@ const quizView = document.getElementById('quizView');
 const referenceView = document.getElementById('referenceView');
 const referenceContent = document.getElementById('referenceContent');
 
+/* ============ SICHTBARKEITS-TOGGLE ============ */
+
+let showTranslation = localStorage.getItem('training_translation') !== 'false';
+const trainingContainer = document.querySelector('.training-trainer');
+
+function injectVisibilityToggles() {
+    const bar = document.createElement('div');
+    bar.className = 'map-vis-toggles';
+
+    const transBtn = document.createElement('button');
+    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
+    transBtn.textContent = '👁 ' + t('vis.translation');
+    transBtn.addEventListener('click', () => {
+        showTranslation = !showTranslation;
+        localStorage.setItem('training_translation', showTranslation);
+        transBtn.classList.toggle('active', showTranslation);
+        trainingContainer.classList.toggle('hide-translation', !showTranslation);
+    });
+
+    bar.appendChild(transBtn);
+
+    document.addEventListener('langchange', () => {
+        transBtn.textContent = '👁 ' + t('vis.translation');
+    });
+
+    const filterArea = document.querySelector('#quizView .segment-filters');
+    if (filterArea) filterArea.insertAdjacentElement('afterend', bar);
+}
+
 /* ============ STATE ============ */
 
 let currentMode = 'random';
@@ -72,8 +101,8 @@ function applySegmentFilter() {
     filteredQuestions = trainingQuestions.filter(q => segments.includes(q.segment));
 
     if (filteredQuestions.length === 0) {
-        document.getElementById('seg_particles').checked = true;
-        filteredQuestions = trainingQuestions.filter(q => q.segment === 'particles');
+        document.getElementById('seg_existence').checked = true;
+        filteredQuestions = trainingQuestions.filter(q => q.segment === 'existence');
     }
     resetQuiz();
 }
@@ -286,5 +315,8 @@ score = new ScoreTracker('correctCount', 'incorrectCount');
 /* Quick Answer Button injizieren */
 const scoreEl = document.querySelector('.score');
 if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
+
+injectVisibilityToggles();
+if (!showTranslation) trainingContainer.classList.add('hide-translation');
 
 applySegmentFilter();

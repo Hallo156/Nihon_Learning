@@ -435,6 +435,37 @@ button:hover, .check-button:hover {
     background-color: #f8f9fa;
 }
 
+/* ===== Sichtbarkeits-Toggles (Romaji / Übersetzung) – geteilt ===== */
+.map-vis-toggles {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 0 auto 10px;
+}
+
+.map-vis-btn {
+    padding: 5px 14px;
+    border: 2px solid #bbb;
+    border-radius: 20px;
+    background: #f0f2f5;
+    color: #888;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.map-vis-btn.active {
+    background: #e8f0fe;
+    color: #0056b3;
+    border-color: #007bff;
+}
+
+.map-vis-btn:hover {
+    border-color: #007bff;
+    color: #0056b3;
+}
+
 /* ===== Globaler Level-Toggle ===== */
 .level-toggle-bar {
     position: fixed;

@@ -61,12 +61,24 @@
     pointer-events: none;
 }
 
-.building-label-sub {
+.building-label-romaji {
     font-size: 10px;
     fill: rgba(255, 255, 255, 0.85);
     font-family: sans-serif;
     pointer-events: none;
 }
+
+.building-label-trans {
+    font-size: 10px;
+    fill: rgba(255, 255, 255, 0.75);
+    font-family: sans-serif;
+    font-style: italic;
+    pointer-events: none;
+}
+
+/* Toggle-Steuerung via Container-Klasse */
+.location-map-trainer.hide-romaji      .building-label-romaji { display: none; }
+.location-map-trainer.hide-translation .building-label-trans  { display: none; }
 
 /* ===== Quiz-Typ-Toggle ===== */
 #quizTypeToggle {

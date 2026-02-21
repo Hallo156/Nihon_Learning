@@ -67,3 +67,8 @@
 .training .score {
     margin-top: 15px;
 }
+
+/* ===== Übersetzungs-Toggle ===== */
+.training-trainer.hide-translation .prompt-text {
+    display: none;
+}

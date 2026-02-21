@@ -25,6 +25,8 @@ const uiStrings = {
     'input.answer':     { de: 'Antwort eingeben...',        en: 'Enter answer...' },
     'btn.quickOn':      { de: '⚡ Schnell',                 en: '⚡ Quick' },
     'btn.quickOff':     { de: '⚡ Normal',                  en: '⚡ Normal' },
+    'vis.romaji':       { de: 'Romaji',                     en: 'Romaji' },
+    'vis.translation':  { de: 'Übersetzung',                en: 'Translation' },
 
     // --- index.html ---
     'index.title':      { de: 'Japanisch Lernen',          en: 'Learn Japanese' },

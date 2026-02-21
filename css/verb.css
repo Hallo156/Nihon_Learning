@@ -43,3 +43,26 @@
     color: #444;
 }
 
+/* Übersetzungs-Anzeige zwischen Frage und Choices */
+.verb-translation {
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    text-align: center;
+    margin: -12px 0 14px;
+    min-height: 18px;
+}
+
+/* Romaji-Span unter dem Verb-Masu in den Choice-Buttons */
+.verb-choice-romaji {
+    display: block;
+    font-size: 12px;
+    opacity: 0.75;
+    font-style: italic;
+    margin-top: 2px;
+}
+
+/* Sichtbarkeits-Toggle-Steuerung */
+.verb-trainer.hide-translation .verb-translation { display: none; }
+.verb-trainer.hide-romaji      .verb-choice-romaji { display: none; }
+

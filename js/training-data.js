@@ -7,9 +7,7 @@
 /* ============ SEGMENT-DEFINITIONEN ============ */
 
 const trainingSegments = [
-    { id: 'particles',   label: 'Partikel (に/を)',               label_en: 'Particles (に/を)',               checked: true },
-    { id: 'existence',   label: 'Existenzsatz (あります/います)',    label_en: 'Existence (あります/います)',       checked: false },
-    { id: 'positions',   label: 'Positionen (まえ/うしろ/なか…)',   label_en: 'Positions (まえ/うしろ/なか…)',    checked: false },
+    { id: 'existence',   label: 'Existenzsatz (あります/います)',    label_en: 'Existence (あります/います)',       checked: true },
     { id: 'giving',      label: 'Geben & Nehmen',                  label_en: 'Giving & Receiving',              checked: false },
     { id: 'shopping',    label: 'Einkaufen (これ/それ/あれ)',       label_en: 'Shopping (これ/それ/あれ)',        checked: false },
     { id: 'verb_past',   label: 'Vergangenheit: Verben',           label_en: 'Past Tense: Verbs',               checked: false },
@@ -24,40 +22,6 @@ const trainingSegments = [
 */
 
 const trainingQuestions = [
-
-    // ──────── PARTIKEL に/を ────────
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: 'タクシー（___）のります。',
-      correct: ['に', 'ni'], explanation: 'のります (einsteigen) → に', explanation_en: 'のります (to get on) → に' },
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: '飛行機（___）おります。',
-      correct: ['を', 'wo', 'o'], explanation: 'おります (aussteigen) → を', explanation_en: 'おります (to get off) → を' },
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: '自転車（___）のります。',
-      correct: ['に', 'ni'], explanation: 'のります (aufsteigen) → に', explanation_en: 'のります (to ride) → に' },
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: 'バス（___）おります。',
-      correct: ['を', 'wo', 'o'], explanation: 'おります (aussteigen) → を', explanation_en: 'おります (to get off) → を' },
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: '電車（___）のります。',
-      correct: ['に', 'ni'], explanation: 'のります (einsteigen) → に', explanation_en: 'のります (to get on) → に' },
-    { segment: 'particles', type: 'fill',
-      prompt: 'Ergänze den richtigen Partikel (に oder を):', prompt_en: 'Fill in the correct particle (に or を):',
-      prompt_jp: '船（___）おります。',
-      correct: ['を', 'wo', 'o'], explanation: 'おります (aussteigen) → を', explanation_en: 'おります (to get off) → を' },
-    { segment: 'particles', type: 'mc',
-      prompt: 'Welchen Partikel braucht のります?', prompt_en: 'Which particle does のります need?',
-      correct: ['に'], choices: ['に', 'を', 'で', 'へ'],
-      explanation: '～にのります — に markiert das Transportmittel beim Einsteigen.', explanation_en: '～にのります — に marks the means of transport when getting on.' },
-    { segment: 'particles', type: 'mc',
-      prompt: 'Welchen Partikel braucht おります?', prompt_en: 'Which particle does おります need?',
-      correct: ['を'], choices: ['に', 'を', 'で', 'へ'],
-      explanation: '～をおります — を markiert das Transportmittel beim Aussteigen.', explanation_en: '～をおります — を marks the means of transport when getting off.' },
 
     // ──────── EXISTENZSATZ あります/います ────────
     { segment: 'existence', type: 'fill',
@@ -88,41 +52,6 @@ const trainingQuestions = [
       prompt: 'Welches Verb benutzt man für belebte Objekte (Menschen, Tiere)?', prompt_en: 'Which verb is used for animate objects (people, animals)?',
       correct: ['います'], choices: ['います', 'あります', 'きます', 'いきます'],
       explanation: 'います für belebte Objekte, あります für unbelebte.', explanation_en: 'います for animate objects, あります for inanimate.' },
-
-    // ──────── POSITIONEN ────────
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **hinter**', prompt_en: 'Fill in the position in Japanese: **behind**',
-      prompt_jp: '本は椅子の（___）にあります。',
-      correct: ['うしろ', 'ushiro'], explanation: 'うしろ = hinter', explanation_en: 'うしろ = behind' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **in / innerhalb**', prompt_en: 'Fill in the position in Japanese: **in / inside**',
-      prompt_jp: 'りんごは箱の（___）にあります。',
-      correct: ['なか', 'naka'], explanation: 'なか = in, innerhalb', explanation_en: 'なか = in, inside' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **vor**', prompt_en: 'Fill in the position in Japanese: **in front of**',
-      prompt_jp: '猫はドアの（___）にいます。',
-      correct: ['まえ', 'mae'], explanation: 'まえ = vor', explanation_en: 'まえ = in front of' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **neben** (direkt angrenzend)', prompt_en: 'Fill in the position in Japanese: **next to** (directly adjacent)',
-      prompt_jp: '銀行は郵便局の（___）にあります。',
-      correct: ['となり', 'tonari'], explanation: 'となり = neben (direkt angrenzend)', explanation_en: 'となり = next to (directly adjacent)' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **neben** (allgemein)', prompt_en: 'Fill in the position in Japanese: **beside** (general)',
-      prompt_jp: '車は家の（___）にあります。',
-      correct: ['よこ', 'yoko'], explanation: 'よこ = neben (allgemein, nicht direkt angrenzend)', explanation_en: 'よこ = beside (general, not directly adjacent)' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **auf / oben**', prompt_en: 'Fill in the position in Japanese: **on top / above**',
-      prompt_jp: '本はテーブルの（___）にあります。',
-      correct: ['うえ', 'ue'], explanation: 'うえ = auf, oben', explanation_en: 'うえ = on, above' },
-    { segment: 'positions', type: 'fill',
-      prompt: 'Ergänze die Position auf Japanisch: **unter**', prompt_en: 'Fill in the position in Japanese: **under**',
-      prompt_jp: '猫はベッドの（___）にいます。',
-      correct: ['した', 'shita'], explanation: 'した = unter', explanation_en: 'した = under' },
-    { segment: 'positions', type: 'mc',
-      prompt: 'Was bedeutet うしろ?', prompt_en: 'What does うしろ mean?',
-      correct: ['hinter'], choices: ['hinter', 'vor', 'neben', 'in'],
-      choices_en: ['behind', 'in front of', 'next to', 'in'], correct_en: ['behind'],
-      explanation: 'うしろ (ushiro) = hinter', explanation_en: 'うしろ (ushiro) = behind' },
 
     // ──────── GEBEN & NEHMEN ────────
     { segment: 'giving', type: 'fill',
@@ -306,22 +235,6 @@ const trainingQuestions = [
 /* ============ REFERENZ-INHALTE (Nachschlagen) ============ */
 
 const trainingReference = {
-    particles: {
-        title: 'Bewegungsverben: ～にのります / ～をおります',
-        title_en: 'Motion Verbs: ～にのります / ～をおります',
-        html: '<ul>' +
-            '<li><strong>～にのります。</strong> (auf etwas steigen / einsteigen)' +
-            '<ul><li>例：電車にのります。(Densha ni norimasu.) — Ich steige in den Zug ein.</li></ul></li>' +
-            '<li><strong>～をおります。</strong> (von etwas aussteigen / absteigen)' +
-            '<ul><li>例：バスをおります。(Basu o orimasu.) — Ich steige aus dem Bus aus.</li></ul></li>' +
-            '</ul>',
-        html_en: '<ul>' +
-            '<li><strong>～にのります。</strong> (to get on / to board)' +
-            '<ul><li>例：電車にのります。(Densha ni norimasu.) — I get on the train.</li></ul></li>' +
-            '<li><strong>～をおります。</strong> (to get off / to disembark)' +
-            '<ul><li>例：バスをおります。(Basu o orimasu.) — I get off the bus.</li></ul></li>' +
-            '</ul>'
-    },
     existence: {
         title: 'Existenzsatz: あります / います',
         title_en: 'Existence: あります / います',
@@ -336,28 +249,6 @@ const trainingReference = {
             '<li><strong>います (imasu):</strong> for animate objects (people and animals)</li>' +
             '<li>例：本はテーブルの上にあります。— The book is on the table.</li>' +
             '<li>例：猫は椅子の下にいます。— The cat is under the chair.</li>' +
-            '</ul>'
-    },
-    positions: {
-        title: 'Positionen: ～のまえ、うしろ、なか、となり、よこ、うえ、した',
-        title_en: 'Positions: ～のまえ, うしろ, なか, となり, よこ, うえ, した',
-        html: '<ul>' +
-            '<li>～のまえ (no mae) — vor</li>' +
-            '<li>～のうしろ (no ushiro) — hinter</li>' +
-            '<li>～のなか (no naka) — in, innerhalb</li>' +
-            '<li>～のとなり (no tonari) — neben (direkt angrenzend)</li>' +
-            '<li>～のよこ (no yoko) — neben (allgemein)</li>' +
-            '<li>～のうえ (no ue) — auf, oben</li>' +
-            '<li>～のした (no shita) — unter</li>' +
-            '</ul>',
-        html_en: '<ul>' +
-            '<li>～のまえ (no mae) — in front of</li>' +
-            '<li>～のうしろ (no ushiro) — behind</li>' +
-            '<li>～のなか (no naka) — inside</li>' +
-            '<li>～のとなり (no tonari) — next to (adjacent)</li>' +
-            '<li>～のよこ (no yoko) — beside (general)</li>' +
-            '<li>～のうえ (no ue) — on top of, above</li>' +
-            '<li>～のした (no shita) — under, below</li>' +
             '</ul>'
     },
     giving: {

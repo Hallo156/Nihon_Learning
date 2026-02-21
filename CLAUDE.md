@@ -33,9 +33,9 @@ js/
   kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level + Kategorie gruppiert, Kategorien ausklappbar (sessionStorage)
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz: 4 Fragetypen, dynamische Generierung, Segment-Filter, Spaced Repetition
-  training-data.js         Trainingsdaten: 10 Segmente, ~70 Fragen (MC/Fill/Translate), Referenz-Inhalte
+  training-data.js         Trainingsdaten: 7 Segmente, ~55 Fragen (MC/Fill), Referenz-Inhalte (particles+positions entfernt)
   training.js              Dynamischer Quiz-Motor: Segment-Filter, Spaced Repetition (70/30), Ansicht-Toggle
-  verb.js                  15 Verb-Daten + Quiz-Logik + Toggle Random/Semi-Random (Spaced Repetition 70/30)
+  verb.js                  15 Verb-Daten + Quiz-Logik + Romaji/Translation-Toggle + Spaced Repetition (70/30)
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz: 3 Typen, dynamischer Stufenfilter via computeVocabLevel(), Spaced Repetition
   simulation-data.js       Simulations-Daten: 3 Szenen (Kleidung, Essen, Moebel), Multiline-Dialoge mit Luecken (bilingual)
@@ -105,7 +105,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `kanji-list.js`: ~228 Zeilen (Kategorie-Rendering, categoryOrder, sessionStorage-Helfer)
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~295 Zeilen
-- `training-data.js`: ~490 Zeilen (reine Daten: 9 Segmente Grammatik, Fragen, Referenz — bilingual; kanji_vocab-Segment entfernt)
+- `training-data.js`: ~375 Zeilen (reine Daten: 7 Segmente Grammatik, Fragen, Referenz — bilingual; particles+positions entfernt)
 - `training.js`: ~279 Zeilen
 - `kanji-vocab-data.js`: ~128 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
 - `kanji-vocab.js`: ~270 Zeilen
@@ -115,7 +115,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `kanji-vocab.html`: ~70 Zeilen (Vokabular-Trainer-Skelett)
 - `common.css`: ~310 Zeilen (inkl. alle Shared Quiz-Elemente)
 - `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
-- `verb.css`: ~45 Zeilen (nur Verb-spezifisch, inkl. vertikale Buttons-Ausnahme)
+- `verb.css`: ~65 Zeilen (Verb-spezifisch, vertikale Buttons-Ausnahme, .verb-translation, .verb-choice-romaji, Toggle-CSS)
 - `kanji.css`: ~95 Zeilen (nur Kanji-spezifisch)
 - `kanji-list.css`: ~225 Zeilen (Flip-Card Styles + Kategorie-Abschnitt: .category-section, .category-summary, .cat-arrow)
 - `training.css`: ~70 Zeilen (nur Training-spezifisch)
@@ -148,6 +148,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Toggle-Button oben: "Zufaellig" (rein random) / "Wiederholung" (Spaced Repetition)
 - Semi-Random Algorithmus: 70% neue Fragen, 30% falsch beantwortete
 - Moduswechsel resettet Score + Queues
+- **Sichtbarkeits-Toggles:** Romaji (unter Verb-Buttons) + Übersetzung (Satz oberhalb Choices) — localStorage `verb_romaji`/`verb_translation`, beide standard-an
+- Choice-Buttons zeigen Verb (ます-Form) + Romaji-Span (versteckbar per Toggle)
+- Übersetzung im Feedback-Bereich entfernt (wird jetzt oben angezeigt)
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
 - 108 Kanji in 2 Stufen: A1 (73), A2 (35)
@@ -186,8 +189,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Texteingabe: Enter = Pruefen, akzeptiert Kana + Romaji
 
 ### Grammatik-Trainer (`training-data.js` + `training.js` + `training.html`)
-- 9 Themen-Segmente (Grammatik): Partikel, Existenzsatz, Positionen, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
-- Checkbox-Filter fuer Segmentauswahl (Partikel default an), "Filter anwenden" resettet Quiz
+- 7 Themen-Segmente (Grammatik): Existenzsatz, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
+- Entfernt: Partikel (に/を) — in Transport-Modul enthalten; Positionen (まえ/うしろ…) — in Gegenstand-Position enthalten
+- Checkbox-Filter fuer Segmentauswahl (Existenzsatz default an), "Filter anwenden" resettet Quiz
 - ~70 Fragen in 3 Typen: MC (Multiple Choice), Fill (Lueckentext), Translate (Uebersetzung)
 - Datenstruktur: `{ segment, type, prompt, prompt_en?, prompt_jp?, correct[], choices?, choices_en?, correct_en?, explanation, explanation_en? }`
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie kanji.js/verb.js)

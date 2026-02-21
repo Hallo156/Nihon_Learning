@@ -73,9 +73,18 @@ function injectVisibilityToggles(container) {
         btnR.textContent = '👁 ' + t('locMap.toggleRomaji');
         btnT.textContent = '👁 ' + t('locMap.toggleTranslation');
     });
+
+    refreshPromptVisibility();
 }
 
 function refreshPromptVisibility() {
+    // Container-Klassen für Karten-Labels
+    const trainer = document.querySelector('.location-map-trainer');
+    if (trainer) {
+        trainer.classList.toggle('hide-romaji',      !showRomaji);
+        trainer.classList.toggle('hide-translation', !showTranslation);
+    }
+    // Prompt-Elemente
     const romEl = document.querySelector('#mapPrompt .prompt-romaji');
     const subEl = document.querySelector('#mapPrompt .prompt-sub');
     if (romEl) romEl.style.display = showRomaji      ? 'block' : 'none';
@@ -152,10 +161,11 @@ function buildMapSVG(highlightId, showPlayer, showTarget) {
             fill="${b.color}" stroke="${strokeColor}" stroke-width="${strokeW}" ${filterAttr}/>`;
 
         const cx = b.x + b.w / 2;
-        const cy = b.y + b.h / 2 - 6;
+        const cy = b.y + b.h / 2 - 10;
+        const trans = currentLang === 'en' ? b.en : b.de;
         s += `<text x="${cx}" y="${cy}" class="building-label-jp" text-anchor="middle">${b.jp}</text>`;
-        const sub = currentLang === 'en' ? (b.en.length > 12 ? b.romaji : b.en) : b.romaji;
-        s += `<text x="${cx}" y="${cy + 18}" class="building-label-sub" text-anchor="middle">${sub}</text>`;
+        s += `<text x="${cx}" y="${cy + 15}" class="building-label-romaji" text-anchor="middle">${b.romaji}</text>`;
+        s += `<text x="${cx}" y="${cy + 27}" class="building-label-trans" text-anchor="middle">${trans}</text>`;
     });
 
     // Ziel-Kreuzung (goldenes Z-Marker)

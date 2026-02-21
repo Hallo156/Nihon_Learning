@@ -180,6 +180,11 @@
     border-radius: 8px;
 }
 
+/* ===== Übersetzungs-Toggle ===== */
+.simulation-trainer.hide-translation .dialog-tr {
+    display: none;
+}
+
 /* ===== Text-Eingabe innerhalb der Bubble ===== */
 .sim-text-input {
     display: flex;

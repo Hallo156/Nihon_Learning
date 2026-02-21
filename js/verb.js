@@ -33,6 +33,53 @@ function getSentenceFilled(v) {
     return currentLang === 'en' ? v.sentence_en_filled : v.sentence_de_filled;
 }
 
+/* ============ SICHTBARKEITS-TOGGLE ============ */
+
+let showRomaji      = localStorage.getItem('verb_romaji')      !== 'false';
+let showTranslation = localStorage.getItem('verb_translation') !== 'false';
+const verbContainer = document.querySelector('.verb-trainer');
+let verbTranslationEl = null;
+
+function injectVisibilityToggles() {
+    const bar = document.createElement('div');
+    bar.className = 'map-vis-toggles';
+
+    const romajiBtn = document.createElement('button');
+    romajiBtn.className = 'map-vis-btn' + (showRomaji ? ' active' : '');
+    romajiBtn.textContent = '👁 ' + t('vis.romaji');
+    romajiBtn.addEventListener('click', () => {
+        showRomaji = !showRomaji;
+        localStorage.setItem('verb_romaji', showRomaji);
+        romajiBtn.classList.toggle('active', showRomaji);
+        verbContainer.classList.toggle('hide-romaji', !showRomaji);
+    });
+
+    const transBtn = document.createElement('button');
+    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
+    transBtn.textContent = '👁 ' + t('vis.translation');
+    transBtn.addEventListener('click', () => {
+        showTranslation = !showTranslation;
+        localStorage.setItem('verb_translation', showTranslation);
+        transBtn.classList.toggle('active', showTranslation);
+        verbContainer.classList.toggle('hide-translation', !showTranslation);
+    });
+
+    bar.appendChild(romajiBtn);
+    bar.appendChild(transBtn);
+
+    document.addEventListener('langchange', () => {
+        romajiBtn.textContent = '👁 ' + t('vis.romaji');
+        transBtn.textContent  = '👁 ' + t('vis.translation');
+    });
+
+    const modeToggleEl = document.querySelector('.verb-trainer .mode-toggle');
+    if (modeToggleEl) modeToggleEl.insertAdjacentElement('afterend', bar);
+
+    verbTranslationEl = document.createElement('div');
+    verbTranslationEl.className = 'verb-translation';
+    questionArea.insertAdjacentElement('afterend', verbTranslationEl);
+}
+
 /* ============ STATE ============ */
 
 let currentQuestion = null;
@@ -72,19 +119,21 @@ function loadQuestion() {
     currentQuestion = selectNextQuestion();
     questionArea.textContent = currentQuestion.sentence_jp_blank.replace("＿＿＿＿＿", " ______ ");
 
-    let choices = [currentQuestion.verb_masu];
-    while (choices.length < 3) {
-        const random = verbsData[Math.floor(Math.random() * verbsData.length)].verb_masu;
-        if (!choices.includes(random)) choices.push(random);
+    if (verbTranslationEl) verbTranslationEl.textContent = getSentenceFilled(currentQuestion);
+
+    let choiceVerbs = [currentQuestion];
+    while (choiceVerbs.length < 3) {
+        const random = verbsData[Math.floor(Math.random() * verbsData.length)];
+        if (!choiceVerbs.some(v => v.verb_masu === random.verb_masu)) choiceVerbs.push(random);
     }
-    shuffleArray(choices);
+    shuffleArray(choiceVerbs);
 
     choicesArea.innerHTML = '';
-    choices.forEach(choiceText => {
+    choiceVerbs.forEach(verbObj => {
         const button = document.createElement('button');
         button.classList.add('choice-button');
-        button.textContent = choiceText;
-        button.addEventListener('click', () => handleAnswer(choiceText));
+        button.innerHTML = verbObj.verb_masu + '<span class="verb-choice-romaji">' + verbObj.romaji + '</span>';
+        button.addEventListener('click', () => handleAnswer(verbObj.verb_masu));
         choicesArea.appendChild(button);
     });
 
@@ -113,7 +162,6 @@ function handleAnswer(selectedVerb) {
     }
 
     feedbackHTML += `${t('verb.fullSentence')}: <strong>${currentQuestion.sentence_jp_filled}</strong><br>`;
-    feedbackHTML += `<span class="translation">${t('verb.meaningLabel')}: "${getSentenceFilled(currentQuestion)}"</span><br>`;
     feedbackHTML += `<span class="romaji">(${currentQuestion.verb_masu} - ${currentQuestion.romaji} - ${getMeaning(currentQuestion)})</span>`;
 
     feedbackArea.innerHTML = feedbackHTML;
@@ -153,6 +201,10 @@ modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
 /* Quick Answer Button injizieren */
 const scoreEl = document.querySelector('.score');
 if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
+
+injectVisibilityToggles();
+if (!showRomaji)      verbContainer.classList.add('hide-romaji');
+if (!showTranslation) verbContainer.classList.add('hide-translation');
 
 remainingQuestions = [...verbsData];
 shuffleArray(remainingQuestions);

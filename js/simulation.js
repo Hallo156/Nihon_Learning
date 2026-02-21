@@ -33,6 +33,35 @@ const inputModeText      = document.getElementById('inputModeText');
 const dialogContainer    = document.getElementById('dialogContainer');
 const nextButton         = document.getElementById('nextButton');
 
+/* ============ SICHTBARKEITS-TOGGLE ============ */
+
+let showTranslation = localStorage.getItem('sim_translation') !== 'false';
+const simContainer  = document.querySelector('.simulation-trainer');
+
+function injectVisibilityToggles() {
+    const bar = document.createElement('div');
+    bar.className = 'map-vis-toggles';
+
+    const transBtn = document.createElement('button');
+    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
+    transBtn.textContent = '👁 ' + t('vis.translation');
+    transBtn.addEventListener('click', () => {
+        showTranslation = !showTranslation;
+        localStorage.setItem('sim_translation', showTranslation);
+        transBtn.classList.toggle('active', showTranslation);
+        simContainer.classList.toggle('hide-translation', !showTranslation);
+    });
+
+    bar.appendChild(transBtn);
+
+    document.addEventListener('langchange', () => {
+        transBtn.textContent = '👁 ' + t('vis.translation');
+    });
+
+    const inputModeEl = document.getElementById('inputModeToggle');
+    if (inputModeEl) inputModeEl.insertAdjacentElement('afterend', bar);
+}
+
 /* ============ STATE ============ */
 
 let currentMode      = 'random';   // 'random' | 'spaced'
@@ -457,4 +486,6 @@ document.addEventListener('langchange', () => {
 score = new ScoreTracker('correctCount', 'incorrectCount');
 buildSceneCheckboxes();
 injectQuickAnswerButton(document.querySelector('.simulation-trainer'));
+injectVisibilityToggles();
+if (!showTranslation) simContainer.classList.add('hide-translation');
 applySceneFilter();
