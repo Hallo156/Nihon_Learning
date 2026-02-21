@@ -13,12 +13,14 @@
 */
 
 const simulationScenes = [
-    { id: 'clothes',  label: 'Kleidung',       label_en: 'Clothing',   checked: true  },
-    { id: 'clothes2', label: 'Kleidung',       label_en: 'Clothing',   checked: true  },
-    { id: 'food',     label: 'Lebensmittel',   label_en: 'Food',       checked: false },
-    { id: 'food2',    label: 'Lebensmittel',   label_en: 'Food',       checked: false },
-    { id: 'furni',    label: 'Möbel',          label_en: 'Furniture',  checked: false },
-    { id: 'furni2',   label: 'Möbel',          label_en: 'Furniture',  checked: false },
+    { id: 'clothes',  label: 'Kleidung',         label_en: 'Clothing',     checked: true  },
+    { id: 'clothes2', label: 'Kleidung',         label_en: 'Clothing',     checked: true  },
+    { id: 'food',     label: 'Lebensmittel',     label_en: 'Food',         checked: false },
+    { id: 'food2',    label: 'Lebensmittel',     label_en: 'Food',         checked: false },
+    { id: 'furni',    label: 'Möbel',            label_en: 'Furniture',    checked: false },
+    { id: 'furni2',   label: 'Möbel',            label_en: 'Furniture',    checked: false },
+    { id: 'korero1',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are', checked: false },
+    { id: 'korero2',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are', checked: false },
 ];
 
 /* =====================================================================
@@ -599,5 +601,114 @@ const simulationDialogs = {
 
         { type: 'text', speaker: 'ten',
           jp: 'ありがとうございます！もくようびにおとどけします。', de: 'Danke schön! Wir liefern am Donnerstag.', en: 'Thank you! We will deliver on Thursday.' },
+    ],
+
+    /* ---- KORE/SORE/ARE 1 ----
+       Ziel: Demonstrativpronomen これ/それ/あれ anhand visueller Positionen üben.
+       Ablauf: Begrüßung → Kunde fragt nach weit entfernter Jacke (あれ) →
+               Verkäufer erklärt → Kunde bittet um das Shirt beim Verkäufer (それ) →
+               Verkäufer reicht es → Kunde kauft das Shirt in seinen Händen (これ) →
+               Verabschiedung
+       Visual-Feld: { position: 'far'|'near-staff'|'near-customer', item: Emoji }
+    */
+    korero1: [
+        { type: 'text', speaker: 'ten',
+          jp: 'いらっしゃいませ！', de: 'Willkommen!', en: 'Welcome!' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'far', item: '🧥' },
+          before: '', after: 'はなんですか？',
+          before_en: 'What is ', after_en: '?',
+          de: 'Was ist das da drüben (weit entfernt)?',
+          en: 'What is that over there (far away)?',
+          correct: ['あれ', 'are'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'あれ (are) = das dort (weit von Sprecher und Hörer entfernt). Die Jacke hängt weit entfernt an der Wand.',
+          explanation_en: 'あれ (are) = that over there (far from both speaker and listener). The jacket is hanging far away on the wall.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'あれはカシミアジャケットです。', de: 'Das da drüben ist eine Kaschmirjacke.', en: 'That over there is a cashmere jacket.' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'near-staff', item: '👕' },
+          before: '', after: 'もみせてください。',
+          before_en: 'Please show me ', after_en: ' too.',
+          de: 'Zeigen Sie mir das (beim Verkäufer) bitte auch.',
+          en: 'Please show me that (near the staff) too.',
+          correct: ['それ', 'sore'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'それ (sore) = das dort (nahe beim Gesprächspartner/Verkäufer). Das Shirt liegt beim Verkäufer auf dem Tresen.',
+          explanation_en: 'それ (sore) = that (near the listener/staff). The shirt is on the counter near the staff.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'はい、どうぞ。', de: 'Ja, bitte sehr.', en: 'Yes, here you go.' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'near-customer', item: '👕' },
+          before: '', after: 'をください。',
+          before_en: 'I\'ll take ', after_en: '.',
+          de: 'Das hier (bei mir) nehme ich bitte.',
+          en: 'I\'ll take this one please.',
+          correct: ['これ', 'kore'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'これ (kore) = dies hier (beim Sprecher/Kunden). Der Kunde hält das Shirt jetzt selbst in der Hand.',
+          explanation_en: 'これ (kore) = this (near the speaker/customer). The customer is now holding the shirt.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'ありがとうございました！', de: 'Vielen Dank!', en: 'Thank you very much!' },
+    ],
+
+    /* ---- KORE/SORE/ARE 2 ----
+       Ziel: Demonstrativpronomen これ/それ/あれ in einem Lebensmittelgeschäft üben.
+       Ablauf: Begrüßung → Kunde fragt nach weit entferntem Apfel (あれ) →
+               Verkäufer nennt Preis → Kunde bestellt Brot beim Verkäufer (それ) →
+               Verkäufer reicht es → Kunde kauft Süßigkeit in seinen Händen (これ) →
+               Verabschiedung
+    */
+    korero2: [
+        { type: 'text', speaker: 'ten',
+          jp: 'いらっしゃいませ！', de: 'Willkommen!', en: 'Welcome!' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'far', item: '🍎' },
+          before: '', after: 'はいくらですか？',
+          before_en: 'How much is ', after_en: '?',
+          de: 'Wie viel kostet das da drüben (weit entfernt)?',
+          en: 'How much is that over there (far away)?',
+          correct: ['あれ', 'are'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'あれ (are) = das dort (weit von Sprecher und Hörer entfernt). Die Äpfel stehen weit entfernt im Regal.',
+          explanation_en: 'あれ (are) = that over there (far from both). The apples are far away on the shelf.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'あれはひゃくえんです。', de: 'Das da drüben kostet 100 Yen.', en: 'That over there is 100 yen.' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'near-staff', item: '🍞' },
+          before: '', after: 'をひとつください。',
+          before_en: 'One ', after_en: ', please.',
+          de: 'Eins von dem da (beim Verkäufer) bitte.',
+          en: 'One of that (near the staff) please.',
+          correct: ['それ', 'sore'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'それ (sore) = das dort (nahe beim Gesprächspartner/Verkäufer). Das Brot liegt beim Verkäufer auf dem Tresen.',
+          explanation_en: 'それ (sore) = that (near the listener/staff). The bread is near the staff.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'はい、どうぞ。', de: 'Ja, bitte sehr.', en: 'Yes, here you go.' },
+
+        { type: 'blank', speaker: 'kyaku',
+          visual: { position: 'near-customer', item: '🍬' },
+          before: '', after: 'もください。',
+          before_en: 'Also ', after_en: ', please.',
+          de: 'Das hier (bei mir) auch bitte.',
+          en: 'Also this one (near me) please.',
+          correct: ['これ', 'kore'],
+          choices: ['これ', 'それ', 'あれ'],
+          explanation: 'これ (kore) = dies hier (beim Sprecher/Kunden). Der Kunde hat die Süßigkeit bereits aufgehoben.',
+          explanation_en: 'これ (kore) = this (near the speaker/customer). The customer has already picked up the candy.' },
+
+        { type: 'text', speaker: 'ten',
+          jp: 'ありがとうございました！', de: 'Vielen Dank!', en: 'Thank you very much!' },
     ],
 };

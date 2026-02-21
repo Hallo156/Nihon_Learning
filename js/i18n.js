@@ -149,6 +149,7 @@ const uiStrings = {
     'sim.speaker.customer':   { de: 'Kunde',                en: 'Customer' },
     'sim.nextBlank':          { de: 'Nächste Lücke',        en: 'Next Gap' },
     'sim.noScene':            { de: 'Bitte eine Szene auswählen.', en: 'Please select a scene.' },
+    'sim.visual.you':         { de: 'Du',                   en: 'You' },
 
     // --- location-obj.html (Gegenstand-Position) ---
     'index.locObj.title':        { de: 'Gegenstand-Position',    en: 'Object Position' },

@@ -40,8 +40,8 @@ js/
   verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
-  simulation-data.js       Simulations-Daten: 3 Szenen (Kleidung, Essen, Moebel), Multiline-Dialoge mit Luecken (bilingual)
-  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), nutzt getLangField + buildVisibilityToggles
+  simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld fuer Positions-Indikator
+  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), renderKoreroVisual() fuer diese/das/jenes-Positionen, nutzt getLangField + buildVisibilityToggles
   location-obj-data.js     9 Positionen mit SVG-Koordinaten (ballCx/Cy, hitX/Y/W/H), JP/DE/EN, Romaji
   location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), via QuizEngine
   location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
@@ -196,8 +196,8 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
 - `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
-- `simulation-data.js`: ~510 Zeilen (reine Daten: 6 Szenen je 2x Kleidung/Essen/Moebel, Multiline-Dialoge bilingual)
-- `simulation.js`: ~452 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
+- `simulation-data.js`: ~610 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen haben `visual`-Feld)
+- `simulation.js`: ~510 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(); nutzt getLangField + buildVisibilityToggles)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
 - `location-obj-data.js`: ~85 Zeilen (10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; inkl. in_regal)
 - `location-obj.js`: ~237 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz via QuizEngine)
@@ -305,7 +305,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Alle 9 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js, location-obj.js, location-map.js
 
 ### Einkaufs-Simulation (`simulation-data.js` + `simulation.js` + `simulation.html`)
-- 6 Szenen (A1-Fokus): je 2x Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen
+- 8 Szenen (A1-Fokus): je 2x Kleidung kaufen, Lebensmittel kaufen, Moebel kaufen, これ/それ/あれ Demonstrativpronomen
 - Multiline-Dialog: feste Zeilen (Sprecher sichtbar) + Lueckenzeilen (aktive Luecke hervorgehoben)
 - Eingabe-Modus Toggle: "Multiple Choice" (Buttons) oder "Gemischt" (Romaji/Kana/Kanji)
 - Lückenfortschritt: Lücken werden der Reihe nach freigeschaltet, bereits gefuellte Luecken gruen dargestellt
@@ -315,7 +315,8 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Feedback nach jeder Luecke: Erklaerung (DE/EN) + richtige Antwort bei Fehler
 - Quick Answer: nach richtiger Antwort 400ms Delay, dann automatisch naechste Luecke
 - Sprecher-Labels: "Verkäufer" / "Kunde" (i18n), Bubbles links/rechts je nach Sprecher
-- Datenstruktur: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en }`
+- Datenstruktur: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en, visual? }`
+- `visual`-Feld (optional, nur Korero-Szenen): `{ position: 'near-customer'|'near-staff'|'far', item: Emoji-String }` — rendert visuellen Positions-Indikator (👤 Du / Emoji / 👤 Verk.) über der aktiven Lücke via `renderKoreroVisual()`
 - i18n-Keys: `sim.*` (13 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation" (`index.group.simulation`)
 

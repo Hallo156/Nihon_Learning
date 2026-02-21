@@ -193,6 +193,11 @@ function renderBlankLine(container, line, blankPos, trVisible) {
 
     if (blankPos < blankIndex) {
         // Bereits beantwortet — zeige korrekte Antwort grün
+        if (line.visual) {
+            const vis = renderKoreroVisual(line);
+            if (vis) container.appendChild(vis);
+        }
+
         const filledSpan = document.createElement('span');
         filledSpan.className = 'dialog-jp';
         filledSpan.innerHTML = escHtml(before)
@@ -209,6 +214,11 @@ function renderBlankLine(container, line, blankPos, trVisible) {
 
     } else if (blankPos === blankIndex) {
         // Aktive Lücke
+        if (line.visual) {
+            const vis = renderKoreroVisual(line);
+            if (vis) container.appendChild(vis);
+        }
+
         const textBefore = document.createElement('span');
         textBefore.className = 'dialog-jp';
         textBefore.textContent = before;
@@ -389,6 +399,63 @@ function advanceBlank() {
     } else {
         renderDialog();
     }
+}
+
+/* ============ KORE/SORE/ARE VISUELLER INDIKATOR ============ */
+
+function renderKoreroVisual(line) {
+    const v = line.visual;
+    if (!v) return null;
+
+    const youLabel   = t('sim.visual.you');
+    const staffLabel = t('sim.speaker.staff');
+
+    const wrap = document.createElement('div');
+    wrap.className = 'korero-visual';
+
+    function personCol(name) {
+        const col = document.createElement('div');
+        col.className = 'kv-person-wrap';
+        col.innerHTML = '<span class="kv-person-face">👤</span>'
+            + '<span class="kv-person-name">' + escHtml(name) + '</span>';
+        return col;
+    }
+
+    function itemEl(extra) {
+        const el = document.createElement('div');
+        el.className = 'kv-item-wrap' + (extra ? ' ' + extra : '');
+        el.innerHTML = '<span class="kv-item-emoji">' + v.item + '</span>';
+        return el;
+    }
+
+    function connector() {
+        const el = document.createElement('div');
+        el.className = 'kv-connector';
+        return el;
+    }
+
+    if (v.position === 'near-customer') {
+        // [item] [👤 Du] ·····  [👤 Verk.]
+        wrap.appendChild(itemEl());
+        wrap.appendChild(personCol(youLabel));
+        wrap.appendChild(connector());
+        wrap.appendChild(personCol(staffLabel));
+    } else if (v.position === 'near-staff') {
+        // [👤 Du] ·····  [👤 Verk.] [item]
+        wrap.appendChild(personCol(youLabel));
+        wrap.appendChild(connector());
+        wrap.appendChild(personCol(staffLabel));
+        wrap.appendChild(itemEl());
+    } else {
+        // far: [👤 Du] ·· [item on shelf] ·· [👤 Verk.]
+        wrap.appendChild(personCol(youLabel));
+        wrap.appendChild(connector());
+        wrap.appendChild(itemEl('kv-item-wrap--far'));
+        wrap.appendChild(connector());
+        wrap.appendChild(personCol(staffLabel));
+    }
+
+    return wrap;
 }
 
 /* ============ HILFSFUNKTIONEN ============ */
