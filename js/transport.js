@@ -27,8 +27,6 @@ const modeRandomBtn   = document.getElementById('modeRandom');
 const modeSemiBtn     = document.getElementById('modeSemiRandom');
 const inputMCBtn      = document.getElementById('inputModeMC');
 const inputTextBtn    = document.getElementById('inputModeText');
-const diffFilter      = document.getElementById('diffFilter');
-const applyFilterBtn  = document.getElementById('applyFilter');
 
 /* ============ VISIBILITY TOGGLES (Romaji / Übersetzung) ============ */
 
@@ -58,7 +56,12 @@ function injectVisibilityToggles(container) {
 
     bar.appendChild(romajiBtn);
     bar.appendChild(transBtn);
-    container.insertBefore(bar, container.firstChild);
+    const inputModeToggleEl = document.getElementById('inputModeToggle');
+    if (inputModeToggleEl) {
+        inputModeToggleEl.insertAdjacentElement('afterend', bar);
+    } else {
+        container.insertBefore(bar, container.firstChild);
+    }
 }
 
 function refreshChainVisibility() {
@@ -571,16 +574,8 @@ function advanceQuestion() {
 
 /* ============ ROUTE-MANAGEMENT ============ */
 
-function getSelectedDifficulties() {
-    const checks = diffFilter.querySelectorAll('input[type=checkbox]:checked');
-    return [...checks].map(c => c.value);
-}
-
 function buildPool() {
-    const diffs = getSelectedDifficulties();
-    let pool = transportRoutes.filter(r => diffs.includes(r.difficulty));
-    if (pool.length === 0) pool = [...transportRoutes];
-    remaining = [...pool];
+    remaining = [...transportRoutes];
     shuffleArray(remaining);
     incorrectPool = [];
 }
@@ -593,10 +588,7 @@ function pickNextRoute() {
         return r;
     }
     if (remaining.length === 0) {
-        const diffs = getSelectedDifficulties();
-        let pool = transportRoutes.filter(r => diffs.includes(r.difficulty));
-        if (pool.length === 0) pool = [...transportRoutes];
-        remaining = [...pool];
+        remaining = [...transportRoutes];
         shuffleArray(remaining);
     }
     return remaining.pop();
@@ -616,27 +608,6 @@ function resetQuiz() {
     score.reset();
     buildPool();
     loadNextRoute();
-}
-
-/* ============ FILTER-CHECKBOXEN ============ */
-
-function buildDiffCheckboxes() {
-    diffFilter.innerHTML = '';
-    const diffs = [
-        { val: 'easy',   de: 'Einfach',  en: 'Easy' },
-        { val: 'medium', de: 'Mittel',   en: 'Medium' },
-        { val: 'hard',   de: 'Komplex',  en: 'Complex' }
-    ];
-    diffs.forEach(d => {
-        const label = document.createElement('label');
-        const cb    = document.createElement('input');
-        cb.type  = 'checkbox';
-        cb.value = d.val;
-        cb.checked = (d.val === 'easy' || d.val === 'medium');
-        label.appendChild(cb);
-        label.appendChild(document.createTextNode(' ' + (currentLang === 'en' ? d.en : d.de)));
-        diffFilter.appendChild(label);
-    });
 }
 
 /* ============ EVENTS ============ */
@@ -671,10 +642,7 @@ inputTextBtn.addEventListener('click', () => {
     if (currentRoute) renderQuestion();
 });
 
-applyFilterBtn.addEventListener('click', resetQuiz);
-
 document.addEventListener('langchange', () => {
-    buildDiffCheckboxes();
     if (currentRoute) {
         renderChain();
         renderQuestion();
@@ -684,7 +652,6 @@ document.addEventListener('langchange', () => {
 /* ============ INIT ============ */
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
-buildDiffCheckboxes();
 injectQuickAnswerButton(document.querySelector('.transport-trainer'));
 injectVisibilityToggles(document.querySelector('.transport-trainer'));
 buildPool();

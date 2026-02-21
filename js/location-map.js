@@ -19,7 +19,6 @@ function svgCY(gy) { return SVG_CROSS_Y[gy]; }
 
 /* ============ STATE ============ */
 
-let currentMode = 'random';      // 'random' | 'semi-random'
 let currentQuizType = 'nav';     // 'nav' | 'desc'
 let answered = false;
 
@@ -32,8 +31,6 @@ let navStepLog = [];             // Array der geklickten JP-Richtungsnamen
 
 // Desc State
 let currentDescQ = null;
-let remainingDesc = [];
-let incorrectDesc = [];
 
 const score = new ScoreTracker('correctCount', 'incorrectCount');
 
@@ -338,17 +335,7 @@ function finishNav(isCorrect, forcedByLimit) {
 /* ============ BESCHREIBEN ============ */
 
 function pickNextDesc() {
-    if (currentMode === 'random') {
-        return descQuestions[Math.floor(Math.random() * descQuestions.length)];
-    }
-    if (incorrectDesc.length > 0 && Math.random() < 0.3) {
-        return incorrectDesc[Math.floor(Math.random() * incorrectDesc.length)];
-    }
-    if (remainingDesc.length === 0) {
-        remainingDesc = [...descQuestions];
-        shuffleArray(remainingDesc);
-    }
-    return remainingDesc.pop();
+    return descQuestions[Math.floor(Math.random() * descQuestions.length)];
 }
 
 function loadDesc() {
@@ -401,12 +388,10 @@ function handleDescAnswer(isCorrect, clickedBtn, choicesEl) {
 
     if (isCorrect) {
         score.addCorrect();
-        if (currentMode === 'semi-random') incorrectDesc = incorrectDesc.filter(q => q.id !== currentDescQ.id);
         const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
         showFeedback('feedbackArea', `<strong>${t('feedback.correct')}</strong><br><em>${exp}</em>`, true, true);
     } else {
         score.addIncorrect();
-        if (currentMode === 'semi-random' && !incorrectDesc.find(q => q.id === currentDescQ.id)) incorrectDesc.push(currentDescQ);
         const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
         showFeedback('feedbackArea', `<strong>${t('feedback.wrong')}</strong><br><em>${exp}</em>`, false, true);
     }
@@ -428,9 +413,6 @@ function loadQuestion() {
 /* ============ RESET ============ */
 
 function resetQuiz() {
-    remainingDesc = [...descQuestions];
-    shuffleArray(remainingDesc);
-    incorrectDesc = [];
     score.reset();
     loadQuestion();
 }
@@ -440,22 +422,6 @@ function resetQuiz() {
 document.getElementById('nextButton').addEventListener('click', loadQuestion);
 
 document.getElementById('finalizeButton').addEventListener('click', handleFinalize);
-
-document.getElementById('modeRandom').addEventListener('click', () => {
-    if (currentMode === 'random') return;
-    currentMode = 'random';
-    document.getElementById('modeRandom').classList.add('active');
-    document.getElementById('modeSemiRandom').classList.remove('active');
-    resetQuiz();
-});
-
-document.getElementById('modeSemiRandom').addEventListener('click', () => {
-    if (currentMode === 'semi-random') return;
-    currentMode = 'semi-random';
-    document.getElementById('modeSemiRandom').classList.add('active');
-    document.getElementById('modeRandom').classList.remove('active');
-    resetQuiz();
-});
 
 document.getElementById('typeNav').addEventListener('click', () => {
     if (currentQuizType === 'nav') return;
@@ -479,6 +445,4 @@ document.addEventListener('langchange', loadQuestion);
 
 injectQuickAnswerButton(document.querySelector('.location-map-trainer'));
 injectVisibilityToggles(document.querySelector('.location-map-trainer'));
-remainingDesc = [...descQuestions];
-shuffleArray(remainingDesc);
 loadNav();
