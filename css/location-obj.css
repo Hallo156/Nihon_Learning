@@ -75,36 +75,6 @@
     stroke-width: 2;
 }
 
-/* ===== Sichtbarkeits-Toggles (Romaji / Übersetzung) ===== */
-.obj-vis-toggles {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin: 0 auto 10px;
-}
-
-.obj-vis-btn {
-    padding: 5px 14px;
-    border: 2px solid #bbb;
-    border-radius: 20px;
-    background: #f0f2f5;
-    color: #888;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-}
-
-.obj-vis-btn.active {
-    background: #e8f0fe;
-    color: #0056b3;
-    border-color: #007bff;
-}
-
-.obj-vis-btn:hover {
-    border-color: #007bff;
-    color: #0056b3;
-}
-
 /* ===== Quiz-Typ-Toggle ===== */
 #quizTypeToggle {
     margin: 8px auto 12px;

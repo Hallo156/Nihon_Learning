@@ -1,25 +1,7 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
 /* simulation.js — Einkaufs-Simulations-Modul: Multiline-Dialoge mit Lückentexten.
-   Braucht: common.js, i18n.js, simulation-data.js */
-
-/* ============ HILFSFUNKTIONEN (bilingual) ============ */
-
-function getSceneLabel(scene) {
-    return currentLang === 'en' && scene.label_en ? scene.label_en : scene.label;
-}
-function getLineBefore(line) {
-    return currentLang === 'en' && line.before_en !== undefined ? line.before_en : line.before;
-}
-function getLineAfter(line) {
-    return currentLang === 'en' && line.after_en !== undefined ? line.after_en : line.after;
-}
-function getExplanation(line) {
-    return currentLang === 'en' && line.explanation_en ? line.explanation_en : line.explanation;
-}
-function getLineTranslation(line) {
-    return currentLang === 'en' ? (line.en || '') : (line.de || '');
-}
+   Braucht: common.js, i18n.js, quiz-engine.js, simulation-data.js */
 
 /* ============ DOM-REFERENZEN ============ */
 
@@ -35,32 +17,16 @@ const nextButton         = document.getElementById('nextButton');
 
 /* ============ SICHTBARKEITS-TOGGLE ============ */
 
-let showTranslation = localStorage.getItem('sim_translation') !== 'false';
-const simContainer  = document.querySelector('.simulation-trainer');
+const simContainer = document.querySelector('.simulation-trainer');
 
-function injectVisibilityToggles() {
-    const bar = document.createElement('div');
-    bar.className = 'map-vis-toggles';
-
-    const transBtn = document.createElement('button');
-    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
-    transBtn.textContent = '👁 ' + t('vis.translation');
-    transBtn.addEventListener('click', () => {
-        showTranslation = !showTranslation;
-        localStorage.setItem('sim_translation', showTranslation);
-        transBtn.classList.toggle('active', showTranslation);
-        simContainer.classList.toggle('hide-translation', !showTranslation);
-    });
-
-    bar.appendChild(transBtn);
-
-    document.addEventListener('langchange', () => {
-        transBtn.textContent = '👁 ' + t('vis.translation');
-    });
-
-    const inputModeEl = document.getElementById('inputModeToggle');
-    if (inputModeEl) inputModeEl.insertAdjacentElement('afterend', bar);
-}
+buildVisibilityToggles({
+    container: simContainer,
+    insertAfter: document.getElementById('inputModeToggle'),
+    target: simContainer,
+    toggles: [
+        { key: 'sim_translation', i18nKey: 'vis.translation', cssClass: 'hide-translation', defaultOn: true }
+    ]
+});
 
 /* ============ STATE ============ */
 
@@ -81,7 +47,6 @@ let incorrectScenes  = [];
 
 /* ============ SZENENCHECKBOXEN ============ */
 
-// Baut eine Liste eindeutiger Kategorien (label/label_en) mit allen zugehörigen IDs
 function buildSceneGroups() {
     const groups = [];
     simulationScenes.forEach(scene => {
@@ -108,19 +73,17 @@ function buildSceneCheckboxes() {
         const labelEl = document.createElement('label');
         const cb      = document.createElement('input');
         cb.type       = 'checkbox';
-        // value = alle IDs der Gruppe, kommasepariert
         cb.value      = group.ids.join(',');
         cb.checked    = group.checked;
         labelEl.appendChild(cb);
         labelEl.appendChild(document.createTextNode(
-            ' ' + (currentLang === 'en' && group.label_en ? group.label_en : group.label)
+            ' ' + getLangField(group, 'label')
         ));
         sceneFiltersDiv.appendChild(labelEl);
     });
 }
 
 function getSelectedScenes() {
-    // Gibt alle einzelnen Szenen-IDs der angehakten Gruppen zurück
     const ids = [];
     sceneFiltersDiv.querySelectorAll('input[type=checkbox]:checked').forEach(cb => {
         cb.value.split(',').forEach(id => ids.push(id));
@@ -208,7 +171,7 @@ function renderDialog() {
             if (trVisible) {
                 const trSpan = document.createElement('span');
                 trSpan.className = 'dialog-tr';
-                trSpan.textContent = '(' + getLineTranslation(line) + ')';
+                trSpan.textContent = '(' + (getLangField(line, 'de', 'en') || '') + ')';
                 bubbleEl.appendChild(trSpan);
             }
         } else {
@@ -225,8 +188,8 @@ function renderDialog() {
 function renderBlankLine(container, line, blankPos, trVisible) {
     container.innerHTML = '';
 
-    const before = getLineBefore(line);
-    const after  = getLineAfter(line);
+    const before = getLangField(line, 'before');
+    const after  = getLangField(line, 'after');
 
     if (blankPos < blankIndex) {
         // Bereits beantwortet — zeige korrekte Antwort grün
@@ -240,7 +203,7 @@ function renderBlankLine(container, line, blankPos, trVisible) {
         if (trVisible) {
             const trSpan = document.createElement('span');
             trSpan.className = 'dialog-tr';
-            trSpan.textContent = '(' + getLineTranslation(line) + ')';
+            trSpan.textContent = '(' + (getLangField(line, 'de', 'en') || '') + ')';
             container.appendChild(trSpan);
         }
 
@@ -374,7 +337,7 @@ function finishBlank(isCorrect, line) {
     if (currentBubble && !currentBubble.querySelector('.dialog-tr')) {
         const trSpan = document.createElement('span');
         trSpan.className = 'dialog-tr';
-        trSpan.textContent = '(' + getLineTranslation(line) + ')';
+        trSpan.textContent = '(' + (getLangField(line, 'de', 'en') || '') + ')';
         currentBubble.appendChild(trSpan);
     }
 
@@ -386,19 +349,19 @@ function finishBlank(isCorrect, line) {
         if (bubble.querySelector('.dialog-tr')) return; // schon sichtbar
         const tr = document.createElement('span');
         tr.className = 'dialog-tr';
-        tr.textContent = '(' + getLineTranslation(l) + ')';
+        tr.textContent = '(' + (getLangField(l, 'de', 'en') || '') + ')';
         bubble.appendChild(tr);
     });
 
     // Score + Feedback
     if (isCorrect) {
         score.addCorrect();
-        showFeedback('feedbackArea', t('feedback.correct') + ' — ' + getExplanation(line), true);
+        showFeedback('feedbackArea', t('feedback.correct') + ' — ' + getLangField(line, 'explanation'), true);
     } else {
         score.addIncorrect();
         showFeedback('feedbackArea',
             t('feedback.wrong') + ' ' + t('feedback.correctIs') + ' ' + line.correct[0]
-            + ' — ' + getExplanation(line), false);
+            + ' — ' + getLangField(line, 'explanation'), false);
         if (currentMode === 'spaced' && !incorrectScenes.includes(activeSceneId)) {
             incorrectScenes.push(activeSceneId);
         }
@@ -486,6 +449,4 @@ document.addEventListener('langchange', () => {
 score = new ScoreTracker('correctCount', 'incorrectCount');
 buildSceneCheckboxes();
 injectQuickAnswerButton(document.querySelector('.simulation-trainer'));
-injectVisibilityToggles();
-if (!showTranslation) simContainer.classList.add('hide-translation');
 applySceneFilter();

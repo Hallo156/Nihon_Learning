@@ -1,31 +1,21 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
 /* training.js — Dynamischer Quiz-Motor fuer Vokabular & Grammatik.
-   Braucht: common.js, i18n.js, training-data.js */
+   Braucht: common.js, i18n.js, quiz-engine.js, training-data.js */
 
 /* ============ HELFER: Sprach-abhängige Felder ============ */
 
-function getPrompt(q) { return currentLang === 'en' && q.prompt_en ? q.prompt_en : q.prompt; }
-function getExplanation(q) { return currentLang === 'en' && q.explanation_en ? q.explanation_en : q.explanation; }
-function getChoices(q) { return currentLang === 'en' && q.choices_en ? q.choices_en : q.choices; }
-function getCorrect(q) { return currentLang === 'en' && q.correct_en ? q.correct_en : q.correct; }
-function getSegmentLabel(seg) { return currentLang === 'en' && seg.label_en ? seg.label_en : seg.label; }
-function getRefTitle(ref) { return currentLang === 'en' && ref.title_en ? ref.title_en : ref.title; }
-function getRefHtml(ref) { return currentLang === 'en' && ref.html_en ? ref.html_en : ref.html; }
+function getPrompt(q) { return getLangField(q, 'prompt', 'prompt_en'); }
+function getExplanation(q) { return getLangField(q, 'explanation', 'explanation_en'); }
+function getChoices(q) { return getLangField(q, 'choices', 'choices_en'); }
+function getCorrect(q) { return getLangField(q, 'correct', 'correct_en'); }
+function getSegmentLabel(seg) { return getLangField(seg, 'label', 'label_en'); }
+function getRefTitle(ref) { return getLangField(ref, 'title', 'title_en'); }
+function getRefHtml(ref) { return getLangField(ref, 'html', 'html_en'); }
 
-/* ============ DOM-REFERENZEN ============ */
+/* ============ DOM-REFERENZEN (modul-spezifisch) ============ */
 
-const displayArea = document.getElementById('displayArea');
-const choicesArea = document.getElementById('choicesArea');
-const inputArea = document.getElementById('inputArea');
-const textInput = document.getElementById('textInput');
-const checkButton = document.getElementById('checkButton');
-const feedbackArea = document.getElementById('feedbackArea');
-const nextButton = document.getElementById('nextButton');
 const segmentFiltersDiv = document.getElementById('segmentFilters');
-const applyFilterBtn = document.getElementById('applyFilter');
-const modeRandomBtn = document.getElementById('modeRandom');
-const modeSemiBtn = document.getElementById('modeSemiRandom');
 const viewQuizBtn = document.getElementById('viewQuiz');
 const viewRefBtn = document.getElementById('viewReference');
 const quizView = document.getElementById('quizView');
@@ -34,42 +24,20 @@ const referenceContent = document.getElementById('referenceContent');
 
 /* ============ SICHTBARKEITS-TOGGLE ============ */
 
-let showTranslation = localStorage.getItem('training_translation') !== 'false';
 const trainingContainer = document.querySelector('.training-trainer');
 
-function injectVisibilityToggles() {
-    const bar = document.createElement('div');
-    bar.className = 'map-vis-toggles';
-
-    const transBtn = document.createElement('button');
-    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
-    transBtn.textContent = '👁 ' + t('vis.translation');
-    transBtn.addEventListener('click', () => {
-        showTranslation = !showTranslation;
-        localStorage.setItem('training_translation', showTranslation);
-        transBtn.classList.toggle('active', showTranslation);
-        trainingContainer.classList.toggle('hide-translation', !showTranslation);
-    });
-
-    bar.appendChild(transBtn);
-
-    document.addEventListener('langchange', () => {
-        transBtn.textContent = '👁 ' + t('vis.translation');
-    });
-
-    const filterArea = document.querySelector('#quizView .segment-filters');
-    if (filterArea) filterArea.insertAdjacentElement('afterend', bar);
-}
+const visState = buildVisibilityToggles({
+    container: document.querySelector('#quizView'),
+    insertAfter: document.querySelector('#quizView .segment-filters'),
+    target: trainingContainer,
+    toggles: [
+        { key: 'training_translation', i18nKey: 'vis.translation', cssClass: 'hide-translation', defaultOn: true }
+    ]
+});
 
 /* ============ STATE ============ */
 
-let currentMode = 'random';
 let filteredQuestions = [];
-let remainingQuestions = [];
-let incorrectQuestions = [];
-let currentQuestion = null;
-let answered = false;
-let score = null;
 
 /* ============ FILTER: Checkboxen dynamisch erzeugen ============ */
 
@@ -104,159 +72,79 @@ function applySegmentFilter() {
         document.getElementById('seg_existence').checked = true;
         filteredQuestions = trainingQuestions.filter(q => q.segment === 'existence');
     }
-    resetQuiz();
+    engine.resetQuiz();
 }
 
-/* ============ SPACED REPETITION (70/30) ============ */
+/* ============ QUIZ-ENGINE ============ */
 
-function selectNextQuestion() {
-    if (currentMode === 'random') {
-        return filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
-    }
-    if (remainingQuestions.length === 0 && incorrectQuestions.length === 0) {
-        remainingQuestions = [...filteredQuestions];
-        shuffleArray(remainingQuestions);
-    }
-    if (incorrectQuestions.length > 0 && Math.random() < 0.3) {
-        return incorrectQuestions.shift();
-    }
-    if (remainingQuestions.length > 0) {
-        return remainingQuestions.shift();
-    }
-    return incorrectQuestions.shift();
-}
+const engine = new QuizEngine({
+    feedbackId: 'feedbackArea',
+    nextButtonId: 'nextButton',
+    choicesAreaId: 'choicesArea',
+    textInputId: 'textInput',
+    checkButtonId: 'checkButton',
+    displayAreaId: 'displayArea',
+    inputAreaId: 'inputArea',
+    modeRandomId: 'modeRandom',
+    modeSemiId: 'modeSemiRandom',
+    correctSpanId: 'correctCount',
+    incorrectSpanId: 'incorrectCount',
+    quickAnswerTarget: '.score',
 
-/* ============ FRAGE LADEN ============ */
+    getPool: () => filteredQuestions,
 
-function loadQuestion() {
-    currentQuestion = selectNextQuestion();
-    answered = false;
-    clearFeedback('feedbackArea');
-    nextButton.style.display = 'none';
-    choicesArea.innerHTML = '';
-    textInput.value = '';
-    textInput.disabled = false;
-    checkButton.disabled = false;
+    renderQuestion: (q, eng) => {
+        const seg = trainingSegments.find(s => s.id === q.segment);
+        const segLabel = seg ? getSegmentLabel(seg) : '';
+        let html = '<div class="segment-badge">' + segLabel + '</div>';
+        html += '<p class="prompt-text">' + getPrompt(q) + '</p>';
 
-    const seg = trainingSegments.find(s => s.id === currentQuestion.segment);
-    const segLabel = seg ? getSegmentLabel(seg) : '';
-    let html = '<div class="segment-badge">' + segLabel + '</div>';
-    html += '<p class="prompt-text">' + getPrompt(currentQuestion) + '</p>';
-
-    if (currentQuestion.prompt_jp) {
-        const jpText = currentQuestion.prompt_jp.replace(/（___）/g, '<span class="blank-highlight">______</span>');
-        html += '<p class="prompt-jp">' + jpText + '</p>';
-    }
-
-    displayArea.innerHTML = html;
-
-    if (currentQuestion.type === 'mc') {
-        inputArea.style.display = 'none';
-        renderChoiceButtons(getChoices(currentQuestion));
-    } else {
-        inputArea.style.display = '';
-        textInput.focus();
-    }
-}
-
-/* ============ MULTIPLE CHOICE ============ */
-
-function renderChoiceButtons(choices) {
-    choicesArea.innerHTML = '';
-    const shuffled = [...choices];
-    shuffleArray(shuffled);
-    shuffled.forEach(text => {
-        const btn = document.createElement('button');
-        btn.classList.add('choice-button');
-        btn.textContent = text;
-        btn.addEventListener('click', () => handleChoiceClick(text));
-        choicesArea.appendChild(btn);
-    });
-}
-
-function handleChoiceClick(selected) {
-    if (answered) return;
-    const correctArr = getCorrect(currentQuestion);
-    const isCorrect = correctArr.some(
-        c => c.toLowerCase() === selected.toLowerCase()
-    );
-    choicesArea.querySelectorAll('.choice-button').forEach(btn => {
-        btn.disabled = true;
-        if (correctArr.some(c => c.toLowerCase() === btn.textContent.toLowerCase())) {
-            btn.classList.add('correct-choice');
+        if (q.prompt_jp) {
+            const jpText = q.prompt_jp.replace(/（___）/g, '<span class="blank-highlight">______</span>');
+            html += '<p class="prompt-jp">' + jpText + '</p>';
         }
-        if (btn.textContent === selected && !isCorrect) {
-            btn.classList.add('wrong-choice');
+
+        eng.displayArea.innerHTML = html;
+
+        if (q.type === 'mc') {
+            eng.inputArea.style.display = 'none';
+            const shuffled = [...getChoices(q)];
+            shuffleArray(shuffled);
+            eng.renderChoiceButtons(shuffled, selected => {
+                eng.handleMCAnswer(selected, getCorrect(q));
+            });
+        } else {
+            eng.inputArea.style.display = '';
         }
-    });
-    finishAnswer(isCorrect);
-}
+    },
 
-/* ============ TEXTEINGABE PRUEFEN ============ */
+    checkText: (input, q) => {
+        return q.correct.some(
+            c => c === input || c.toLowerCase() === input.toLowerCase()
+        );
+    },
 
-function checkTextInput() {
-    if (answered) return;
-    const input = textInput.value.trim();
-    if (!input) return;
+    buildFeedback: (q, isCorrect) => {
+        let html = '';
+        if (isCorrect) {
+            html += '<strong>' + t('feedback.correct') + '</strong>';
+        } else {
+            html += '<strong>' + t('feedback.wrong') + '</strong> ' + t('training.correctIs') + ' ' + q.correct[0];
+        }
+        const explanation = getExplanation(q);
+        if (explanation) {
+            html += '<br><span class="explanation">' + explanation + '</span>';
+        }
+        return html;
+    },
 
-    const isCorrect = currentQuestion.correct.some(
-        c => c === input || c.toLowerCase() === input.toLowerCase()
-    );
-    finishAnswer(isCorrect);
-}
-
-/* ============ ANTWORT AUSWERTEN ============ */
-
-function finishAnswer(isCorrect) {
-    answered = true;
-    textInput.disabled = true;
-    checkButton.disabled = true;
-
-    let html = '';
-    if (isCorrect) {
-        html += '<strong>' + t('feedback.correct') + '</strong>';
-        score.addCorrect();
-    } else {
-        html += '<strong>' + t('feedback.wrong') + '</strong> ' + t('training.correctIs') + ' ' + currentQuestion.correct[0];
-        score.addIncorrect();
-        if (currentMode === 'semi-random') {
-            incorrectQuestions.push(currentQuestion);
+    onLangChange: () => {
+        buildFilterCheckboxes();
+        if (referenceView.style.display !== 'none') {
+            buildReferenceContent();
         }
     }
-
-    const explanation = getExplanation(currentQuestion);
-    if (explanation) {
-        html += '<br><span class="explanation">' + explanation + '</span>';
-    }
-
-    feedbackArea.innerHTML = html;
-    feedbackArea.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
-
-    if (isCorrect && isQuickAnswer()) {
-        setTimeout(loadQuestion, 400);
-    } else {
-        nextButton.style.display = 'block';
-    }
-}
-
-/* ============ RESET ============ */
-
-function resetQuiz() {
-    score.reset();
-    remainingQuestions = [...filteredQuestions];
-    shuffleArray(remainingQuestions);
-    incorrectQuestions = [];
-    loadQuestion();
-}
-
-/* ============ MODUS-WECHSEL ============ */
-
-function switchMode(mode) {
-    currentMode = mode;
-    modeRandomBtn.classList.toggle('active', mode === 'random');
-    modeSemiBtn.classList.toggle('active', mode === 'semi-random');
-    resetQuiz();
-}
+});
 
 /* ============ ANSICHT-WECHSEL (Quiz / Nachschlagen) ============ */
 
@@ -284,39 +172,13 @@ function buildReferenceContent() {
     referenceContent.innerHTML = html;
 }
 
-/* ============ LANGCHANGE ============ */
+/* ============ EVENT LISTENERS (modul-spezifisch) ============ */
 
-document.addEventListener('langchange', () => {
-    buildFilterCheckboxes();
-    if (referenceView.style.display !== 'none') {
-        buildReferenceContent();
-    }
-    if (currentQuestion) loadQuestion();
-});
-
-/* ============ EVENT LISTENERS ============ */
-
-nextButton.addEventListener('click', loadQuestion);
-checkButton.addEventListener('click', checkTextInput);
-textInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkTextInput();
-});
-modeRandomBtn.addEventListener('click', () => switchMode('random'));
-modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
-applyFilterBtn.addEventListener('click', applySegmentFilter);
+document.getElementById('applyFilter').addEventListener('click', applySegmentFilter);
 viewQuizBtn.addEventListener('click', () => switchView('quiz'));
 viewRefBtn.addEventListener('click', () => switchView('reference'));
 
 /* ============ INITIALISIERUNG ============ */
 
 buildFilterCheckboxes();
-score = new ScoreTracker('correctCount', 'incorrectCount');
-
-/* Quick Answer Button injizieren */
-const scoreEl = document.querySelector('.score');
-if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
-
-injectVisibilityToggles();
-if (!showTranslation) trainingContainer.classList.add('hide-translation');
-
 applySegmentFilter();

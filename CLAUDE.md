@@ -11,13 +11,14 @@ index.html                 Hauptmenue (11 Karten → Module, inkl. Simulation-Gr
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
-                           input-area, level-filters, segment-filters, ref-block/ref-body, ref-table
+                           input-area, level-filters, segment-filters, ref-block/ref-body, ref-table,
+                           quiz-type-toggle, question-display, segment-badge, vis-toggles
   index.css                Karten-Grid + Gruppen-Ueberschriften fuers Hauptmenue
   kana.css                 Kana-Display (100px), Filter-Panel (kana-spezifisch)
-  kanji.css                Kanji-Display (120px), Meaning-Display, Quiz-Type-Toggle, Feedback-Extras
+  kanji.css                Kanji-Display (120px), Meaning-Display, Feedback-Extras
   kanji-list.css           Flip-Card Styles, Level-Gruppen, Responsive Grid
-  numbers.css              Zahlen-Display (64px), Frage-Anzeige (numbers-spezifisch), Feedback
-  training.css             Frage-Anzeige (training-spezifisch), Feedback, Container-Override (900px)
+  numbers.css              Number-Display (64px), Container-Override
+  training.css             Container-Override (900px), Hide-Translation-Regel
   verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
   simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
@@ -27,25 +28,26 @@ css/
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
+  quiz-engine.js           Shared Quiz-Logik: QuizEngine-Klasse, getLangField(), buildVisibilityToggles()
   kana.js                  Kana-Daten (6 Kategorien, ~230 Zeichen) + Quiz-Logik + Romaji-Varianten
   kanji-data.js            Kanji-Daten nach Stufen: A1 (73), A2 (35) = 108 Kanji; mit category-Feld (i18n-Key)
-  kanji.js                 Kanji-Quiz: 3 Typen, Stufenfilter, Spaced Repetition (70/30)
+  kanji.js                 Kanji-Quiz via QuizEngine: 3 Typen, Stufenfilter
   kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level + Kategorie gruppiert, Kategorien ausklappbar (sessionStorage)
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
-  numbers.js               Zahlen-Quiz: 4 Fragetypen, dynamische Generierung, Segment-Filter, Spaced Repetition
+  numbers.js               Zahlen-Quiz via QuizEngine: 4 Fragetypen, dynamische Generierung, Segment-Filter
   training-data.js         Trainingsdaten: 7 Segmente, ~55 Fragen (MC/Fill), Referenz-Inhalte (particles+positions entfernt)
-  training.js              Dynamischer Quiz-Motor: Segment-Filter, Spaced Repetition (70/30), Ansicht-Toggle
-  verb.js                  15 Verb-Daten + Quiz-Logik + Romaji/Translation-Toggle + Spaced Repetition (70/30)
+  training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Ansicht-Toggle
+  verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
-  kanji-vocab.js           Kanji-Vokabular-Quiz: 3 Typen, dynamischer Stufenfilter via computeVocabLevel(), Spaced Repetition
+  kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
   simulation-data.js       Simulations-Daten: 3 Szenen (Kleidung, Essen, Moebel), Multiline-Dialoge mit Luecken (bilingual)
-  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), Spaced Repetition (70/30)
+  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), nutzt getLangField + buildVisibilityToggles
   location-obj-data.js     9 Positionen mit SVG-Koordinaten (ballCx/Cy, hitX/Y/W/H), JP/DE/EN, Romaji
-  location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), Spaced Repetition
+  location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), via QuizEngine
   location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
-  location-map.js          SVG-Karte-Builder, Nav-Minispiel (vertauschte Richtungsbuttons), Desc-Quiz, Spaced Repetition
+  location-map.js          SVG-Karte-Builder, Nav-Minispiel, Desc-Quiz, nutzt getLangField + buildVisibilityToggles
   transport-data.js        Transport-Daten: 12 Orte, 8 Transportmittel, 9 Routen (einfach/mittel/komplex), bilingual
-  transport.js             Ketten-Quiz: Visualisierung, Lücken-Erkennung, MC + Texteingabe, Spaced Repetition (70/30)
+  transport.js             Ketten-Quiz: Visualisierung, Lücken-Quiz, MC + Texteingabe, nutzt getLangField + buildVisibilityToggles
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -62,20 +64,92 @@ pages/
 
 ## Architektur-Regeln
 
-- **Alle JS-Dateien erwarten common.js als erstes Script.** Reihenfolge: `<script src="../js/common.js">` → `<script src="../js/i18n.js">` → ggf. Daten-Script → `<script src="../js/[modul].js">`
-- **kanji.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji.js
+- **Alle JS-Dateien erwarten common.js als erstes Script.** Standard-Reihenfolge: `common.js` → `i18n.js` → `quiz-engine.js` → ggf. Daten-Script → `[modul].js`
+- **quiz-engine.js wird von allen Modulen geladen** (ausser kana.html und kanji-list.html, die keine QuizEngine nutzen).
+- **kanji.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → kanji-data.js → kanji.js
 - **kanji-list.js braucht kanji-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-list.js
-- **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → training-data.js → training.js
-- **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → numbers-data.js → numbers.js
-- **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
-- **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → simulation-data.js → simulation.js
-- **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → location-obj-data.js → location-obj.js
-- **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → location-map-data.js → location-map.js
-- **transport.js braucht transport-data.js.** Reihenfolge: common.js → i18n.js → transport-data.js → transport.js
+- **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → training-data.js → training.js
+- **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → numbers-data.js → numbers.js
+- **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
+- **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → simulation-data.js → simulation.js
+- **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-obj-data.js → location-obj.js
+- **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-map-data.js → location-map.js
+- **transport.js braucht transport-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport.js
+- **verb.js hat keine separate Daten-Datei.** Reihenfolge: common.js → i18n.js → quiz-engine.js → verb.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
 - **Das Tool soll immer in Deutsch und Englisch verstaendlich sein.** Alle UI-Texte muessen ueber i18n.js (`t()`-Funktion und `data-i18n`-Attribute) in beiden Sprachen verfuegbar sein. Daten-Dateien (kanji-data.js, training-data.js, verb.js) muessen bilinguale Felder (`meaning_en`, `prompt_en`, `explanation_en`, etc.) enthalten.
+
+## QuizEngine (`quiz-engine.js`)
+
+Zentrale Quiz-Infrastruktur — wird von 8 Modulen genutzt. Enthaelt drei Hauptkomponenten:
+
+### `getLangField(obj, deKey, enKey?)`
+Sprach-Helfer fuer bilinguale Datenfelder. Gibt `obj[enKey]` zurueck wenn `currentLang === 'en'` und Wert existiert, sonst `obj[deKey]`. Konvention: `enKey` = `deKey + '_en'` wenn nicht explizit angegeben.
+- Standard-Muster: `getLangField(q, 'prompt')` → versucht `q.prompt_en`, Fallback `q.prompt`
+- Expliziter EN-Key: `getLangField(b, 'de', 'en')` → versucht `b.en`, Fallback `b.de`
+- Genutzt von: allen QuizEngine-Modulen + simulation.js, transport.js, location-map.js
+
+### `buildVisibilityToggles(config)`
+Erzeugt Sichtbarkeits-Toggle-Leiste (Romaji / Uebersetzung). Config: `{ container, insertBefore?, insertAfter?, target, toggles[] }`. Jeder Toggle: `{ key, i18nKey, cssClass, defaultOn, onToggle? }`. Gibt State-Objekt `{ [key]: boolean }` zurueck.
+- Speichert Zustand in `localStorage`, setzt CSS-Klassen auf `target`, aktualisiert Button-Text bei `langchange`
+- Genutzt von: verb.js, location-obj.js, simulation.js, transport.js, location-map.js
+
+### `QuizEngine`-Klasse
+Config-basierter Quiz-Lifecycle. Constructor erhaelt Objekt mit:
+
+**DOM-IDs** (optional — Features uebersprungen wenn Element fehlt): `feedbackId`, `nextButtonId`, `choicesAreaId`, `textInputId`, `checkButtonId`, `displayAreaId`, `modeRandomId`, `modeSemiId`, `correctSpanId`, `incorrectSpanId`, `quickAnswerTarget`
+
+**Pflicht-Callbacks:**
+- `getPool()` → Array der aktuellen Fragen
+- `renderQuestion(item, engine)` → Frage ins DOM rendern
+- `buildFeedback(item, isCorrect)` → HTML-String fuer Feedback
+
+**Optionale Callbacks:** `checkText(input, item)`, `onCorrect(item)`, `onIncorrect(item)`, `onReset()`, `onLangChange()`
+
+**Methoden:**
+- `loadQuestion()` — Reset DOM, waehle naechste Frage, rufe `renderQuestion()` auf
+- `finishAnswer(isCorrect)` — Score, Feedback, Quick Answer / Next Button
+- `renderChoiceButtons(choices, onSelect)` — Standard-MC-Buttons erzeugen
+- `handleMCAnswer(selected, correctArr)` — Buttons einfaerben + finishAnswer
+- `handleTextSubmit()` — Texteingabe validieren via `checkText`
+- `resetQuiz()` — Score reset, Pools neu befuellen, loadQuestion
+- `switchMode(mode)` — 'random' | 'semi-random', Buttons + resetQuiz
+
+**Automatisches Event-Binding:** nextButton, textInput Enter, checkButton, modeRandom/modeSemi, langchange
+
+### Modul-Tiers
+
+| Tier | Module | Nutzung von quiz-engine.js |
+|------|--------|----------------------------|
+| 1 (Standard-Quiz) | training, numbers, kanji, kanji-vocab | QuizEngine-Klasse vollstaendig |
+| 2 (Adaptiert) | verb, location-obj | QuizEngine mit custom Rendering/Klick-Handler |
+| 3 (Nur Utilities) | simulation, transport, location-map | getLangField() + buildVisibilityToggles(), eigener Quiz-Lifecycle |
+| — | kana, kanji-list | Kein quiz-engine.js (einzigartiger Flow / kein Quiz) |
+
+### Template fuer neues Modul (Tier 1)
+
+```javascript
+const engine = new QuizEngine({
+    feedbackId: 'feedbackArea',
+    nextButtonId: 'nextButton',
+    choicesAreaId: 'choicesArea',
+    textInputId: 'textInput',
+    checkButtonId: 'checkButton',
+    displayAreaId: 'displayArea',
+    modeRandomId: 'modeRandom',
+    modeSemiId: 'modeSemiRandom',
+    correctSpanId: 'correctCount',
+    incorrectSpanId: 'incorrectCount',
+    quickAnswerTarget: '.container-class',
+
+    getPool: () => filteredData,
+    renderQuestion: (item, eng) => { /* ... */ },
+    checkText: (input, item) => { /* ... return boolean */ },
+    buildFeedback: (item, isCorrect) => { /* ... return HTML string */ }
+});
+```
 
 ## Internationalisierung (i18n)
 
@@ -85,7 +159,7 @@ pages/
 - **langchange Event:** `CustomEvent('langchange')` wird bei Toggle ausgeloest. Modul-Scripts hoeren darauf und laden Fragen/Feedback neu.
 - **Toggle-Button:** Wird per JS in `i18n.js` injiziert (`.lang-toggle`, feste Position rechts oben). Zeigt "EN" wenn aktuell DE, und "DE" wenn aktuell EN.
 - **localStorage:** Sprachpraeferenz wird unter Key `'lang'` gespeichert (default: `'de'`).
-- **Bilinguale Datenfelder:** Daten-Dateien haben `_en`-Varianten (z.B. `meaning_en[]`, `prompt_en`, `explanation_en`, `label_en`, `title_en`, `html_en`). Helfer-Funktionen in Modul-Scripts (z.B. `getMeaning()`, `getPrompt()`) waehlen je nach `currentLang`.
+- **Bilinguale Datenfelder:** Daten-Dateien haben `_en`-Varianten (z.B. `meaning_en[]`, `prompt_en`, `explanation_en`, `label_en`, `title_en`, `html_en`). `getLangField()` in `quiz-engine.js` waehlt je nach `currentLang`.
 - **Globaler Level-Filter:** `getActiveLevels()` in `i18n.js` liefert aktuell aktive Levels (localStorage-Key `'levels'`, default `['A1']`). `CustomEvent('levelchange')` wird bei Toggle ausgeloest. Kanji-Trainer, Kanji-Liste und Kanji-Vokabular hoeren darauf. Toggle-Bar wird per JS injiziert (`.level-toggle-bar`, fixiert rechts oben unter dem Sprach-Toggle).
 
 ## Zeilengrenze
@@ -98,40 +172,41 @@ Dateien sollen **maximal 1000 Zeilen** haben. Falls eine Datei die Grenze uebers
 Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
 - `i18n.js`: ~179 Zeilen
-- `verb.js`: ~149 Zeilen
+- `quiz-engine.js`: ~385 Zeilen (QuizEngine-Klasse, getLangField, buildVisibilityToggles)
+- `verb.js`: ~116 Zeilen (via QuizEngine)
 - `kana.js`: ~199 Zeilen
 - `kanji-data.js`: ~175 Zeilen (reine Daten: A1=73, A2=35 — B1/B2 zu A2, mehrere zu A1 umgestuft, 円 hinzugefügt, category-Feld)
-- `kanji.js`: ~316 Zeilen
+- `kanji.js`: ~162 Zeilen (via QuizEngine)
 - `kanji-list.js`: ~228 Zeilen (Kategorie-Rendering, categoryOrder, sessionStorage-Helfer)
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
-- `numbers.js`: ~295 Zeilen
+- `numbers.js`: ~294 Zeilen (via QuizEngine)
 - `training-data.js`: ~375 Zeilen (reine Daten: 7 Segmente Grammatik, Fragen, Referenz — bilingual; particles+positions entfernt)
-- `training.js`: ~279 Zeilen
+- `training.js`: ~184 Zeilen (via QuizEngine)
 - `kanji-vocab-data.js`: ~128 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
-- `kanji-vocab.js`: ~270 Zeilen
+- `kanji-vocab.js`: ~186 Zeilen (via QuizEngine)
 - `training.html`: ~73 Zeilen (dynamisches Skelett)
 - `numbers.html`: ~73 Zeilen (dynamisches Skelett)
 - `kanji-list.html`: ~36 Zeilen (Karteikarten-Skelett)
 - `kanji-vocab.html`: ~70 Zeilen (Vokabular-Trainer-Skelett)
-- `common.css`: ~310 Zeilen (inkl. alle Shared Quiz-Elemente)
+- `common.css`: ~594 Zeilen (inkl. alle Shared Quiz-Elemente, quiz-type-toggle, question-display, vis-toggles)
 - `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
 - `verb.css`: ~65 Zeilen (Verb-spezifisch, vertikale Buttons-Ausnahme, .verb-translation, .verb-choice-romaji, Toggle-CSS)
-- `kanji.css`: ~95 Zeilen (nur Kanji-spezifisch)
+- `kanji.css`: ~63 Zeilen (nur Kanji-spezifisch, Display + Feedback)
 - `kanji-list.css`: ~225 Zeilen (Flip-Card Styles + Kategorie-Abschnitt: .category-section, .category-summary, .cat-arrow)
-- `training.css`: ~70 Zeilen (nur Training-spezifisch)
-- `numbers.css`: ~57 Zeilen (nur Numbers-spezifisch)
+- `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
+- `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
 - `simulation-data.js`: ~510 Zeilen (reine Daten: 6 Szenen je 2x Kleidung/Essen/Moebel, Multiline-Dialoge bilingual)
-- `simulation.js`: ~240 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition)
+- `simulation.js`: ~452 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
 - `location-obj-data.js`: ~85 Zeilen (10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; inkl. in_regal)
-- `location-obj.js`: ~250 Zeilen (SVG-Builder mit Ebenen-Rendering, Beschreiben + Zeigen Quiz-Logik, Spaced Repetition)
-- `location-obj.css`: ~90 Zeilen (Szene, Hit-Areas, Ball, Display-Bereich)
+- `location-obj.js`: ~237 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz via QuizEngine)
+- `location-obj.css`: ~135 Zeilen (Szene, Hit-Areas, Ball, Display-Bereich)
 - `location-map-data.js`: ~165 Zeilen (8 Gebaeude, directionData, 8 Nav-Fragen, 12 Desc-Fragen)
-- `location-map.js`: ~275 Zeilen (SVG-Karte, Nav-Minispiel vertauschte Buttons, Desc-Quiz, Spaced Repetition)
+- `location-map.js`: ~421 Zeilen (SVG-Karte, Nav-Minispiel, Desc-Quiz; nutzt getLangField + buildVisibilityToggles)
 - `location-map.css`: ~185 Zeilen (Karte, Richtungsbuttons 2x2, Gebaeude-Choices, Schritt-Log, Finalize-Button)
 - `transport-data.js`: ~960 Zeilen (12 Orte, 8 Transportmittel, 14 Routen inkl. 5 のります/おります-Routen, sentenceOptions, bilingual)
-- `transport.js`: ~690 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition, Visibility-Toggles, Verb-Fragen-Support)
+- `transport.js`: ~633 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
 - `transport.css`: ~460 Zeilen (Kette, Punkte/Striche, SVG-Icons in CSS, Lücken-Animation, Satz-Buttons)
 
 ## Module im Detail
@@ -141,23 +216,21 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Romaji-Varianten akzeptiert: Hepburn (shi) + Kunrei-shiki (si) + Yoon-Varianten (sha/sya)
 - Bei Richtig: 800ms Delay, dann auto-naechstes Zeichen
 - Enter-Taste = Pruefen
+- **Kein quiz-engine.js** — einzigartiger Auto-Advance-Flow (800ms), kein Spaced Repetition
 - **IDs (vereinheitlicht):** Texteingabe `#textInput` (war `romajiInput`), Filter-Button `#applyFilter` (war `applyFiltersButton`)
 
 ### Verb-Trainer (`verb.js` + `verb.html`)
 - 15 Verben im ます-Form, je mit Lueckensatz + Uebersetzung (DE + EN)
-- Toggle-Button oben: "Zufaellig" (rein random) / "Wiederholung" (Spaced Repetition)
-- Semi-Random Algorithmus: 70% neue Fragen, 30% falsch beantwortete
-- Moduswechsel resettet Score + Queues
-- **Sichtbarkeits-Toggles:** Romaji (unter Verb-Buttons) + Übersetzung (Satz oberhalb Choices) — localStorage `verb_romaji`/`verb_translation`, beide standard-an
+- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering (Verb + Romaji-Span), ruft `engine.finishAnswer()` direkt auf
+- **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji + Übersetzung — localStorage `verb.showRomaji`/`verb.showTranslation`, beide standard-an
 - Choice-Buttons zeigen Verb (ます-Form) + Romaji-Span (versteckbar per Toggle)
 - Übersetzung im Feedback-Bereich entfernt (wird jetzt oben angezeigt)
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
 - 108 Kanji in 2 Stufen: A1 (73), A2 (35)
 - Datenstruktur: `{ kanji, meaning_de[], meaning_en[], on, kun, romaji, romaji_variants[], category, level }`
-- 3 Quiz-Typen per Toggle: Kanji→Deutsch/English (MC+Text), Deutsch/English→Kanji (MC+Text), Kanji→Lesung (nur Text)
+- **Via QuizEngine**: 3 Quiz-Typen per Toggle, `renderQuestion` verzweigt intern nach `currentQuizType`
 - Stufenfilter: **global** via Level-Toggle-Bar (rechts oben), kein lokaler Filter mehr
-- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie verb.js)
 - Texteingabe: Enter = Pruefen, akzeptiert meaning_de + meaning_en-Varianten bzw. Romaji-Varianten
 - Feedback zeigt: Kanji, Level-Badge, Bedeutungen, On/Kun-yomi, Romaji
 
@@ -169,6 +242,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Kategorien ausklappbar via `<details>/<summary>` — erste Kategorie pro Level standard-offen
 - Aufklapppzustand per `sessionStorage` gespeichert (bleibt bei Sprach-/Levelwechsel erhalten; reset bei Seiten-Reload)
 - `category`-Feld in `kanji-data.js`: i18n-Key (z.B. `'kanjiList.cat.zahlen'`) — 16 Kategorie-Keys in `i18n.js`
+- **Kein quiz-engine.js** — Karteikarten, kein Quiz
 - Level-Filter: **global** via Level-Toggle-Bar, reagiert auf `levelchange`-Event
 - Click zum Umdrehen (CSS 3D Transform, perspective)
 - Responsive Grid: auto-fill minmax(100px, 1fr)
@@ -177,14 +251,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 ### Zahlen & Zaehler (`numbers-data.js` + `numbers.js` + `numbers.html`)
 - 13 Segmente: 3 Grundzahlen-Bereiche (1-10, 11-100, 100-10000) + 10 Counter (つ, 人, 本, 枚, 匹, 台, 冊, 杯, 個, 回)
 - Checkbox-Filter fuer Segmentauswahl (Zahlen 1-10 default an), "Filter anwenden" resettet Quiz
-- 4 Fragetypen, dynamisch generiert aus Daten-Tabellen:
-  - `reading`: Kanji/Zahl → Lesung (Texteingabe, Kana oder Romaji)
-  - `meaning`: Lesung → Zahl+Counter (MC)
-  - `counter_choice`: Welcher Zaehler fuer X? (MC)
-  - `combine`: N + Counter-Kanji = ? (Texteingabe)
+- **Via QuizEngine**: 4 Fragetypen dynamisch generiert, `renderQuestion` verzweigt nach Fragetyp
 - Datenstruktur Counter: `{ kanji, description, description_en, use_de, use_en, items[{n, reading, romaji}], examples[] }`
 - Alle Lautverschiebungen (rendaku/Gemination) korrekt: z.B. さんぼん (3本), いっぴき (1匹)
-- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus)
 - Ansicht-Toggle: "Ueben" (Quiz) / "Nachschlagen" (Counter-Tabellen als klappbare details/summary)
 - Texteingabe: Enter = Pruefen, akzeptiert Kana + Romaji
 
@@ -192,9 +261,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - 7 Themen-Segmente (Grammatik): Existenzsatz, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
 - Entfernt: Partikel (に/を) — in Transport-Modul enthalten; Positionen (まえ/うしろ…) — in Gegenstand-Position enthalten
 - Checkbox-Filter fuer Segmentauswahl (Existenzsatz default an), "Filter anwenden" resettet Quiz
-- ~70 Fragen in 3 Typen: MC (Multiple Choice), Fill (Lueckentext), Translate (Uebersetzung)
+- **Via QuizEngine**: ~70 Fragen in 3 Typen (MC, Fill, Translate), `renderQuestion` verzweigt nach Fragetyp
 - Datenstruktur: `{ segment, type, prompt, prompt_en?, prompt_jp?, correct[], choices?, choices_en?, correct_en?, explanation, explanation_en? }`
-- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie kanji.js/verb.js)
+- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: Uebersetzung ein/aus
 - Ansicht-Toggle: "Ueben" (Quiz) / "Nachschlagen" (Grammatik-Referenz als klappbare details/summary)
 - Texteingabe: Enter = Pruefen, Feedback mit Erklaerung nach Antwort
 - Loesungen erst nach Beantwortung sichtbar
@@ -203,9 +272,8 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - ~55 zusammengesetzte Woerter (Kanji+Kanji, Kanji+Kana) relevant fuer A1/A2
 - Datenstruktur: `{ word, reading, romaji, romaji_variants[], meaning_de[], meaning_en[] }` — **kein `level`-Feld**
 - **Dynamischer Stufenfilter:** `computeVocabLevel(word)` berechnet Level zur Laufzeit aus `kanji-data.js`. Hoechster Level aller Kanji-Zeichen des Worts. Aendert sich automatisch wenn Kanji in `kanji-data.js` umgestuft werden.
-- 3 Quiz-Typen per Toggle: Wort→Deutsch/English (MC+Text), Deutsch/English→Wort (MC+Text), Wort→Lesung (nur Text)
+- **Via QuizEngine**: 3 Quiz-Typen per Toggle, nahezu identisches Muster wie kanji.js
 - Stufenfilter: **global** via Level-Toggle-Bar, reagiert auf `levelchange`-Event
-- Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus)
 - Texteingabe Wort→Bedeutung: akzeptiert meaning_de + meaning_en (case-insensitive)
 - Texteingabe Bedeutung→Wort: akzeptiert Kanji-Schreibung, Hiragana-Lesung, Romaji + Varianten
 - Texteingabe Wort→Lesung: akzeptiert Hiragana + Romaji + Varianten
@@ -220,7 +288,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Alle Module nutzen `.feedback.correct` / `.feedback.incorrect` aus common.css
 - Sprach-Toggle: `.lang-toggle` (fixiert, rechts oben, blaue Pill-Form)
 - Quick Answer Toggle: `.quick-answer-toggle` (Pill-Form, grau=aus, orange=an)
-- **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`
+- **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.quiz-type-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.question-display` + `.segment-badge`, `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`, `.map-vis-toggles` / `.map-vis-btn` (Sichtbarkeits-Toggles)
 - **Globaler Level-Toggle** in `common.css`: `.level-toggle-bar` (fixiert, rechts oben unter Sprach-Toggle), `.level-toggle-btn` / `.level-toggle-btn.active`
 - **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
 - **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation`, `.location-obj`, `.location-map` — als CSS-Scope-Anker fuer modul-spezifische Overrides
@@ -233,6 +301,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Bei falsch:** Normales Verhalten (Feedback lesen, "Naechste Frage" klicken)
 - **Zentrale Logik** in `common.js`: `quickAnswerEnabled`, `isQuickAnswer()`, `toggleQuickAnswer()`, `injectQuickAnswerButton(container)`
 - **quickanswerchange Event:** `CustomEvent('quickanswerchange')` wird bei Toggle ausgeloest. Button-Text aktualisiert sich automatisch.
+- **QuizEngine** integriert Quick Answer automatisch ueber `quickAnswerTarget` Config. Tier-3-Module rufen `injectQuickAnswerButton()` manuell auf.
 - **Alle 9 Module** nutzen Quick Answer: kana.js (verkuerzt 800→400ms), kanji.js, verb.js, training.js, numbers.js, kanji-vocab.js, simulation.js, location-obj.js, location-map.js
 
 ### Einkaufs-Simulation (`simulation-data.js` + `simulation.js` + `simulation.html`)
@@ -242,6 +311,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Lückenfortschritt: Lücken werden der Reihe nach freigeschaltet, bereits gefuellte Luecken gruen dargestellt
 - Szenenwahl per Checkbox-Filter + "Filter anwenden"-Button
 - Modi: "Zufaellig" / "Wiederholung" (gleicher 70/30 Algorithmus wie andere Module)
+- **Tier-3-Modul:** Eigener Quiz-Lifecycle, nutzt `getLangField()` + `buildVisibilityToggles()` aus quiz-engine.js
 - Feedback nach jeder Luecke: Erklaerung (DE/EN) + richtige Antwort bei Fehler
 - Quick Answer: nach richtiger Antwort 400ms Delay, dann automatisch naechste Luecke
 - Sprecher-Labels: "Verkäufer" / "Kunde" (i18n), Bubbles links/rechts je nach Sprecher
@@ -262,9 +332,9 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - SVG-Szene (viewBox 500×360): Tisch (テーブル), Box (箱), Regal (棚) als fixe Objekte; roter Ball (ボール) an wechselnden Positionen
 - 9 Positionen: auf/unter dem Tisch, neben/vor/hinter der Box, neben/vor dem Regal, zwischen Box+Tisch, auf dem Regal
 - Datenstruktur: `{ id, jp, romaji, de, en, ballCx, ballCy, hitX, hitY, hitW, hitH }`
-- 2 Quiz-Typen per Toggle: **Beschreiben** (Ball sichtbar → 4 MC-Buttons mit JP-Phrasen) / **Zeigen** (JP-Phrase sichtbar → transparente Hit-Areas auf SVG, Klick auswerten)
+- **Via QuizEngine** (Tier 2): 2 Quiz-Typen per Toggle — **Beschreiben** (MC, custom Buttons mit JP/Romaji/Translation) / **Zeigen** (SVG-Klick, ruft `engine.finishAnswer()` direkt auf)
 - SVG komplett inline als String (kein fetch, laeuft auf file://)
-- Modi: "Zufaellig" / "Wiederholung" (70/30 Algorithmus)
+- **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji + Uebersetzung
 - Quick Answer: 400ms auto-advance bei richtig
 - i18n-Keys: `locObj.*` (7 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation"
@@ -273,6 +343,7 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - SVG-Karte (viewBox 610×390): 3×3-Strassengitter mit 8 farbigen Gebaeuden als Rechtecke + JP-Kanji + Romaji-Labels
 - 8 Gebaeude: 駅 (Bahnhof), 学校 (Schule), コンビニ (Konbini), 病院 (Krankenhaus), 公園 (Park), 銀行 (Bank), 郵便局 (Postamt), 図書館 (Bibliothek)
 - Datenstruktur Gebaeude: `{ id, jp, romaji, de, en, color, col, row, x, y, w, h }`
+- **Tier-3-Modul:** Eigener Quiz-Lifecycle, nutzt `getLangField()` + `buildVisibilityToggles()` aus quiz-engine.js
 - 2 Modi per Toggle:
   - **Navigation**: 8 scripted Routen (steps[]: migi/hidari/massugu/modoru), Richtungsbuttons 2×2-Grid werden bei jeder Frage/jedem Schritt neu gemischt (shuffleArray) — Lernender muss みぎ/ひだり/まっすぐ/もどる kennen
   - **Beschreiben**: 12 Fragen (Gebaeude hervorgehoben, Frage "Was ist rechts/links/ueber/unter X?"), 4 MC-Buttons mit Gebaeude-JP+DE/EN
@@ -288,10 +359,11 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - 12 Orte (`transportPlaces`): いえ, えき, がっこう, くうこう, びょういん, こうえん, スーパー, バス停, 地下鉄の駅, ホテル, 会社, コンビニ — je mit Emoji-Icon, Kanji, Romaji, DE/EN
 - 8 Transportmittel (`transportModes`): あるいて, でんしゃ, ちかてつ, バス, タクシー, くるま, ひこうき, じてんしゃ — je mit inline SVG-Icon, Farbe, Romaji
 - 14 Routen-Szenarien in 3 Schwierigkeiten: einfach (1 Schritt), mittel (2 Schritte), komplex (3 Schritte) + 5 のります/おります-Verb-Routen
+- **Tier-3-Modul:** Eigener Quiz-Lifecycle, nutzt `getLangField()` + `buildVisibilityToggles()` aus quiz-engine.js
 - **Lücken:** Unbekannte Transportmittel als animiertes ???-Icon; nach Beantwortung aufgedeckt (CSS-Animation)
 - Eingabe-Modus Toggle: "Multiple Choice" (4 Transport-Buttons mit SVG-Icon) / "Texteingabe" (Kana oder Romaji)
 - Schwierigkeits-Filter: Checkboxen (Einfach / Mittel / Komplex), "Filter anwenden" resettet Quiz
-- Visibility-Toggles: Romaji / Übersetzung ein-/ausblenden (localStorage, wie locObj/locMap)
+- Visibility-Toggles via `buildVisibilityToggles()`: Romaji / Übersetzung ein-/ausblenden
 - Modi: "Zufällig" / "Wiederholung" (70/30 Spaced Repetition)
 - Quick Answer: 400ms auto-advance bei richtig
 - Datenstruktur Route: `{ id, label:{de,en}, difficulty, nodes:[{type:'place'|'transport',id}], questions:[{stepIndex,type,prompt_de,prompt_en,promptArgs,correct[],correctId,choices[],sentenceOptions[],explanation_de,explanation_en}] }`

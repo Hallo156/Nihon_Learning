@@ -2,7 +2,7 @@
 
 /* verb.js — Verb-Trainer: Satzluecken mit Multiple-Choice (15 Verben)
    Zwei Modi per Toggle: "Zufaellig" und "Wiederholung" (Spaced Repetition 70/30).
-   Braucht: common.js, i18n.js */
+   Braucht: common.js, i18n.js, quiz-engine.js */
 
 /* ============ DATEN ============ */
 
@@ -33,179 +33,84 @@ function getSentenceFilled(v) {
     return currentLang === 'en' ? v.sentence_en_filled : v.sentence_de_filled;
 }
 
-/* ============ SICHTBARKEITS-TOGGLE ============ */
-
-let showRomaji      = localStorage.getItem('verb_romaji')      !== 'false';
-let showTranslation = localStorage.getItem('verb_translation') !== 'false';
-const verbContainer = document.querySelector('.verb-trainer');
-let verbTranslationEl = null;
-
-function injectVisibilityToggles() {
-    const bar = document.createElement('div');
-    bar.className = 'map-vis-toggles';
-
-    const romajiBtn = document.createElement('button');
-    romajiBtn.className = 'map-vis-btn' + (showRomaji ? ' active' : '');
-    romajiBtn.textContent = '👁 ' + t('vis.romaji');
-    romajiBtn.addEventListener('click', () => {
-        showRomaji = !showRomaji;
-        localStorage.setItem('verb_romaji', showRomaji);
-        romajiBtn.classList.toggle('active', showRomaji);
-        verbContainer.classList.toggle('hide-romaji', !showRomaji);
-    });
-
-    const transBtn = document.createElement('button');
-    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
-    transBtn.textContent = '👁 ' + t('vis.translation');
-    transBtn.addEventListener('click', () => {
-        showTranslation = !showTranslation;
-        localStorage.setItem('verb_translation', showTranslation);
-        transBtn.classList.toggle('active', showTranslation);
-        verbContainer.classList.toggle('hide-translation', !showTranslation);
-    });
-
-    bar.appendChild(romajiBtn);
-    bar.appendChild(transBtn);
-
-    document.addEventListener('langchange', () => {
-        romajiBtn.textContent = '👁 ' + t('vis.romaji');
-        transBtn.textContent  = '👁 ' + t('vis.translation');
-    });
-
-    const modeToggleEl = document.querySelector('.verb-trainer .mode-toggle');
-    if (modeToggleEl) modeToggleEl.insertAdjacentElement('afterend', bar);
-
-    verbTranslationEl = document.createElement('div');
-    verbTranslationEl.className = 'verb-translation';
-    questionArea.insertAdjacentElement('afterend', verbTranslationEl);
-}
-
-/* ============ STATE ============ */
-
-let currentQuestion = null;
-let currentMode = 'random';         // 'random' | 'semi-random'
-let remainingQuestions = [];         // Semi-Random: noch nicht gezeigte Fragen
-let incorrectQuestions = [];         // Semi-Random: falsch beantwortete Fragen
-
-/* ============ DOM ============ */
+/* ============ DOM (modul-spezifisch) ============ */
 
 const questionArea = document.getElementById('questionArea');
-const choicesArea = document.getElementById('choicesArea');
-const feedbackArea = document.getElementById('feedbackArea');
-const nextButton = document.getElementById('nextButton');
-const score = new ScoreTracker('correctCount', 'incorrectCount');
-const modeRandomBtn = document.getElementById('modeRandom');
-const modeSemiBtn = document.getElementById('modeSemiRandom');
+let verbTranslationEl = null;
 
-/* ============ FRAGEN-AUSWAHL ============ */
+/* ============ SICHTBARKEITS-TOGGLE ============ */
 
-function selectNextQuestion() {
-    if (currentMode === 'random') {
-        return verbsData[Math.floor(Math.random() * verbsData.length)];
-    }
-    if (remainingQuestions.length === 0 && incorrectQuestions.length === 0) {
-        remainingQuestions = [...verbsData];
-        shuffleArray(remainingQuestions);
-    }
-    if (incorrectQuestions.length > 0 && Math.random() < 0.3) {
-        return incorrectQuestions.shift();
-    }
-    return remainingQuestions.shift();
-}
+const verbContainer = document.querySelector('.verb-trainer');
 
-/* ============ FRAGE LADEN + ANZEIGEN ============ */
+const visState = buildVisibilityToggles({
+    container: verbContainer,
+    insertAfter: document.querySelector('.verb-trainer .mode-toggle'),
+    target: verbContainer,
+    toggles: [
+        { key: 'verb_romaji', i18nKey: 'vis.romaji', cssClass: 'hide-romaji', defaultOn: true },
+        { key: 'verb_translation', i18nKey: 'vis.translation', cssClass: 'hide-translation', defaultOn: true }
+    ]
+});
 
-function loadQuestion() {
-    currentQuestion = selectNextQuestion();
-    questionArea.textContent = currentQuestion.sentence_jp_blank.replace("＿＿＿＿＿", " ______ ");
+/* Uebersetzungs-Element erstellen */
+verbTranslationEl = document.createElement('div');
+verbTranslationEl.className = 'verb-translation';
+questionArea.insertAdjacentElement('afterend', verbTranslationEl);
 
-    if (verbTranslationEl) verbTranslationEl.textContent = getSentenceFilled(currentQuestion);
+/* ============ QUIZ-ENGINE ============ */
 
-    let choiceVerbs = [currentQuestion];
-    while (choiceVerbs.length < 3) {
-        const random = verbsData[Math.floor(Math.random() * verbsData.length)];
-        if (!choiceVerbs.some(v => v.verb_masu === random.verb_masu)) choiceVerbs.push(random);
-    }
-    shuffleArray(choiceVerbs);
+const engine = new QuizEngine({
+    feedbackId: 'feedbackArea',
+    nextButtonId: 'nextButton',
+    choicesAreaId: 'choicesArea',
+    modeRandomId: 'modeRandom',
+    modeSemiId: 'modeSemiRandom',
+    correctSpanId: 'correctCount',
+    incorrectSpanId: 'incorrectCount',
+    quickAnswerTarget: '.score',
 
-    choicesArea.innerHTML = '';
-    choiceVerbs.forEach(verbObj => {
-        const button = document.createElement('button');
-        button.classList.add('choice-button');
-        button.innerHTML = verbObj.verb_masu + '<span class="verb-choice-romaji">' + verbObj.romaji + '</span>';
-        button.addEventListener('click', () => handleAnswer(verbObj.verb_masu));
-        choicesArea.appendChild(button);
-    });
+    getPool: () => verbsData,
 
-    clearFeedback('feedbackArea');
-    nextButton.style.display = 'none';
-}
+    renderQuestion: (v, eng) => {
+        questionArea.textContent = v.sentence_jp_blank.replace("＿＿＿＿＿", " ______ ");
+        if (verbTranslationEl) verbTranslationEl.textContent = getSentenceFilled(v);
 
-/* ============ ANTWORT PRUEFEN ============ */
-
-function handleAnswer(selectedVerb) {
-    choicesArea.querySelectorAll('.choice-button').forEach(btn => btn.disabled = true);
-
-    let feedbackHTML = '';
-    if (selectedVerb === currentQuestion.verb_masu) {
-        feedbackArea.className = 'feedback correct';
-        feedbackHTML += `<strong>${t('verb.correctVerb', currentQuestion.verb_masu)}</strong><br>`;
-        score.addCorrect();
-    } else {
-        feedbackArea.className = 'feedback incorrect';
-        feedbackHTML += `<strong>${t('verb.wrongSel', selectedVerb)}</strong><br>`;
-        feedbackHTML += `${t('verb.correctAns', currentQuestion.verb_masu)}<br>`;
-        score.addIncorrect();
-        if (currentMode === 'semi-random') {
-            incorrectQuestions.push(currentQuestion);
+        /* 3 Verb-Choices mit Romaji-Span */
+        let choiceVerbs = [v];
+        while (choiceVerbs.length < 3) {
+            const random = verbsData[Math.floor(Math.random() * verbsData.length)];
+            if (!choiceVerbs.some(cv => cv.verb_masu === random.verb_masu)) choiceVerbs.push(random);
         }
+        shuffleArray(choiceVerbs);
+
+        eng.choicesArea.innerHTML = '';
+        choiceVerbs.forEach(verbObj => {
+            const button = document.createElement('button');
+            button.classList.add('choice-button');
+            button.innerHTML = verbObj.verb_masu + '<span class="verb-choice-romaji">' + verbObj.romaji + '</span>';
+            button.addEventListener('click', () => {
+                if (eng.answered) return;
+                eng.choicesArea.querySelectorAll('.choice-button').forEach(btn => { btn.disabled = true; });
+                eng.finishAnswer(verbObj.verb_masu === v.verb_masu);
+            });
+            eng.choicesArea.appendChild(button);
+        });
+    },
+
+    buildFeedback: (v, isCorrect) => {
+        let html = '';
+        if (isCorrect) {
+            html += `<strong>${t('verb.correctVerb', v.verb_masu)}</strong><br>`;
+        } else {
+            html += `<strong>${t('verb.wrongSel', '')}</strong><br>`;
+            html += `${t('verb.correctAns', v.verb_masu)}<br>`;
+        }
+        html += `${t('verb.fullSentence')}: <strong>${v.sentence_jp_filled}</strong><br>`;
+        html += `<span class="romaji">(${v.verb_masu} - ${v.romaji} - ${getMeaning(v)})</span>`;
+        return html;
     }
-
-    feedbackHTML += `${t('verb.fullSentence')}: <strong>${currentQuestion.sentence_jp_filled}</strong><br>`;
-    feedbackHTML += `<span class="romaji">(${currentQuestion.verb_masu} - ${currentQuestion.romaji} - ${getMeaning(currentQuestion)})</span>`;
-
-    feedbackArea.innerHTML = feedbackHTML;
-
-    if (selectedVerb === currentQuestion.verb_masu && isQuickAnswer()) {
-        setTimeout(loadQuestion, 400);
-    } else {
-        nextButton.style.display = 'block';
-    }
-}
-
-/* ============ MODUS-WECHSEL ============ */
-
-function switchMode(mode) {
-    currentMode = mode;
-    modeRandomBtn.classList.toggle('active', mode === 'random');
-    modeSemiBtn.classList.toggle('active', mode === 'semi-random');
-    score.reset();
-    remainingQuestions = [...verbsData];
-    shuffleArray(remainingQuestions);
-    incorrectQuestions = [];
-    loadQuestion();
-}
-
-/* ============ LANGCHANGE ============ */
-
-document.addEventListener('langchange', () => {
-    if (currentQuestion) loadQuestion();
 });
 
 /* ============ INIT ============ */
 
-nextButton.addEventListener('click', loadQuestion);
-modeRandomBtn.addEventListener('click', () => switchMode('random'));
-modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
-
-/* Quick Answer Button injizieren */
-const scoreEl = document.querySelector('.score');
-if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
-
-injectVisibilityToggles();
-if (!showRomaji)      verbContainer.classList.add('hide-romaji');
-if (!showTranslation) verbContainer.classList.add('hide-translation');
-
-remainingQuestions = [...verbsData];
-shuffleArray(remainingQuestions);
-loadQuestion();
+engine.loadQuestion();

@@ -1,7 +1,7 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
 /* location-map.js — Stadtkarte Quiz.
-   Benötigt: common.js, i18n.js, location-map-data.js */
+   Benötigt: common.js, i18n.js, quiz-engine.js, location-map-data.js */
 
 /* ============ KOORDINATEN-HILFSFUNKTIONEN ============
    Grid-Koordinaten: x ∈ {0,1,2,3}, y ∈ {0,1,2,3}
@@ -36,59 +36,23 @@ const score = new ScoreTracker('correctCount', 'incorrectCount');
 
 /* ============ SICHTBARKEITS-TOGGLES ============ */
 
-let showRomaji      = localStorage.getItem('locMap.showRomaji')      !== 'false';
-let showTranslation = localStorage.getItem('locMap.showTranslation') !== 'false';
-
-function injectVisibilityToggles(container) {
-    const wrap = document.createElement('div');
-    wrap.className = 'map-vis-toggles';
-
-    const btnR = document.createElement('button');
-    btnR.id = 'toggleRomaji';
-    btnR.className = 'map-vis-btn' + (showRomaji ? ' active' : '');
-    btnR.textContent = '👁 ' + t('locMap.toggleRomaji');
-    btnR.addEventListener('click', () => {
-        showRomaji = !showRomaji;
-        localStorage.setItem('locMap.showRomaji', String(showRomaji));
-        btnR.classList.toggle('active', showRomaji);
-        refreshPromptVisibility();
-    });
-
-    const btnT = document.createElement('button');
-    btnT.id = 'toggleTranslation';
-    btnT.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
-    btnT.textContent = '👁 ' + t('locMap.toggleTranslation');
-    btnT.addEventListener('click', () => {
-        showTranslation = !showTranslation;
-        localStorage.setItem('locMap.showTranslation', String(showTranslation));
-        btnT.classList.toggle('active', showTranslation);
-        refreshPromptVisibility();
-    });
-
-    wrap.appendChild(btnR);
-    wrap.appendChild(btnT);
-    container.insertBefore(wrap, document.getElementById('mapContainer'));
-
-    document.addEventListener('langchange', () => {
-        btnR.textContent = '👁 ' + t('locMap.toggleRomaji');
-        btnT.textContent = '👁 ' + t('locMap.toggleTranslation');
-    });
-
-    refreshPromptVisibility();
-}
+const visState = buildVisibilityToggles({
+    container: document.querySelector('.location-map-trainer'),
+    insertBefore: document.getElementById('mapContainer'),
+    target: document.querySelector('.location-map-trainer'),
+    toggles: [
+        { key: 'locMap.showRomaji', i18nKey: 'locMap.toggleRomaji', cssClass: 'hide-romaji', defaultOn: true,
+          onToggle: () => refreshPromptVisibility() },
+        { key: 'locMap.showTranslation', i18nKey: 'locMap.toggleTranslation', cssClass: 'hide-translation', defaultOn: true,
+          onToggle: () => refreshPromptVisibility() }
+    ]
+});
 
 function refreshPromptVisibility() {
-    // Container-Klassen für Karten-Labels
-    const trainer = document.querySelector('.location-map-trainer');
-    if (trainer) {
-        trainer.classList.toggle('hide-romaji',      !showRomaji);
-        trainer.classList.toggle('hide-translation', !showTranslation);
-    }
-    // Prompt-Elemente
     const romEl = document.querySelector('#mapPrompt .prompt-romaji');
     const subEl = document.querySelector('#mapPrompt .prompt-sub');
-    if (romEl) romEl.style.display = showRomaji      ? 'block' : 'none';
-    if (subEl) subEl.style.display = showTranslation ? 'block' : 'none';
+    if (romEl) romEl.style.display = visState['locMap.showRomaji']      ? 'block' : 'none';
+    if (subEl) subEl.style.display = visState['locMap.showTranslation'] ? 'block' : 'none';
 }
 
 /* ============ NAVIGATIONS-GENERATOR ============ */
@@ -162,7 +126,7 @@ function buildMapSVG(highlightId, showPlayer, showTarget) {
 
         const cx = b.x + b.w / 2;
         const cy = b.y + b.h / 2 - 10;
-        const trans = currentLang === 'en' ? b.en : b.de;
+        const trans = getLangField(b, 'de', 'en');
         s += `<text x="${cx}" y="${cy}" class="building-label-jp" text-anchor="middle">${b.jp}</text>`;
         s += `<text x="${cx}" y="${cy + 15}" class="building-label-romaji" text-anchor="middle">${b.romaji}</text>`;
         s += `<text x="${cx}" y="${cy + 27}" class="building-label-trans" text-anchor="middle">${trans}</text>`;
@@ -357,7 +321,7 @@ function loadDesc() {
     document.getElementById('mapContainer').innerHTML = buildMapSVG(currentDescQ.highlightBuilding, false, false);
 
     const promptEl = document.getElementById('mapPrompt');
-    const qText = currentLang === 'en' ? currentDescQ.question_en : currentDescQ.question_de;
+    const qText = getLangField(currentDescQ, 'question_de', 'question_en');
     promptEl.innerHTML = `
         <span class="prompt-jp">${currentDescQ.question_jp}</span>
         <span class="prompt-romaji">${currentDescQ.question_romaji}</span>
@@ -378,7 +342,7 @@ function loadDesc() {
         const btn = document.createElement('button');
         btn.className = 'building-choice-btn';
         btn.dataset.bid = b.id;
-        const sub = currentLang === 'en' ? b.en : b.de;
+        const sub = getLangField(b, 'de', 'en');
         btn.innerHTML = `<span class="bcb-jp">${b.jp}</span><span class="bcb-sub">${sub}</span>`;
         btn.addEventListener('click', () => {
             if (answered) return;
@@ -398,11 +362,11 @@ function handleDescAnswer(isCorrect, clickedBtn, choicesEl) {
 
     if (isCorrect) {
         score.addCorrect();
-        const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
+        const exp = getLangField(currentDescQ, 'explanation_de', 'explanation_en');
         showFeedback('feedbackArea', `<strong>${t('feedback.correct')}</strong><br><em>${exp}</em>`, true, true);
     } else {
         score.addIncorrect();
-        const exp = currentLang === 'en' ? currentDescQ.explanation_en : currentDescQ.explanation_de;
+        const exp = getLangField(currentDescQ, 'explanation_de', 'explanation_en');
         showFeedback('feedbackArea', `<strong>${t('feedback.wrong')}</strong><br><em>${exp}</em>`, false, true);
     }
 
@@ -454,5 +418,4 @@ document.addEventListener('langchange', loadQuestion);
 /* ============ INIT ============ */
 
 injectQuickAnswerButton(document.querySelector('.location-map-trainer'));
-injectVisibilityToggles(document.querySelector('.location-map-trainer'));
 loadNav();

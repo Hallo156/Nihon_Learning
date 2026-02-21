@@ -499,3 +499,96 @@ button:hover, .check-button:hover {
 .level-toggle-btn:hover:not(.active) {
     background-color: #e8f0fe;
 }
+
+/* ===== Quiz-Type Toggle (shared, genutzt von Kanji, Kanji-Vocab, Location-Obj, Location-Map) ===== */
+.quiz-type-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    overflow: hidden;
+    border: 2px solid #007bff;
+}
+
+.quiz-type-toggle button {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 13px;
+    border: none;
+    border-radius: 0;
+    background-color: #fff;
+    color: #007bff;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.quiz-type-toggle button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.quiz-type-toggle button:hover:not(.active) {
+    background-color: #e8f0fe;
+}
+
+/* ===== Question Display + Segment Badge (shared, genutzt von Training, Numbers) ===== */
+.question-display {
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    min-height: 100px;
+}
+
+.segment-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007bff;
+    margin-bottom: 12px;
+}
+
+.prompt-text {
+    font-size: 18px;
+    color: #333;
+    margin: 8px 0;
+}
+
+.prompt-jp {
+    font-size: 26px;
+    color: #1a1a1a;
+    margin: 12px 0 0;
+    font-weight: bold;
+}
+
+.blank-highlight {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+    padding: 0 4px;
+    font-weight: bold;
+}
+
+.explanation {
+    font-weight: normal;
+    font-size: 14px;
+    color: inherit;
+    opacity: 0.85;
+}
+
+/* ===== Feedback + Score overrides (shared, Training + Numbers) ===== */
+.training .feedback,
+.numbers .feedback {
+    text-align: left;
+    line-height: 1.7;
+    padding: 12px;
+    font-size: 15px;
+}
+
+.training .score,
+.numbers .score {
+    margin-top: 15px;
+}

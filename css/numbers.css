@@ -8,49 +8,11 @@
     text-align: center;
 }
 
-/* ===== Frage-Anzeige ===== */
-.numbers .question-display {
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    min-height: 100px;
-}
-
-.numbers .segment-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #007bff;
-    margin-bottom: 12px;
-}
-
-.numbers .prompt-text {
-    font-size: 18px;
-    color: #333;
-    margin: 8px 0;
-}
-
+/* ===== Zahlen-Display (grosser Text) ===== */
 .number-display {
     font-size: 64px;
     font-weight: bold;
     color: #1a1a1a;
     margin: 15px 0;
     line-height: 1.2;
-}
-
-/* ===== Feedback ===== */
-.numbers .feedback {
-    text-align: left;
-    line-height: 1.7;
-    padding: 12px;
-    font-size: 15px;
-}
-
-/* ===== Score ===== */
-.numbers .score {
-    margin-top: 15px;
 }

@@ -8,66 +8,6 @@
     text-align: center;
 }
 
-/* ===== Frage-Anzeige ===== */
-.question-display {
-    margin: 20px 0;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    min-height: 100px;
-}
-
-.segment-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-size: 12px;
-    font-weight: bold;
-    color: #fff;
-    background-color: #007bff;
-    margin-bottom: 12px;
-}
-
-.prompt-text {
-    font-size: 18px;
-    color: #333;
-    margin: 8px 0;
-}
-
-.prompt-jp {
-    font-size: 26px;
-    color: #1a1a1a;
-    margin: 12px 0 0;
-    font-weight: bold;
-}
-
-.blank-highlight {
-    color: #007bff;
-    border-bottom: 3px solid #007bff;
-    padding: 0 4px;
-    font-weight: bold;
-}
-
-/* ===== Feedback ===== */
-.training .feedback {
-    text-align: left;
-    line-height: 1.7;
-    padding: 12px;
-    font-size: 15px;
-}
-
-.explanation {
-    font-weight: normal;
-    font-size: 14px;
-    color: inherit;
-    opacity: 0.85;
-}
-
-/* ===== Score ===== */
-.training .score {
-    margin-top: 15px;
-}
-
 /* ===== Übersetzungs-Toggle ===== */
 .training-trainer.hide-translation .prompt-text {
     display: none;

@@ -1,6 +1,7 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
-/* transport.js — Verkehr & Fortbewegung: Ketten-Visualisierung, Quiz-Logik, Spaced Repetition */
+/* transport.js — Verkehr & Fortbewegung: Ketten-Visualisierung, Quiz-Logik, Spaced Repetition.
+   Braucht: common.js, i18n.js, quiz-engine.js, transport-data.js */
 
 /* ============ STATE ============ */
 
@@ -13,9 +14,6 @@ let answered      = false;
 let remaining   = [];
 let incorrectPool = [];
 let score;
-
-let showRomaji      = localStorage.getItem('transport_romaji')      !== 'false';
-let showTranslation = localStorage.getItem('transport_translation') !== 'false';
 
 /* ============ DOM-REFS ============ */
 
@@ -30,46 +28,24 @@ const inputTextBtn    = document.getElementById('inputModeText');
 
 /* ============ VISIBILITY TOGGLES (Romaji / Übersetzung) ============ */
 
-function injectVisibilityToggles(container) {
-    const bar = document.createElement('div');
-    bar.className = 'map-vis-toggles';
-
-    const romajiBtn = document.createElement('button');
-    romajiBtn.className = 'map-vis-btn' + (showRomaji ? ' active' : '');
-    romajiBtn.textContent = '👁 ' + t('transport.toggleRomaji');
-    romajiBtn.addEventListener('click', () => {
-        showRomaji = !showRomaji;
-        localStorage.setItem('transport_romaji', showRomaji);
-        romajiBtn.classList.toggle('active', showRomaji);
-        refreshChainVisibility();
-    });
-
-    const transBtn = document.createElement('button');
-    transBtn.className = 'map-vis-btn' + (showTranslation ? ' active' : '');
-    transBtn.textContent = '👁 ' + t('transport.toggleTranslation');
-    transBtn.addEventListener('click', () => {
-        showTranslation = !showTranslation;
-        localStorage.setItem('transport_translation', showTranslation);
-        transBtn.classList.toggle('active', showTranslation);
-        refreshChainVisibility();
-    });
-
-    bar.appendChild(romajiBtn);
-    bar.appendChild(transBtn);
-    const inputModeToggleEl = document.getElementById('inputModeToggle');
-    if (inputModeToggleEl) {
-        inputModeToggleEl.insertAdjacentElement('afterend', bar);
-    } else {
-        container.insertBefore(bar, container.firstChild);
-    }
-}
+const visState = buildVisibilityToggles({
+    container: document.querySelector('.transport-trainer'),
+    insertAfter: document.getElementById('inputModeToggle'),
+    target: document.querySelector('.transport-trainer'),
+    toggles: [
+        { key: 'transport_romaji', i18nKey: 'transport.toggleRomaji', cssClass: 'hide-romaji', defaultOn: true,
+          onToggle: () => refreshChainVisibility() },
+        { key: 'transport_translation', i18nKey: 'transport.toggleTranslation', cssClass: 'hide-translation', defaultOn: true,
+          onToggle: () => refreshChainVisibility() }
+    ]
+});
 
 function refreshChainVisibility() {
     document.querySelectorAll('.chain-romaji').forEach(el => {
-        el.style.display = showRomaji ? '' : 'none';
+        el.style.display = visState['transport_romaji'] ? '' : 'none';
     });
     document.querySelectorAll('.chain-translation').forEach(el => {
-        el.style.display = showTranslation ? '' : 'none';
+        el.style.display = visState['transport_translation'] ? '' : 'none';
     });
 }
 
@@ -280,7 +256,7 @@ function buildChain(route, activeQuestionIdx) {
                 <div class="chain-place-icon">${place.icon}</div>
                 <div class="chain-place-jp">${place.kanji || place.jp}</div>
                 <div class="chain-romaji chain-place-romaji">${place.romaji}</div>
-                <div class="chain-translation chain-place-trans">${currentLang === 'en' ? place.en : place.de}</div>
+                <div class="chain-translation chain-place-trans">${getLangField(place, 'de', 'en')}</div>
             </div>`;
         } else {
             // transport node
@@ -310,7 +286,7 @@ function buildChain(route, activeQuestionIdx) {
                     <div class="chain-link-label">
                         <span class="chain-link-jp">${mode.kanji || mode.jp}</span>
                         <span class="chain-romaji chain-link-romaji">${mode.romaji}</span>
-                        <span class="chain-translation chain-link-trans">${currentLang === 'en' ? mode.en : mode.de}</span>
+                        <span class="chain-translation chain-link-trans">${getLangField(mode, 'de', 'en')}</span>
                     </div>
                 </div>`;
             }
@@ -358,7 +334,7 @@ function renderQuestion() {
     // Textliche Frage (ohne Nennung des Transportmittels)
     const promptEl = document.createElement('p');
     promptEl.className = 'transport-prompt';
-    let promptText = currentLang === 'en' ? q.prompt_en : q.prompt_de;
+    let promptText = getLangField(q, 'prompt_de', 'prompt_en');
     // Ersetze {0}, {1} durch Ortsnamen
     q.promptArgs.forEach((placeId, idx) => {
         const pl = getPlace(placeId);
@@ -393,7 +369,7 @@ function renderMCChoices(q) {
             btn.style.setProperty('--choice-color', color);
             btn.innerHTML = `<span class="tsc-jp">${opt.jp}</span>
                              <span class="tsc-romaji chain-romaji">${opt.romaji}</span>
-                             <span class="tsc-trans chain-translation">${currentLang === 'en' ? opt.en : opt.de}</span>`;
+                             <span class="tsc-trans chain-translation">${getLangField(opt, 'de', 'en')}</span>`;
             btn.addEventListener('click', () => handleChoice(opt.modeId, q, area));
             area.appendChild(btn);
         });
@@ -410,7 +386,7 @@ function renderMCChoices(q) {
             btn.innerHTML = `<span class="tc-label">
                                <span class="tc-jp">${mode.kanji || mode.jp}</span>
                                <span class="tc-romaji chain-romaji">${mode.romaji}</span>
-                               <span class="tc-trans chain-translation">${currentLang === 'en' ? mode.en : mode.de}</span>
+                               <span class="tc-trans chain-translation">${getLangField(mode, 'de', 'en')}</span>
                              </span>`;
             btn.style.setProperty('--choice-color', mode.color);
             btn.addEventListener('click', () => handleChoice(modeId, q, area));
@@ -508,7 +484,7 @@ function getCorrectLabel(q) {
 function finishAnswer(correct, q) {
     if (correct) {
         score.addCorrect();
-        const explanation = currentLang === 'en' ? q.explanation_en : q.explanation_de;
+        const explanation = getLangField(q, 'explanation_de', 'explanation_en');
         showFeedback('feedbackArea', `${t('feedback.correct')} ${explanation}`, true);
         if (isQuickAnswer()) {
             setTimeout(advanceQuestion, 400);
@@ -518,7 +494,7 @@ function finishAnswer(correct, q) {
     } else {
         score.addIncorrect();
         if (currentMode === 'spaced') incorrectPool.push(currentRoute);
-        const explanation = currentLang === 'en' ? q.explanation_en : q.explanation_de;
+        const explanation = getLangField(q, 'explanation_de', 'explanation_en');
         const correctLabel = getCorrectLabel(q);
         showFeedback('feedbackArea', `${t('feedback.wrong')} ${t('feedback.correctIs')} ${correctLabel} — ${explanation}`, false);
         nextButton.style.display = 'block';
@@ -551,7 +527,7 @@ function renderChainRevealed(q) {
             <div class="chain-link-label">
                 <span class="chain-link-jp">${mode.kanji || mode.jp}</span>
                 <span class="chain-romaji chain-link-romaji">${mode.romaji}</span>
-                <span class="chain-translation chain-link-trans">${currentLang === 'en' ? mode.en : mode.de}</span>
+                <span class="chain-translation chain-link-trans">${getLangField(mode, 'de', 'en')}</span>
             </div>`;
         refreshChainVisibility();
     }
@@ -653,6 +629,5 @@ document.addEventListener('langchange', () => {
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
 injectQuickAnswerButton(document.querySelector('.transport-trainer'));
-injectVisibilityToggles(document.querySelector('.transport-trainer'));
 buildPool();
 loadNextRoute();

@@ -1,29 +1,19 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
 /* numbers.js — Zahlen & Zaehlwoerter Quiz-Motor.
-   Braucht: common.js, i18n.js, numbers-data.js */
+   Braucht: common.js, i18n.js, quiz-engine.js, numbers-data.js */
 
 /* ============ HELFER: Sprach-abhaengige Felder ============ */
 
-function getSegmentLabel(seg) { return currentLang === 'en' && seg.label_en ? seg.label_en : seg.label; }
-function getRefTitle(ref) { return currentLang === 'en' && ref.title_en ? ref.title_en : ref.title; }
-function getRefHtml(ref) { return currentLang === 'en' && ref.html_en ? ref.html_en : ref.html; }
+function getSegmentLabel(seg) { return getLangField(seg, 'label', 'label_en'); }
+function getRefTitle(ref) { return getLangField(ref, 'title', 'title_en'); }
+function getRefHtml(ref) { return getLangField(ref, 'html', 'html_en'); }
 function getCounterDesc(c) { return currentLang === 'en' ? c.description_en : c.description; }
 function getItemName(ex) { return currentLang === 'en' ? ex.item_en : ex.item_de; }
 
-/* ============ DOM-REFERENZEN ============ */
+/* ============ DOM-REFERENZEN (modul-spezifisch) ============ */
 
-const displayArea = document.getElementById('displayArea');
-const choicesArea = document.getElementById('choicesArea');
-const inputArea = document.getElementById('inputArea');
-const textInput = document.getElementById('textInput');
-const checkButton = document.getElementById('checkButton');
-const feedbackArea = document.getElementById('feedbackArea');
-const nextButton = document.getElementById('nextButton');
 const segmentFiltersDiv = document.getElementById('segmentFilters');
-const applyFilterBtn = document.getElementById('applyFilter');
-const modeRandomBtn = document.getElementById('modeRandom');
-const modeSemiBtn = document.getElementById('modeSemiRandom');
 const viewQuizBtn = document.getElementById('viewQuiz');
 const viewRefBtn = document.getElementById('viewReference');
 const quizView = document.getElementById('quizView');
@@ -32,14 +22,8 @@ const referenceContent = document.getElementById('referenceContent');
 
 /* ============ STATE ============ */
 
-let currentMode = 'random';
 let filteredSegments = [];
 let generatedPool = [];
-let remainingQuestions = [];
-let incorrectQuestions = [];
-let currentQuestion = null;
-let answered = false;
-let score = null;
 
 /* ============ FILTER: Checkboxen dynamisch erzeugen ============ */
 
@@ -73,7 +57,7 @@ function applySegmentFilter() {
         filteredSegments = ['basic_1_10'];
     }
     generateQuestionPool();
-    resetQuiz();
+    engine.resetQuiz();
 }
 
 /* ============ FRAGEN-GENERIERUNG ============ */
@@ -96,23 +80,17 @@ function generateBasicQuestions(segId) {
     if (!numbers) return;
 
     numbers.forEach(num => {
-        /* Typ reading: Kanji -> Lesung */
         generatedPool.push({
-            segment: segId,
-            type: 'text',
-            promptKey: 'numbers.howRead',
-            promptArgs: [num.kanji],
+            segment: segId, type: 'text',
+            promptKey: 'numbers.howRead', promptArgs: [num.kanji],
             display: num.kanji,
             correct: buildCorrectAnswers(num),
             explanation: num.reading + ' (' + num.romaji + ')'
         });
 
-        /* Typ meaning: Lesung -> Zahl (MC) */
         generatedPool.push({
-            segment: segId,
-            type: 'mc',
-            promptKey: 'numbers.whatMeans',
-            promptArgs: [num.reading],
+            segment: segId, type: 'mc',
+            promptKey: 'numbers.whatMeans', promptArgs: [num.reading],
             display: num.reading,
             correct: [String(num.n)],
             choices: generateNumberChoices(num.n, numbers),
@@ -126,47 +104,36 @@ function generateCounterQuestions(segId, counterKey) {
     if (!counter) return;
 
     counter.items.forEach(item => {
-        /* Typ reading: "Wie sagt man N [Counter-Objekt]?" */
         generatedPool.push({
-            segment: segId,
-            type: 'text',
-            promptKey: 'numbers.howSay',
-            promptArgs: [String(item.n), counter.kanji],
+            segment: segId, type: 'text',
+            promptKey: 'numbers.howSay', promptArgs: [String(item.n), counter.kanji],
             display: item.n + counter.kanji,
             correct: buildCounterCorrect(item),
             explanation: item.reading + ' (' + item.romaji + ')'
         });
 
-        /* Typ meaning: Lesung -> N+Counter (MC) */
         generatedPool.push({
-            segment: segId,
-            type: 'mc',
-            promptKey: 'numbers.whatMeans',
-            promptArgs: [item.reading],
+            segment: segId, type: 'mc',
+            promptKey: 'numbers.whatMeans', promptArgs: [item.reading],
             display: item.reading,
             correct: [item.n + counter.kanji],
             choices: generateCounterMcChoices(item.n, counter.kanji),
             explanation: item.reading + ' = ' + item.n + counter.kanji
         });
 
-        /* Typ combine: N + Counter-Kanji = ? */
         generatedPool.push({
-            segment: segId,
-            type: 'text',
-            promptKey: 'numbers.combine',
-            promptArgs: [String(item.n), counter.kanji],
+            segment: segId, type: 'text',
+            promptKey: 'numbers.combine', promptArgs: [String(item.n), counter.kanji],
             display: item.n + ' + ' + counter.kanji,
             correct: buildCounterCorrect(item),
             explanation: item.reading + ' (' + item.romaji + ')'
         });
     });
 
-    /* counter_choice Fragen: Welchen Zaehler fuer X? */
     const relevantExamples = counterExamples.filter(ex => ex.counter === counterKey);
     relevantExamples.forEach(ex => {
         generatedPool.push({
-            segment: segId,
-            type: 'mc_counter',
+            segment: segId, type: 'mc_counter',
             promptKey: 'numbers.whichCounter',
             promptArgs_fn: () => [getItemName(ex)],
             correct: [counter.kanji],
@@ -226,163 +193,71 @@ function generateCounterKanjiChoices(correctKanji) {
     return choices;
 }
 
-/* ============ SPACED REPETITION (70/30) ============ */
+/* ============ QUIZ-ENGINE ============ */
 
-function selectNextQuestion() {
-    if (currentMode === 'random') {
-        return generatedPool[Math.floor(Math.random() * generatedPool.length)];
-    }
-    if (remainingQuestions.length === 0 && incorrectQuestions.length === 0) {
-        remainingQuestions = [...generatedPool];
-        shuffleArray(remainingQuestions);
-    }
-    if (incorrectQuestions.length > 0 && Math.random() < 0.3) {
-        return incorrectQuestions.shift();
-    }
-    if (remainingQuestions.length > 0) {
-        return remainingQuestions.shift();
-    }
-    return incorrectQuestions.shift();
-}
+const engine = new QuizEngine({
+    feedbackId: 'feedbackArea',
+    nextButtonId: 'nextButton',
+    choicesAreaId: 'choicesArea',
+    textInputId: 'textInput',
+    checkButtonId: 'checkButton',
+    displayAreaId: 'displayArea',
+    inputAreaId: 'inputArea',
+    modeRandomId: 'modeRandom',
+    modeSemiId: 'modeSemiRandom',
+    correctSpanId: 'correctCount',
+    incorrectSpanId: 'incorrectCount',
+    quickAnswerTarget: '.score',
 
-/* ============ FRAGE LADEN ============ */
+    getPool: () => generatedPool,
 
-function loadQuestion() {
-    if (generatedPool.length === 0) return;
+    renderQuestion: (q, eng) => {
+        const seg = numbersSegments.find(s => s.id === q.segment);
+        const segLabel = seg ? getSegmentLabel(seg) : '';
+        const promptArgs = q.promptArgs_fn ? q.promptArgs_fn() : q.promptArgs;
 
-    currentQuestion = selectNextQuestion();
-    answered = false;
-    clearFeedback('feedbackArea');
-    nextButton.style.display = 'none';
-    choicesArea.innerHTML = '';
-    textInput.value = '';
-    textInput.disabled = false;
-    checkButton.disabled = false;
-
-    const seg = numbersSegments.find(s => s.id === currentQuestion.segment);
-    const segLabel = seg ? getSegmentLabel(seg) : '';
-
-    /* Prompt-Argumente: statisch oder via Funktion */
-    const promptArgs = currentQuestion.promptArgs_fn
-        ? currentQuestion.promptArgs_fn()
-        : currentQuestion.promptArgs;
-
-    let html = '<div class="segment-badge">' + segLabel + '</div>';
-    html += '<p class="prompt-text">' + t(currentQuestion.promptKey, ...promptArgs) + '</p>';
-
-    if (currentQuestion.display) {
-        html += '<div class="number-display">' + currentQuestion.display + '</div>';
-    }
-
-    displayArea.innerHTML = html;
-
-    if (currentQuestion.type === 'mc' || currentQuestion.type === 'mc_counter') {
-        inputArea.style.display = 'none';
-        renderChoiceButtons(currentQuestion.choices);
-    } else {
-        inputArea.style.display = '';
-        textInput.focus();
-    }
-}
-
-/* ============ MULTIPLE CHOICE ============ */
-
-function renderChoiceButtons(choices) {
-    choicesArea.innerHTML = '';
-    choices.forEach(text => {
-        const btn = document.createElement('button');
-        btn.classList.add('choice-button');
-        btn.textContent = text;
-        btn.addEventListener('click', () => handleChoiceClick(text));
-        choicesArea.appendChild(btn);
-    });
-}
-
-function handleChoiceClick(selected) {
-    if (answered) return;
-    const correctArr = currentQuestion.correct;
-    const isCorrect = correctArr.some(c => c.toLowerCase() === selected.toLowerCase());
-
-    choicesArea.querySelectorAll('.choice-button').forEach(btn => {
-        btn.disabled = true;
-        if (correctArr.some(c => c.toLowerCase() === btn.textContent.toLowerCase())) {
-            btn.classList.add('correct-choice');
+        let html = '<div class="segment-badge">' + segLabel + '</div>';
+        html += '<p class="prompt-text">' + t(q.promptKey, ...promptArgs) + '</p>';
+        if (q.display) {
+            html += '<div class="number-display">' + q.display + '</div>';
         }
-        if (btn.textContent === selected && !isCorrect) {
-            btn.classList.add('wrong-choice');
+        eng.displayArea.innerHTML = html;
+
+        if (q.type === 'mc' || q.type === 'mc_counter') {
+            eng.inputArea.style.display = 'none';
+            eng.renderChoiceButtons(q.choices, selected => {
+                eng.handleMCAnswer(selected, q.correct);
+            });
+        } else {
+            eng.inputArea.style.display = '';
         }
-    });
-    finishAnswer(isCorrect);
-}
+    },
 
-/* ============ TEXTEINGABE PRUEFEN ============ */
+    checkText: (input, q) => {
+        return q.correct.some(c => c === input || c.toLowerCase() === input.toLowerCase());
+    },
 
-function checkTextInput() {
-    if (answered) return;
-    const input = textInput.value.trim();
-    if (!input) return;
+    buildFeedback: (q, isCorrect) => {
+        const explanation = q.explanation_fn ? q.explanation_fn() : q.explanation;
+        let html = '';
+        if (isCorrect) {
+            html += '<strong>' + t('feedback.correct') + '</strong>';
+        } else {
+            html += '<strong>' + t('feedback.wrong') + '</strong> ' + t('feedback.correctIs') + ' ' + q.correct[0];
+        }
+        if (explanation) {
+            html += '<br><span class="explanation">' + explanation + '</span>';
+        }
+        return html;
+    },
 
-    const isCorrect = currentQuestion.correct.some(
-        c => c === input || c.toLowerCase() === input.toLowerCase()
-    );
-    finishAnswer(isCorrect);
-}
-
-/* ============ ANTWORT AUSWERTEN ============ */
-
-function finishAnswer(isCorrect) {
-    answered = true;
-    textInput.disabled = true;
-    checkButton.disabled = true;
-
-    const explanation = currentQuestion.explanation_fn
-        ? currentQuestion.explanation_fn()
-        : currentQuestion.explanation;
-
-    let html = '';
-    if (isCorrect) {
-        html += '<strong>' + t('feedback.correct') + '</strong>';
-        score.addCorrect();
-    } else {
-        html += '<strong>' + t('feedback.wrong') + '</strong> ' + t('feedback.correctIs') + ' ' + currentQuestion.correct[0];
-        score.addIncorrect();
-        if (currentMode === 'semi-random') {
-            incorrectQuestions.push(currentQuestion);
+    onLangChange: () => {
+        buildFilterCheckboxes();
+        if (referenceView.style.display !== 'none') {
+            buildReferenceContent();
         }
     }
-
-    if (explanation) {
-        html += '<br><span class="explanation">' + explanation + '</span>';
-    }
-
-    feedbackArea.innerHTML = html;
-    feedbackArea.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
-
-    if (isCorrect && isQuickAnswer()) {
-        setTimeout(loadQuestion, 400);
-    } else {
-        nextButton.style.display = 'block';
-    }
-}
-
-/* ============ RESET ============ */
-
-function resetQuiz() {
-    score.reset();
-    remainingQuestions = [...generatedPool];
-    shuffleArray(remainingQuestions);
-    incorrectQuestions = [];
-    loadQuestion();
-}
-
-/* ============ MODUS-WECHSEL ============ */
-
-function switchMode(mode) {
-    currentMode = mode;
-    modeRandomBtn.classList.toggle('active', mode === 'random');
-    modeSemiBtn.classList.toggle('active', mode === 'semi-random');
-    resetQuiz();
-}
+});
 
 /* ============ ANSICHT-WECHSEL (Quiz / Nachschlagen) ============ */
 
@@ -391,10 +266,7 @@ function switchView(view) {
     viewRefBtn.classList.toggle('active', view === 'reference');
     quizView.style.display = view === 'quiz' ? '' : 'none';
     referenceView.style.display = view === 'reference' ? '' : 'none';
-
-    if (view === 'reference') {
-        buildReferenceContent();
-    }
+    if (view === 'reference') buildReferenceContent();
 }
 
 function buildReferenceContent() {
@@ -410,36 +282,13 @@ function buildReferenceContent() {
     referenceContent.innerHTML = html;
 }
 
-/* ============ LANGCHANGE ============ */
+/* ============ EVENT LISTENERS (modul-spezifisch) ============ */
 
-document.addEventListener('langchange', () => {
-    buildFilterCheckboxes();
-    if (referenceView.style.display !== 'none') {
-        buildReferenceContent();
-    }
-    if (currentQuestion) loadQuestion();
-});
-
-/* ============ EVENT LISTENERS ============ */
-
-nextButton.addEventListener('click', loadQuestion);
-checkButton.addEventListener('click', checkTextInput);
-textInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter') checkTextInput();
-});
-modeRandomBtn.addEventListener('click', () => switchMode('random'));
-modeSemiBtn.addEventListener('click', () => switchMode('semi-random'));
-applyFilterBtn.addEventListener('click', applySegmentFilter);
+document.getElementById('applyFilter').addEventListener('click', applySegmentFilter);
 viewQuizBtn.addEventListener('click', () => switchView('quiz'));
 viewRefBtn.addEventListener('click', () => switchView('reference'));
 
 /* ============ INITIALISIERUNG ============ */
 
 buildFilterCheckboxes();
-score = new ScoreTracker('correctCount', 'incorrectCount');
-
-/* Quick Answer Button injizieren */
-const scoreEl = document.querySelector('.score');
-if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
-
 applySegmentFilter();
