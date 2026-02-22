@@ -9,7 +9,6 @@
 const trainingSegments = [
     { id: 'existence',   label: 'Existenzsatz (あります/います)',    label_en: 'Existence (あります/います)',       checked: true },
     { id: 'giving',      label: 'Geben & Nehmen',                  label_en: 'Giving & Receiving',              checked: false },
-    { id: 'shopping',    label: 'Einkaufen (これ/それ/あれ)',       label_en: 'Shopping (これ/それ/あれ)',        checked: false },
     { id: 'verb_past',   label: 'Vergangenheit: Verben',           label_en: 'Past Tense: Verbs',               checked: false },
     { id: 'i_adj_past',  label: 'Vergangenheit: い-Adjektive',     label_en: 'Past Tense: い-Adjectives',       checked: false },
     { id: 'na_adj_past', label: 'Vergangenheit: な-Adjektive',     label_en: 'Past Tense: な-Adjectives',       checked: false },
@@ -80,32 +79,6 @@ const trainingQuestions = [
       correct: ['bekommen'], choices: ['geben', 'bekommen', 'kaufen', 'bringen'],
       choices_en: ['to give', 'to receive', 'to buy', 'to bring'], correct_en: ['to receive'],
       explanation: 'もらいます (moraimasu) = bekommen', explanation_en: 'もらいます (moraimasu) = to receive' },
-
-    // ──────── EINKAUFEN これ/それ/あれ ────────
-    { segment: 'shopping', type: 'fill',
-      prompt: 'Ergänze: ___ (nah beim Sprecher) はいくらですか。', prompt_en: 'Fill in: ___ (near the speaker) はいくらですか。',
-      prompt_jp: '（___）はいくらですか。',
-      correct: ['これ', 'kore'], explanation: 'これ = dies (nah beim Sprecher)', explanation_en: 'これ = this (near the speaker)' },
-    { segment: 'shopping', type: 'fill',
-      prompt: 'Ergänze: ___ (nah beim Angesprochenen) をください。', prompt_en: 'Fill in: ___ (near the listener) をください。',
-      prompt_jp: '（___）をください。',
-      correct: ['それ', 'sore'], explanation: 'それ = das (nah beim Angesprochenen)', explanation_en: 'それ = that (near the listener)' },
-    { segment: 'shopping', type: 'fill',
-      prompt: 'Ergänze: ___ (weit weg von beiden) は何ですか。', prompt_en: 'Fill in: ___ (far from both) は何ですか。',
-      prompt_jp: '（___）は何ですか。',
-      correct: ['あれ', 'are'], explanation: 'あれ = jenes (weit weg von beiden)', explanation_en: 'あれ = that over there (far from both)' },
-    { segment: 'shopping', type: 'mc',
-      prompt: 'Welches Wort bezieht sich auf etwas nahe beim Sprecher?', prompt_en: 'Which word refers to something near the speaker?',
-      correct: ['これ'], choices: ['これ', 'それ', 'あれ', 'どれ'],
-      explanation: 'これ (kore) = dieses (nah beim Sprecher)', explanation_en: 'これ (kore) = this (near the speaker)' },
-    { segment: 'shopping', type: 'mc',
-      prompt: 'Wie fragt man „Wie viel kostet das?"', prompt_en: 'How do you ask "How much does it cost?"',
-      correct: ['いくらですか'], choices: ['いくらですか', 'なんですか', 'どこですか', 'だれですか'],
-      explanation: '～はいくらですか = Wie viel kostet ~?', explanation_en: '～はいくらですか = How much is ~?' },
-    { segment: 'shopping', type: 'mc',
-      prompt: 'Wie sagt man „Bitte geben Sie mir das"?', prompt_en: 'How do you say "Please give me that"?',
-      correct: ['～をください'], choices: ['～をください', '～をあげます', '～をかいます', '～をみます'],
-      explanation: '～をください (~ o kudasai) = Bitte geben Sie mir ~.', explanation_en: '～をください (~ o kudasai) = Please give me ~.' },
 
     // ──────── VERGANGENHEIT: VERBEN ────────
     { segment: 'verb_past', type: 'fill',
@@ -265,24 +238,6 @@ const trainingReference = {
             '<li><strong>もらいます (moraimasu):</strong> to receive (speaker/B from A)</li>' +
             '<li>例：私は友達にプレゼントをあげます。— I give my friend a present.</li>' +
             '<li>例：私は友達に本をもらいました。— I received a book from my friend.</li>' +
-            '</ul>'
-    },
-    shopping: {
-        title: 'Einkaufen: これ、それ、あれ',
-        title_en: 'Shopping: これ, それ, あれ',
-        html: '<ul>' +
-            '<li><strong>これ (kore):</strong> dieses (nah beim Sprecher)</li>' +
-            '<li><strong>それ (sore):</strong> das (nah beim Angesprochenen)</li>' +
-            '<li><strong>あれ (are):</strong> jenes (weit weg von beiden)</li>' +
-            '<li><strong>～はいくらですか。</strong> — Wie viel kostet ~?</li>' +
-            '<li><strong>～をください。</strong> — Bitte geben Sie mir ~.</li>' +
-            '</ul>',
-        html_en: '<ul>' +
-            '<li><strong>これ (kore):</strong> this (near the speaker)</li>' +
-            '<li><strong>それ (sore):</strong> that (near the listener)</li>' +
-            '<li><strong>あれ (are):</strong> that over there (far from both)</li>' +
-            '<li><strong>～はいくらですか。</strong> — How much is ~?</li>' +
-            '<li><strong>～をください。</strong> — Please give me ~.</li>' +
             '</ul>'
     },
     verb_past: {

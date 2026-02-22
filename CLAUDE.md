@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (11 Karten → Module, inkl. Simulation-Gruppe)
+index.html                 Hauptmenue (12 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -35,13 +35,15 @@ js/
   kanji-list.js            Kanji-Karteikarten: Flip-Cards nach Level + Kategorie gruppiert, Kategorien ausklappbar (sessionStorage)
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz via QuizEngine: 4 Fragetypen, dynamische Generierung, Segment-Filter
-  training-data.js         Trainingsdaten: 7 Segmente, ~55 Fragen (MC/Fill), Referenz-Inhalte (particles+positions entfernt)
+  training-data.js         Trainingsdaten: 6 Segmente, ~49 Fragen (MC/Fill), Referenz-Inhalte (particles+positions+shopping entfernt)
   training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Ansicht-Toggle
   verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
-  simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld fuer Positions-Indikator
-  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), renderKoreroVisual() fuer diese/das/jenes-Positionen, nutzt getLangField + buildVisibilityToggles
+  simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld
+  simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), renderKoreroVisual() fuer Positionen, nutzt getLangField + buildVisibilityToggles
+  giving-data.js           Geben&Nehmen-Daten: 3 Szenen (giving1/2/3), Dialoge bilingual + romaji-Felder (text: romaji; blank: before_romaji/after_romaji/answer_romaji); speakerLabels pro Szene
+  giving.js                Geben&Nehmen-Quiz: wie Simulation, zusaetzlich Romaji-Toggle via buildVisibilityToggles, renderBlankLine zeigt romaji unter JP-Text
   location-obj-data.js     9 Positionen mit SVG-Koordinaten (ballCx/Cy, hitX/Y/W/H), JP/DE/EN, Romaji
   location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), via QuizEngine
   location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
@@ -57,6 +59,7 @@ pages/
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
+  giving.html              Geben & Nehmen (Multiline-Dialog, Szenenfilter, Romaji-Toggle, MC + Texteingabe, Score)
   location-obj.html        Gegenstand-Position (SVG-Szene, Beschreiben + Zeigen, Score)
   location-map.html        Stadtkarte (SVG-Karte, Navigation + Beschreibungs-Quiz, Score)
   transport.html           Verkehr & Fortbewegung (Ketten-Quiz, Schwierigkeitsfilter, MC + Texteingabe, Score)
@@ -72,6 +75,7 @@ pages/
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → numbers-data.js → numbers.js
 - **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
 - **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → simulation-data.js → simulation.js
+- **giving.js braucht giving-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → giving-data.js → giving.js
 - **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-obj-data.js → location-obj.js
 - **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-map-data.js → location-map.js
 - **transport.js braucht transport-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport.js
@@ -180,7 +184,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `kanji-list.js`: ~228 Zeilen (Kategorie-Rendering, categoryOrder, sessionStorage-Helfer)
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
 - `numbers.js`: ~294 Zeilen (via QuizEngine)
-- `training-data.js`: ~375 Zeilen (reine Daten: 7 Segmente Grammatik, Fragen, Referenz — bilingual; particles+positions entfernt)
+- `training-data.js`: ~330 Zeilen (reine Daten: 6 Segmente Grammatik, Fragen, Referenz — bilingual; particles+positions+shopping entfernt)
 - `training.js`: ~184 Zeilen (via QuizEngine)
 - `kanji-vocab-data.js`: ~128 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
 - `kanji-vocab.js`: ~186 Zeilen (via QuizEngine)
@@ -196,8 +200,10 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
 - `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
-- `simulation-data.js`: ~610 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen haben `visual`-Feld)
-- `simulation.js`: ~510 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(); nutzt getLangField + buildVisibilityToggles)
+- `simulation-data.js`: ~720 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen: `visual`-Feld)
+- `simulation.js`: ~520 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(); nutzt getLangField + buildVisibilityToggles)
+- `giving-data.js`: ~195 Zeilen (reine Daten: 3 Szenen — giving1/2/3, bilingual + romaji-Felder; speakerLabels pro Szene)
+- `giving.js`: ~295 Zeilen (Dialog-Rendering + Romaji-Toggle, Luecken-Logik, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
 - `location-obj-data.js`: ~85 Zeilen (10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; inkl. in_regal)
 - `location-obj.js`: ~237 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz via QuizEngine)
@@ -258,7 +264,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Texteingabe: Enter = Pruefen, akzeptiert Kana + Romaji
 
 ### Grammatik-Trainer (`training-data.js` + `training.js` + `training.html`)
-- 7 Themen-Segmente (Grammatik): Existenzsatz, Geben/Nehmen, Einkaufen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
+- 6 Themen-Segmente (Grammatik): Existenzsatz, Geben/Nehmen, Verb-Vgh., い-Adj-Vgh., な-Adj-Vgh., Negation
 - Entfernt: Partikel (に/を) — in Transport-Modul enthalten; Positionen (まえ/うしろ…) — in Gegenstand-Position enthalten
 - Checkbox-Filter fuer Segmentauswahl (Existenzsatz default an), "Filter anwenden" resettet Quiz
 - **Via QuizEngine**: ~70 Fragen in 3 Typen (MC, Fill, Translate), `renderQuestion` verzweigt nach Fragetyp
@@ -314,11 +320,25 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Tier-3-Modul:** Eigener Quiz-Lifecycle, nutzt `getLangField()` + `buildVisibilityToggles()` aus quiz-engine.js
 - Feedback nach jeder Luecke: Erklaerung (DE/EN) + richtige Antwort bei Fehler
 - Quick Answer: nach richtiger Antwort 400ms Delay, dann automatisch naechste Luecke
-- Sprecher-Labels: "Verkäufer" / "Kunde" (i18n), Bubbles links/rechts je nach Sprecher
-- Datenstruktur: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en, visual? }`
+- Sprecher-Labels: "Verkäufer" / "Kunde" (i18n-Keys `sim.speaker.staff` / `sim.speaker.customer`)
+- Datenstruktur Zeile: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en, mcOnly?, visual? }`
 - `visual`-Feld (optional, nur Korero-Szenen): `{ position: 'near-customer'|'near-staff'|'far', item: Emoji-String }` — rendert visuellen Positions-Indikator (👤 Du / Emoji / 👤 Verk.) über der aktiven Lücke via `renderKoreroVisual()`
-- i18n-Keys: `sim.*` (13 Eintraege in i18n.js)
+- i18n-Keys: `sim.*` (11 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation" (`index.group.simulation`)
+
+### Geben & Nehmen (`giving-data.js` + `giving.js` + `giving.html`)
+- 3 Szenen (A1-Fokus): giving1 (Geburtstag — Sakura/Kenta), giving2 (Familie — Yui/Sota), giving3 (Kette — Momo/Riku)
+- Jede Szene hat `speakerLabels: { ten: {de,en}, kyaku: {de,en} }` mit Charakternamen statt "Verkäufer"/"Kunde"
+- **Romaji-Toggle** (Besonderheit dieses Moduls): jede Zeile hat ein `romaji`-Feld (text-Zeilen) bzw. `before_romaji`/`after_romaji`/`answer_romaji` (blank-Zeilen); `.dialog-romaji`-Span in CSS ausblendbar per `hide-romaji`-Klasse
+- Romaji-Anzeige: unter dem JP-Text in kleiner kursiver Schrift (`font-size: 12px, color: #999`). Bei aktiver Lücke: `before_romaji ＿＿＿ after_romaji`, nach Antwort: vollständig mit `answer_romaji`
+- **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji (`giving_romaji`) + Übersetzung (`giving_translation`) — beide standard-an
+- **Tier-3-Modul:** Eigener Quiz-Lifecycle (wie simulation.js), ohne renderKoreroVisual(); nutzt `getLangField()` + `buildVisibilityToggles()`
+- Abgedeckte Grammatik: あげます (Sprecher → andere), もらいます (Sprecher ← andere), くれます (andere → Sprecher); giving3 kontrastiert くれました vs もらいました für dasselbe Ereignis (andere Perspektive)
+- Datenstruktur Zeile text: `{ type:'text', speaker, jp, romaji, de, en }`
+- Datenstruktur Zeile blank: `{ type:'blank', speaker, before, after, before_romaji, after_romaji, answer_romaji, before_en, after_en, de, en, correct[], choices[], explanation, explanation_en }`
+- simulation.css wird mitgeladen (Dialog-Bubble-Styles); `.dialog-romaji` + `.giving-trainer.hide-romaji .dialog-romaji` in simulation.css ergaenzt
+- i18n-Keys: `giving.title`, `index.giving.title`, `index.giving.desc` (3 Eintraege)
+- Index-Gruppe: "Simulation"
 
 ## Regeln fuer Dialogdaten (Simulation + kuenftige Dialoge)
 

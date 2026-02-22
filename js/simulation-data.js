@@ -19,8 +19,8 @@ const simulationScenes = [
     { id: 'food2',    label: 'Lebensmittel',     label_en: 'Food',         checked: false },
     { id: 'furni',    label: 'Möbel',            label_en: 'Furniture',    checked: false },
     { id: 'furni2',   label: 'Möbel',            label_en: 'Furniture',    checked: false },
-    { id: 'korero1',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are', checked: false },
-    { id: 'korero2',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are', checked: false },
+    { id: 'korero1',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are',     checked: false },
+    { id: 'korero2',  label: 'これ/それ/あれ',   label_en: 'Kore/Sore/Are',     checked: false },
 ];
 
 /* =====================================================================
@@ -711,4 +711,5 @@ const simulationDialogs = {
         { type: 'text', speaker: 'ten',
           jp: 'ありがとうございました！', de: 'Vielen Dank!', en: 'Thank you very much!' },
     ],
+
 };

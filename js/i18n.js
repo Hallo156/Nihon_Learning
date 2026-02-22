@@ -138,6 +138,11 @@ const uiStrings = {
     'kanjiVocab.reading':     { de: 'Lesung',                         en: 'Reading' },
     'kanjiVocab.noVocab':     { de: 'Keine Vokabeln für die ausgewählten Stufen.', en: 'No vocabulary for the selected levels.' },
 
+    // --- giving.html (Geben & Nehmen) ---
+    'giving.title':           { de: 'Geben & Nehmen',       en: 'Giving & Receiving' },
+    'index.giving.title':     { de: 'Geben & Nehmen',       en: 'Giving & Receiving' },
+    'index.giving.desc':      { de: 'Dialoge zu あげる・もらう・くれる mit Freunden und Familie. Mit Romaji-Anzeige.', en: 'Dialogues on あげる・もらう・くれる with friends and family. Includes Romaji display.' },
+
     // --- simulation.html ---
     'index.simulation.title': { de: 'Einkaufs-Simulation',  en: 'Shopping Simulation' },
     'index.simulation.desc':  { de: 'Dialoge beim Einkaufen: Kleidung, Essen und Möbel. Lücken per Multiple Choice oder gemischt ausfüllen.', en: 'Shopping dialogues: clothes, food and furniture. Fill in the gaps by multiple choice or mixed mode.' },

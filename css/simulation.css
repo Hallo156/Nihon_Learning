@@ -122,9 +122,19 @@
     font-size: 17px;
     color: #222;
 }
+.dialog-romaji {
+    font-size: 12px;
+    color: #999;
+    font-style: italic;
+}
 .dialog-tr {
     font-size: 13px;
     color: #777;
+}
+
+/* ===== Romaji-Toggle (Geben & Nehmen Modul) ===== */
+.giving-trainer.hide-romaji .dialog-romaji {
+    display: none;
 }
 
 /* ===== Lücken-Styles ===== */
