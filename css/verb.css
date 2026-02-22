@@ -51,3 +51,21 @@
 
 /* Sichtbarkeits-Toggle: Romaji ein-/ausblenden */
 .verb-trainer.hide-romaji .verb-romaji-hint { display: none; }
+
+/* Zweizeilige Choice-Buttons: Bedeutung + Zeitform */
+.verb-trainer .choice-button .choice-meaning {
+    display: block;
+    font-weight: 600;
+}
+.verb-trainer .choice-button .choice-form {
+    display: block;
+    font-size: 0.82em;
+    color: #fff;
+    font-style: italic;
+    margin-top: 3px;
+}
+.verb-trainer .choice-button.correct-choice .choice-form,
+.verb-trainer .choice-button.wrong-choice .choice-form {
+    color: inherit;
+    opacity: 0.85;
+}

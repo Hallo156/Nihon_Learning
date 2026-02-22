@@ -19,8 +19,8 @@ css/
   kanji-list.css           Flip-Card Styles, Level-Gruppen, Responsive Grid
   numbers.css              Number-Display (64px), Container-Override
   training.css             Container-Override (900px), Hide-Translation-Regel
-  verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
-  adjective.css            Fragen-Bereich, Adjektiv-Trainer (Buttons vertikal), Typ-Badge (い/な)
+  verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Zweizeilige Choice-Buttons, Feedback
+  adjective.css            Fragen-Bereich, Adjektiv-Trainer (Buttons vertikal), Zweizeilige Choice-Buttons, Typ-Badge (い/な)
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
   simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
   location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
@@ -39,9 +39,9 @@ js/
   numbers.js               Zahlen-Quiz via QuizEngine: 4 Fragetypen, dynamische Generierung, Segment-Filter
   training-data.js         Trainingsdaten: 6 Segmente, ~49 Fragen (MC/Fill), Referenz-Inhalte (particles+positions+shopping entfernt)
   training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Nachschlag-Sidebar
-  verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle + Nachschlag-Referenz
-  adjective-data.js        Adjektiv-Daten: 25 Adjektive (18 い, 7 な), bilingual + adjReference (3 Abschnitte)
-  adjective.js             Adjektiv-Quiz via QuizEngine + Romaji/Translation-Toggle + Typ-Badge + Nachschlag-Sidebar
+  verb.js                  15 Verb-Daten (je 4 Formen: Geg./Vgh./Vern.Geg./Vern.Vgh.) + Zeitform-Filter + Quiz via QuizEngine + Romaji-Toggle + Nachschlag-Referenz
+  adjective-data.js        Adjektiv-Daten: 25 Adjektive (18 い, 7 な), je 4 Formen bilingual + adjReference (4 Abschnitte inkl. Zeitformen)
+  adjective.js             Adjektiv-Quiz via QuizEngine: Zeitform-Filter + 4-Choice-Quiz (Bedeutung+Form) + Romaji-Toggle + Typ-Badge + Nachschlag-Sidebar
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
   simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld
@@ -62,8 +62,8 @@ pages/
   kanji-list.html          Kanji-Karteikarten (Flip-Cards nach Level, alle Stufen)
   numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlag-Sidebar)
   training.html            Grammatik-Trainer (dynamisches Quiz, Nachschlag-Sidebar)
-  verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
-  adjective.html           Adjektiv-Trainer (Satzluecken, Multiple-Choice, Typ-Badge, Mode-Toggle)
+  verb.html                Verb-Trainer (Zeitform-Filter, 4-Choice-MC, Mode-Toggle, Romaji-Toggle)
+  adjective.html           Adjektiv-Trainer (Zeitform-Filter, 4-Choice-MC, Mode-Toggle, Romaji-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
   giving.html              Geben & Nehmen (Multiline-Dialog, Szenenfilter, Romaji-Toggle, MC + Texteingabe, Score)
@@ -195,7 +195,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
 - `i18n.js`: ~311 Zeilen
 - `quiz-engine.js`: ~465 Zeilen (QuizEngine-Klasse, getLangField, buildVisibilityToggles, buildReferenceSidebar)
-- `verb.js`: ~195 Zeilen (via QuizEngine, inkl. verbReference + Nachschlag-Sidebar)
+- `verb.js`: ~290 Zeilen (15 Verben × 4 Formen, Zeitform-Filter, buildVerbPool, Quiz via QuizEngine, Nachschlag-Sidebar)
 - `kana.js`: ~199 Zeilen
 - `kanji-data.js`: ~175 Zeilen (reine Daten: A1=73, A2=35 — B1/B2 zu A2, mehrere zu A1 umgestuft, 円 hinzugefügt, category-Feld)
 - `kanji.js`: ~162 Zeilen (via QuizEngine)
@@ -219,9 +219,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
 - `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
-- `adjective-data.js`: ~150 Zeilen (reine Daten: 25 Adjektive bilingual + adjReference 3 Abschnitte)
-- `adjective.js`: ~85 Zeilen (via QuizEngine, Typ-Badge, Nachschlag-Sidebar)
-- `adjective.css`: ~80 Zeilen (Fragen-Bereich, vertikale Buttons, Typ-Badge い/な, Toggle-CSS)
+- `adjective-data.js`: ~370 Zeilen (25 Adjektive × 4 Formen bilingual + adjReference 4 Abschnitte inkl. Zeitformen)
+- `adjective.js`: ~130 Zeilen (Zeitform-Filter, buildAdjPool, Quiz via QuizEngine, Typ-Badge, Nachschlag-Sidebar)
+- `adjective.css`: ~100 Zeilen (Fragen-Bereich, vertikale Buttons, Zweizeilige Choice-Buttons, Typ-Badge い/な, Toggle-CSS)
 - `simulation-data.js`: ~720 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen: `visual`-Feld)
 - `simulation-ref.js`: ~71 Zeilen (Nachschlag-Referenz: Einkaufsphrasen, これ/それ/あれ, Adjektive)
 - `simulation.js`: ~535 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(), Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
@@ -250,26 +250,34 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **IDs (vereinheitlicht):** Texteingabe `#textInput` (war `romajiInput`), Filter-Button `#applyFilter` (war `applyFiltersButton`)
 
 ### Verb-Trainer (`verb.js` + `verb.html`)
-- 15 Verben im ます-Form, je mit vollständigem JP-Satz + Übersetzung (DE + EN)
-- Datenstruktur: `{ verb_masu, romaji, meaning_de, meaning_en, sentence_jp_blank, sentence_jp_filled, sentence_de_filled, sentence_en_filled }`
-- **Quiz-Format:** Vollständiger JP-Satz wird angezeigt (Verb **blau hervorgehoben**); Nutzer wählt die korrekte Bedeutung aus 3 Choices (in DE/EN)
-- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering mit Bedeutungstext, ruft `engine.finishAnswer()` direkt auf
-- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: nur Romaji — localStorage `verb_romaji`, standard-an — zeigt `(verb = romaji)` unter dem Satz
-- **Nachschlag-Sidebar:** Verb-Tabelle (15 ます-Form-Verben) + Partikel-Uebersicht (を/に/へ/で/と/が)
-- Feedback zeigt: Bedeutung + vollständiger JP-Satz + Übersetzung + Romaji
-- Index-Gruppe: **Zahlen & Vokabular** (kein Lückentext mehr → eindeutige Vokabel-Fragen)
-- i18n-Keys: `verb.*` (6 Einträge), `index.verb.*` (2 Einträge)
+- 15 Verben im ます-Form, je **4 Formen**: Gegenwart / Vergangenheit / Verneinung Geg. / Verneinung Vgh. → 60 Pool-Items bei allen aktiven Filtern
+- Datenstruktur: `{ verb_masu, romaji, meaning_de, meaning_en, forms: { present, past, neg_present, neg_past } }` — jede Form: `{ jp, de, en, verb_jp, verb_romaji }`
+- **Pool-Items** (flach): `{ base: verbObj, formKey, sentence_jp, sentence_de, sentence_en, verb_jp, verb_romaji }`
+- **Quiz-Format:** Vollständiger JP-Satz angezeigt; Nutzer wählt **4 Choices** — jede zeigt `Bedeutung` (fett) + `Zeitform-Label` (klein) zweizeilig
+- **Zeitform-Filter:** 3 Checkboxen (Gegenwart / Vergangenheit / Verneinung), "Filter anwenden" → `resetQuiz()`; mindestens 1 muss aktiv sein
+- Distraktoren-Strategie: 1 gleiche-Verb-andere-Form, 1 anderes-Verb-gleiche-Form, 1 zufällig — garantiert lehrreiche Auswahl
+- **Via QuizEngine** (MC-only): Custom Button-Rendering, ruft `engine.finishAnswer()` direkt auf (prüft verb_masu UND formKey)
+- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: Romaji — localStorage `verb_romaji`, standard-an
+- **Nachschlag-Sidebar:** Zeitformen-Tabelle (ます/ました/ません/ませんでした) + Verb-Tabelle (15) + Partikel-Übersicht
+- Feedback zeigt: `Bedeutung – Zeitform` + JP-Satz + Übersetzung + konjugiertes Verb + Romaji
+- Index-Gruppe: **Zahlen & Vokabular**
+- i18n-Keys: `verb.*` (7 Einträge), `index.verb.*` (2 Einträge), `form.*` (4 geteilt mit Adjektiv), `filter.tense.*` (4 geteilt)
 
 ### Adjektiv-Trainer (`adjective-data.js` + `adjective.js` + `adjective.html`)
-- 25 Adjektive (18 い-Adjektive, 7 な-Adjektive), bilingual + adjReference (3 Abschnitte)
-- Datenstruktur: `{ adj, romaji, type('i'|'na'), meaning_de, meaning_en, sentence_jp_blank, sentence_jp_filled, sentence_de_filled, sentence_en_filled }`
-- **Quiz-Format:** Vollständiger JP-Satz wird angezeigt (Adjektiv **blau hervorgehoben**); Nutzer wählt die korrekte Bedeutung aus 3 Choices (in DE/EN)
-- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering mit Bedeutungstext, ruft `engine.finishAnswer()` direkt auf
-- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: nur Romaji — localStorage `adj_romaji`, standard-an — zeigt `(adjektiv = romaji)` unter dem Satz
-- **Nachschlag-Sidebar:** 3 Abschnitte — い-Adjektive-Tabelle (18), な-Adjektive-Tabelle (7), Grammatik-Hinweise (prädikativ vs. attributiv)
-- Feedback zeigt: Bedeutung + JP-Satz + Übersetzung + Romaji + Typ-Badge (い/な) inline
-- Index-Gruppe: **Zahlen & Vokabular** (kein Lückentext mehr → eindeutige Vokabel-Fragen)
-- i18n-Keys: `adj.*` (8 Einträge), `index.adj.*` (2 Einträge)
+- 25 Adjektive (18 い, 7 な), je **4 Formen**: Gegenwart / Vergangenheit / Verneinung Geg. / Verneinung Vgh. → 100 Pool-Items bei allen aktiven Filtern
+- Datenstruktur: `{ adj, romaji, type('i'|'na'), meaning_de, meaning_en, forms: { present, past, neg_present, neg_past } }` — jede Form: `{ jp, de, en, adj_jp, adj_romaji }`
+- い-Konjugation: stem+かった (Past) / stem+くない (NegPres) / stem+くなかった (NegPast); Sonderfall: いい→よ-Stamm
+- な-Konjugation: でした (Past) / じゃない です (NegPres) / じゃなかった です (NegPast)
+- **Pool-Items** (flach): `{ base: adjObj, formKey, sentence_jp/de/en, adj_jp, adj_romaji }`
+- **Quiz-Format:** Vollständiger JP-Satz angezeigt; Nutzer wählt **4 Choices** — zweizeilig: Bedeutung + Zeitform-Label
+- **Zeitform-Filter:** 3 Checkboxen (Gegenwart / Vergangenheit / Verneinung), "Filter anwenden" → `resetQuiz()`
+- Distraktoren-Strategie: gleiche-Adj-andere-Form + anderes-Adj-gleiche-Form + zufällig
+- **Via QuizEngine** (MC-only): prüft adj UND formKey
+- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: Romaji — localStorage `adj_romaji`, standard-an
+- **Nachschlag-Sidebar:** Zeitformen-Tabelle (beide Adj-Typen) + い-Adj-Tabelle (18) + な-Adj-Tabelle (7)
+- Feedback zeigt: `Bedeutung – Zeitform` + JP-Satz + Übersetzung + konjugierte Form + Romaji + Typ-Badge (い/な)
+- Index-Gruppe: **Zahlen & Vokabular**
+- i18n-Keys: `adj.*` (9 Einträge), `index.adj.*` (2 Einträge)
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
 - 108 Kanji in 2 Stufen: A1 (73), A2 (35)

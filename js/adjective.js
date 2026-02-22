@@ -1,25 +1,49 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
-/* adjective.js — Adjektiv-Trainer: Bedeutungs-Quiz (25 Adjektive, Satz → Bedeutung wählen).
-   Zeigt vollständigen JP-Satz mit hervorgehobenem Adjektiv; Nutzer wählt korrekte Bedeutung.
-   Zwei Modi per Toggle: "Zufällig" und "Wiederholung" (Spaced Repetition 70/30).
+/* adjective.js — Adjektiv-Trainer: Bedeutungs- + Zeitform-Quiz (25 Adjektive, 4 Formen je).
+   Zeigt vollständigen JP-Satz; Nutzer wählt Bedeutung + Zeitform aus 4 Choices.
+   Filter für Gegenwart / Vergangenheit / Verneinung (Geg.+Vgh.).
    Braucht: common.js, i18n.js, quiz-engine.js, adjective-data.js */
 
-/* ============ HELFER: Sprach-abhängige Felder ============ */
+/* ============ FILTER-STATE ============ */
 
-function getAdjMeaning(a) {
-    return currentLang === 'en' ? a.meaning_en : a.meaning_de;
+let activeAdjFormFilters = { present: true, past: true, negation: true };
+
+function buildAdjPool() {
+    const keys = [];
+    if (activeAdjFormFilters.present)  keys.push('present');
+    if (activeAdjFormFilters.past)     keys.push('past');
+    if (activeAdjFormFilters.negation) { keys.push('neg_present'); keys.push('neg_past'); }
+    const items = [];
+    adjectivesData.forEach(a => {
+        keys.forEach(fk => {
+            const f = a.forms[fk];
+            items.push({ base: a, formKey: fk, sentence_jp: f.jp, sentence_de: f.de, sentence_en: f.en,
+                         adj_jp: f.adj_jp, adj_romaji: f.adj_romaji });
+        });
+    });
+    return items;
 }
-function getAdjSentenceFilled(a) {
-    return currentLang === 'en' ? a.sentence_en_filled : a.sentence_de_filled;
+
+function getAdjFormLabel(formKey) {
+    switch (formKey) {
+        case 'present':     return t('form.present');
+        case 'past':        return t('form.past');
+        case 'neg_present': return t('form.negPresent');
+        case 'neg_past':    return t('form.negPast');
+        default:            return formKey;
+    }
 }
+
+function getAdjMeaning(a)       { return currentLang === 'en' ? a.meaning_en : a.meaning_de; }
+function getAdjItemSentence(item) { return currentLang === 'en' ? item.sentence_en : item.sentence_de; }
 
 /* ============ DOM ============ */
 
 const questionArea = document.getElementById('questionArea');
 let adjRomajiEl = null;
 
-/* ============ SICHTBARKEITS-TOGGLE (nur Romaji) ============ */
+/* ============ SICHTBARKEITS-TOGGLE ============ */
 
 const adjContainer = document.querySelector('.adj-trainer');
 
@@ -32,7 +56,6 @@ const visState = buildVisibilityToggles({
     ]
 });
 
-/* Romaji-Hint-Element unterhalb des Satzes */
 adjRomajiEl = document.createElement('div');
 adjRomajiEl.className = 'adj-romaji-hint';
 questionArea.insertAdjacentElement('afterend', adjRomajiEl);
@@ -49,51 +72,76 @@ const engine = new QuizEngine({
     incorrectSpanId: 'incorrectCount',
     quickAnswerTarget: '.score',
 
-    getPool: () => adjectivesData,
+    getPool: () => buildAdjPool(),
 
-    renderQuestion: (a, eng) => {
-        /* Vollständiger Satz — kein Highlight, Nutzer liest den ganzen Satz */
-        questionArea.textContent = a.sentence_jp_filled;
+    renderQuestion: (item, eng) => {
+        questionArea.textContent = item.sentence_jp;
+        if (adjRomajiEl) adjRomajiEl.textContent = '(' + item.adj_jp + ' = ' + item.adj_romaji + ')';
 
-        /* Romaji-Hint: (adjektiv = romaji) */
-        if (adjRomajiEl) adjRomajiEl.textContent = '(' + a.adj + ' = ' + a.romaji + ')';
+        /* Distractors: 3 items from active pool, distinct (base+form) from current */
+        const pool = buildAdjPool();
+        const others = pool.filter(x => !(x.base.adj === item.base.adj && x.formKey === item.formKey));
+        shuffleArray(others);
 
-        /* 3 Bedeutungs-Choices in aktiver Sprache */
-        let choices = [a];
-        while (choices.length < 3) {
-            const rand = adjectivesData[Math.floor(Math.random() * adjectivesData.length)];
-            if (!choices.some(c => c.adj === rand.adj)) choices.push(rand);
+        /* Try to include: 1 same-adj-diff-form, 1 diff-adj-same-form, 1 random */
+        const distractors = [];
+        const sameAdjDiff = others.find(x => x.base.adj === item.base.adj);
+        if (sameAdjDiff) distractors.push(sameAdjDiff);
+        const diffAdjSame = others.find(x => x.base.adj !== item.base.adj && x.formKey === item.formKey && !distractors.includes(x));
+        if (diffAdjSame) distractors.push(diffAdjSame);
+        for (const x of others) {
+            if (distractors.length >= 3) break;
+            if (!distractors.includes(x)) distractors.push(x);
         }
+
+        const choices = [item, ...distractors.slice(0, 3)];
         shuffleArray(choices);
 
         eng.choicesArea.innerHTML = '';
-        choices.forEach(adjObj => {
+        choices.forEach(choice => {
             const btn = document.createElement('button');
             btn.classList.add('choice-button');
-            btn.textContent = getAdjMeaning(adjObj);
+            btn.innerHTML = '<span class="choice-meaning">' + getAdjMeaning(choice.base) + '</span>' +
+                            '<span class="choice-form">' + getAdjFormLabel(choice.formKey) + '</span>';
             btn.addEventListener('click', () => {
                 if (eng.answered) return;
                 eng.choicesArea.querySelectorAll('.choice-button').forEach(b => { b.disabled = true; });
-                eng.finishAnswer(adjObj.adj === a.adj);
+                eng.finishAnswer(choice.base.adj === item.base.adj && choice.formKey === item.formKey);
             });
             eng.choicesArea.appendChild(btn);
         });
     },
 
-    buildFeedback: (a, isCorrect) => {
-        const typeLabel = a.type === 'i' ? t('adj.typeI') : t('adj.typeNa');
+    buildFeedback: (item, isCorrect) => {
+        const meaning = getAdjMeaning(item.base);
+        const formLabel = getAdjFormLabel(item.formKey);
+        const typeLabel = item.base.type === 'i' ? t('adj.typeI') : t('adj.typeNa');
+        const choiceLabel = meaning + ' – ' + formLabel;
         let html = '';
         if (isCorrect) {
-            html += `<strong>${t('adj.correctMeaning', getAdjMeaning(a))}</strong><br>`;
+            html += `<strong>${t('adj.correctMeaning', choiceLabel)}</strong><br>`;
         } else {
             html += `<strong>${t('adj.wrong')}</strong><br>`;
-            html += `${t('adj.correctAns', getAdjMeaning(a))}<br>`;
+            html += `${t('adj.correctAns', choiceLabel)}<br>`;
         }
-        html += `${t('adj.fullSentence')}: <strong>${a.sentence_jp_filled}</strong><br>`;
-        html += `<em>${getAdjSentenceFilled(a)}</em><br>`;
-        html += `<span class="romaji">(${a.adj} &mdash; ${a.romaji} &mdash; <span class="adj-type-inline ${a.type}">${typeLabel}</span>)</span>`;
+        html += `${t('adj.fullSentence')}: <strong>${item.sentence_jp}</strong><br>`;
+        html += `<em>${getAdjItemSentence(item)}</em><br>`;
+        html += `<span class="romaji">(${item.adj_jp} &mdash; ${item.adj_romaji} &mdash; <span class="adj-type-inline ${item.base.type}">${typeLabel}</span>)</span>`;
         return html;
     }
+});
+
+/* ============ FORM-FILTER ============ */
+
+document.getElementById('applyFormFilter').addEventListener('click', () => {
+    activeAdjFormFilters.present  = document.getElementById('filterPresent').checked;
+    activeAdjFormFilters.past     = document.getElementById('filterPast').checked;
+    activeAdjFormFilters.negation = document.getElementById('filterNeg').checked;
+    if (!activeAdjFormFilters.present && !activeAdjFormFilters.past && !activeAdjFormFilters.negation) {
+        document.getElementById('filterPresent').checked = true;
+        activeAdjFormFilters.present = true;
+    }
+    engine.resetQuiz();
 });
 
 /* ============ NACHSCHLAG-SIDEBAR ============ */
@@ -101,7 +149,7 @@ const engine = new QuizEngine({
 buildReferenceSidebar({
     storageKey: 'sidebar_adjective',
     buildContent: function (container) {
-        ['i_adj', 'na_adj', 'grammar'].forEach(function (key) {
+        ['zeitformen', 'i_adj', 'na_adj'].forEach(function (key) {
             const ref = adjReference[key];
             const details = document.createElement('details');
             details.className = 'ref-block';

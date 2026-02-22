@@ -65,3 +65,21 @@
 
 /* Sichtbarkeits-Toggle: Romaji ein-/ausblenden */
 .adj-trainer.hide-romaji .adj-romaji-hint { display: none; }
+
+/* Zweizeilige Choice-Buttons: Bedeutung + Zeitform */
+.adj-trainer .choice-button .choice-meaning {
+    display: block;
+    font-weight: 600;
+}
+.adj-trainer .choice-button .choice-form {
+    display: block;
+    font-size: 0.82em;
+    color: #fff;
+    font-style: italic;
+    margin-top: 3px;
+}
+.adj-trainer .choice-button.correct-choice .choice-form,
+.adj-trainer .choice-button.wrong-choice .choice-form {
+    color: inherit;
+    opacity: 0.85;
+}

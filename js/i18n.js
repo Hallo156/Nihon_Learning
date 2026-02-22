@@ -46,7 +46,7 @@ const uiStrings = {
     'index.training.title': { de: 'Grammatik-Trainer',     en: 'Grammar Trainer' },
     'index.training.desc':  { de: 'Grammatikübungen zu Partikeln, Verben, Adjektiven und Satzstrukturen.', en: 'Grammar exercises on particles, verbs, adjectives and sentence structures.' },
     'index.verb.title': { de: 'Verb-Trainer',              en: 'Verb Trainer' },
-    'index.verb.desc':  { de: 'Verb-Bedeutungen in japanischen Sätzen erkennen. 15 Verben.', en: 'Recognize verb meanings in Japanese sentences. 15 verbs.' },
+    'index.verb.desc':  { de: 'Bedeutungen von Verben in japanischen Sätzen erkennen — in verschiedenen Zeitformen.', en: 'Recognize verb meanings in Japanese sentences — across different tenses.' },
     'index.kanji.title': { de: 'Kanji-Trainer',            en: 'Kanji Trainer' },
     'index.kanji.desc': { de: 'Kanji lesen, verstehen und übersetzen. Verschiedene Fragetypen und Quizmodi.', en: 'Read, understand and translate Kanji. Multiple question types and quiz modes.' },
 
@@ -81,23 +81,35 @@ const uiStrings = {
 
     // --- verb.html ---
     'verb.title':       { de: 'Japanischer Verb-Trainer',  en: 'Japanese Verb Trainer' },
-    'verb.instruction':    { de: 'Was bedeutet das Verb im Satz?', en: 'What does the verb in the sentence mean?' },
-    'verb.correctMeaning': { de: 'Richtig! Die Bedeutung ist "{0}".', en: 'Correct! The meaning is "{0}".' },
+    'verb.instruction':    { de: 'Welche Bedeutung und Zeitform hat das Verb im Satz?', en: 'What is the meaning and tense of the verb in the sentence?' },
+    'verb.correctMeaning': { de: 'Richtig! "{0}"', en: 'Correct! "{0}"' },
     'verb.wrong':          { de: 'Falsch.',                       en: 'Wrong.' },
-    'verb.correctAns':     { de: 'Die richtige Bedeutung ist: "{0}".', en: 'The correct meaning is: "{0}".' },
+    'verb.correctAns':     { de: 'Richtig wäre: "{0}".', en: 'Correct was: "{0}".' },
     'verb.fullSentence':   { de: 'Vollständiger Satz',            en: 'Full sentence' },
+    'verb.form':           { de: 'Form',                          en: 'Form' },
 
     // --- adjective.html ---
     'adj.title':        { de: 'Japanischer Adjektiv-Trainer', en: 'Japanese Adjective Trainer' },
-    'adj.instruction':    { de: 'Was bedeutet das Adjektiv im Satz?', en: 'What does the adjective in the sentence mean?' },
-    'adj.correctMeaning': { de: 'Richtig! Die Bedeutung ist "{0}".', en: 'Correct! The meaning is "{0}".' },
+    'adj.instruction':    { de: 'Welche Bedeutung und Zeitform hat das Adjektiv im Satz?', en: 'What is the meaning and tense of the adjective in the sentence?' },
+    'adj.correctMeaning': { de: 'Richtig! "{0}"', en: 'Correct! "{0}"' },
     'adj.wrong':          { de: 'Falsch.',                       en: 'Wrong.' },
-    'adj.correctAns':     { de: 'Die richtige Bedeutung ist: "{0}".', en: 'The correct meaning is: "{0}".' },
+    'adj.correctAns':     { de: 'Richtig wäre: "{0}".', en: 'Correct was: "{0}".' },
     'adj.fullSentence': { de: 'Vollständiger Satz',            en: 'Full sentence' },
     'adj.typeI':        { de: 'い-Adjektiv',                   en: 'i-Adjective' },
     'adj.typeNa':       { de: 'な-Adjektiv',                   en: 'na-Adjective' },
+    'adj.form':         { de: 'Form',                          en: 'Form' },
     'index.adj.title':  { de: 'Adjektiv-Trainer',              en: 'Adjective Trainer' },
-    'index.adj.desc':   { de: 'Adjektiv-Bedeutungen in Sätzen erkennen. 25 Adjektive, い-Form und な-Form.', en: 'Recognize adjective meanings in sentences. 25 adjectives, i-form and na-form.' },
+    'index.adj.desc':   { de: 'Bedeutungen von Adjektiven in japanischen Sätzen erkennen — in verschiedenen Zeitformen.', en: 'Recognize adjective meanings in Japanese sentences — across different tenses.' },
+
+    // --- Zeitform-Labels (verb + adjective) ---
+    'form.present':          { de: 'Gegenwart',              en: 'Present' },
+    'form.past':             { de: 'Vergangenheit',          en: 'Past' },
+    'form.negPresent':       { de: 'Verneinung (Geg.)',      en: 'Negative (Pres.)' },
+    'form.negPast':          { de: 'Verneinung (Vgh.)',      en: 'Negative (Past)' },
+    'filter.tense.present':  { de: 'Gegenwart',              en: 'Present' },
+    'filter.tense.past':     { de: 'Vergangenheit',          en: 'Past' },
+    'filter.tense.negation': { de: 'Verneinung',             en: 'Negation' },
+    'filter.tense.none':     { de: 'Bitte mindestens eine Zeitform auswählen.', en: 'Please select at least one tense.' },
 
     // --- training.html ---
     'training.title':   { de: 'Grammatik-Trainer',          en: 'Grammar Trainer' },

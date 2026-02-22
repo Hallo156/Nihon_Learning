@@ -20,7 +20,14 @@
             <button id="modeSemiRandom" data-i18n="btn.spaced">Wiederholung</button>
         </div>
 
-        <p data-i18n="verb.instruction">Vervollständige den Satz mit dem passenden Verb:</p>
+        <p data-i18n="verb.instruction">Welche Bedeutung und Zeitform hat das Verb im Satz?</p>
+
+        <div class="segment-filters">
+            <label><input type="checkbox" id="filterPresent" checked> <span data-i18n="filter.tense.present">Gegenwart</span></label>
+            <label><input type="checkbox" id="filterPast" checked> <span data-i18n="filter.tense.past">Vergangenheit</span></label>
+            <label><input type="checkbox" id="filterNeg" checked> <span data-i18n="filter.tense.negation">Verneinung</span></label>
+            <button id="applyFormFilter" class="btn-apply" data-i18n="btn.applyFilter">Filter anwenden</button>
+        </div>
 
         <div class="question-area" id="questionArea"></div>
 
