@@ -25,10 +25,11 @@ css/
   location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
   location-map.css         SVG-Karte, Richtungsbuttons 2x2-Grid, Gebaeude-Choices (Stadtkarte)
   transport.css            Ketten-Visualisierung (Punkte/Striche), Transport-Icons, Lücken-Animation
+  sidebar.css              Aufklappbare Nachschlag-Sidebar (Toggle-Tab, Panel, Backdrop, Responsive)
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
   i18n.js                  Internationalisierung: Sprach-Toggle DE/EN, UI-String Dictionary, t() Funktion
-  quiz-engine.js           Shared Quiz-Logik: QuizEngine-Klasse, getLangField(), buildVisibilityToggles()
+  quiz-engine.js           Shared Quiz-Logik: QuizEngine-Klasse, getLangField(), buildVisibilityToggles(), buildReferenceSidebar()
   kana.js                  Kana-Daten (6 Kategorien, ~230 Zeichen) + Quiz-Logik + Romaji-Varianten
   kanji-data.js            Kanji-Daten nach Stufen: A1 (73), A2 (35) = 108 Kanji; mit category-Feld (i18n-Key)
   kanji.js                 Kanji-Quiz via QuizEngine: 3 Typen, Stufenfilter
@@ -36,26 +37,28 @@ js/
   numbers-data.js          Zahlen-Daten: Grundzahlen (1-10000), 10 Counter-Tabellen, Referenz-HTML
   numbers.js               Zahlen-Quiz via QuizEngine: 4 Fragetypen, dynamische Generierung, Segment-Filter
   training-data.js         Trainingsdaten: 6 Segmente, ~49 Fragen (MC/Fill), Referenz-Inhalte (particles+positions+shopping entfernt)
-  training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Ansicht-Toggle
-  verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle
+  training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Nachschlag-Sidebar
+  verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle + Nachschlag-Referenz
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
   simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld
+  simulation-ref.js        Nachschlag-Referenz fuer Einkaufs-Simulation: Einkaufsphrasen, これ/それ/あれ, Adjektive
   simulation.js            Simulations-Quiz: Szenenwechsel, Lueckenfuellen (MC + Text), renderKoreroVisual() fuer Positionen, nutzt getLangField + buildVisibilityToggles
-  giving-data.js           Geben&Nehmen-Daten: 3 Szenen (giving1/2/3), Dialoge bilingual + romaji-Felder (text: romaji; blank: before_romaji/after_romaji/answer_romaji); speakerLabels pro Szene
+  giving-data.js           Geben&Nehmen-Daten: 3 Szenen (giving1/2/3), Dialoge bilingual + romaji-Felder; speakerLabels pro Szene; Nachschlag-Referenz (givingReference)
   giving.js                Geben&Nehmen-Quiz: wie Simulation, zusaetzlich Romaji-Toggle via buildVisibilityToggles, renderBlankLine zeigt romaji unter JP-Text
-  location-obj-data.js     9 Positionen mit SVG-Koordinaten (ballCx/Cy, hitX/Y/W/H), JP/DE/EN, Romaji
+  location-obj-data.js     10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; Nachschlag-Referenz (locationObjReference)
   location-obj.js          SVG-Builder, Beschreiben-Quiz (MC), Zeigen-Quiz (Hit-Area-Klick), via QuizEngine
-  location-map-data.js     8 Gebaeude, directionData, 8 navQuestions (steps[]), 12 descQuestions
+  location-map-data.js     8 Gebaeude, directionData, 12 descQuestions; Nachschlag-Referenz (locationMapReference)
   location-map.js          SVG-Karte-Builder, Nav-Minispiel, Desc-Quiz, nutzt getLangField + buildVisibilityToggles
   transport-data.js        Transport-Daten: 12 Orte, 8 Transportmittel, 9 Routen (einfach/mittel/komplex), bilingual
-  transport.js             Ketten-Quiz: Visualisierung, Lücken-Quiz, MC + Texteingabe, nutzt getLangField + buildVisibilityToggles
+  transport-ref.js         Nachschlag-Referenz fuer Transport: Transportmittel, Orte, Satzmuster, のります/おります
+  transport.js             Ketten-Quiz: Visualisierung, Lücken-Quiz, MC + Texteingabe, Nachschlag-Sidebar
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
   kanji-list.html          Kanji-Karteikarten (Flip-Cards nach Level, alle Stufen)
-  numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlagen)
-  training.html            Grammatik-Trainer (dynamisches Quiz + Nachschlagen-Ansicht)
+  numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlag-Sidebar)
+  training.html            Grammatik-Trainer (dynamisches Quiz, Nachschlag-Sidebar)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
@@ -74,11 +77,11 @@ pages/
 - **training.js braucht training-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → training-data.js → training.js
 - **numbers.js braucht numbers-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → numbers-data.js → numbers.js
 - **kanji-vocab.js braucht kanji-data.js UND kanji-vocab-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → kanji-data.js → kanji-vocab-data.js → kanji-vocab.js
-- **simulation.js braucht simulation-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → simulation-data.js → simulation.js
+- **simulation.js braucht simulation-data.js + simulation-ref.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → simulation-data.js → simulation-ref.js → simulation.js
 - **giving.js braucht giving-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → giving-data.js → giving.js
 - **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-obj-data.js → location-obj.js
 - **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-map-data.js → location-map.js
-- **transport.js braucht transport-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport.js
+- **transport.js braucht transport-data.js + transport-ref.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport-ref.js → transport.js
 - **verb.js hat keine separate Daten-Datei.** Reihenfolge: common.js → i18n.js → quiz-engine.js → verb.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
@@ -87,7 +90,7 @@ pages/
 
 ## QuizEngine (`quiz-engine.js`)
 
-Zentrale Quiz-Infrastruktur — wird von 8 Modulen genutzt. Enthaelt drei Hauptkomponenten:
+Zentrale Quiz-Infrastruktur — wird von 8 Modulen genutzt. Enthaelt vier Hauptkomponenten:
 
 ### `getLangField(obj, deKey, enKey?)`
 Sprach-Helfer fuer bilinguale Datenfelder. Gibt `obj[enKey]` zurueck wenn `currentLang === 'en'` und Wert existiert, sonst `obj[deKey]`. Konvention: `enKey` = `deKey + '_en'` wenn nicht explizit angegeben.
@@ -123,6 +126,16 @@ Config-basierter Quiz-Lifecycle. Constructor erhaelt Objekt mit:
 
 **Automatisches Event-Binding:** nextButton, textInput Enter, checkButton, modeRandom/modeSemi, langchange
 
+### `buildReferenceSidebar(config)`
+Erzeugt aufklappbare Nachschlag-Sidebar am rechten Rand. Config: `{ storageKey, buildContent(container) }`.
+- `storageKey`: localStorage-Key fuer offen/zu-Zustand (z.B. `'sidebar_training'`)
+- `buildContent(container)`: Callback der den Inhalt ins Panel rendert (typisch: `<details class="ref-block">` mit `.ref-body` + `.ref-table`)
+- Toggle-Tab fixiert am rechten Rand (writing-mode: vertical-rl), Panel 320px breit (85vw mobil)
+- Hoert auf `langchange` → Inhalt automatisch neu gebaut
+- Z-Index: 900 (Toggle), 899 (Panel), 898 (Backdrop) — unter Lang-Toggle (1000)
+- CSS in `sidebar.css` (muss separat verlinkt werden)
+- Genutzt von: training.js, numbers.js, verb.js, location-obj.js, location-map.js, simulation.js, transport.js, giving.js
+
 ### Modul-Tiers
 
 | Tier | Module | Nutzung von quiz-engine.js |
@@ -157,7 +170,7 @@ const engine = new QuizEngine({
 
 ## Internationalisierung (i18n)
 
-- **Zentrales Dictionary:** `i18n.js` enthaelt `uiStrings` mit ~75 Eintraegen fuer alle geteilten UI-Texte.
+- **Zentrales Dictionary:** `i18n.js` enthaelt `uiStrings` mit ~78 Eintraegen fuer alle geteilten UI-Texte.
 - **t(key, ...args):** Uebersetzungsfunktion mit `{0}`-Platzhalter-Unterstuetzung. Liefert DE oder EN je nach `currentLang`.
 - **data-i18n Attribute:** Statische HTML-Texte werden per `data-i18n="key"` und `data-i18n-placeholder="key"` markiert und beim Sprachwechsel automatisch aktualisiert.
 - **langchange Event:** `CustomEvent('langchange')` wird bei Toggle ausgeloest. Modul-Scripts hoeren darauf und laden Fragen/Feedback neu.
@@ -175,17 +188,17 @@ Dateien sollen **maximal 1000 Zeilen** haben. Falls eine Datei die Grenze uebers
 
 Aktueller Stand (alle unter 1000 Zeilen):
 - `common.js`: ~88 Zeilen
-- `i18n.js`: ~179 Zeilen
-- `quiz-engine.js`: ~385 Zeilen (QuizEngine-Klasse, getLangField, buildVisibilityToggles)
-- `verb.js`: ~116 Zeilen (via QuizEngine)
+- `i18n.js`: ~311 Zeilen
+- `quiz-engine.js`: ~465 Zeilen (QuizEngine-Klasse, getLangField, buildVisibilityToggles, buildReferenceSidebar)
+- `verb.js`: ~195 Zeilen (via QuizEngine, inkl. verbReference + Nachschlag-Sidebar)
 - `kana.js`: ~199 Zeilen
 - `kanji-data.js`: ~175 Zeilen (reine Daten: A1=73, A2=35 — B1/B2 zu A2, mehrere zu A1 umgestuft, 円 hinzugefügt, category-Feld)
 - `kanji.js`: ~162 Zeilen (via QuizEngine)
 - `kanji-list.js`: ~228 Zeilen (Kategorie-Rendering, categoryOrder, sessionStorage-Helfer)
 - `numbers-data.js`: ~305 Zeilen (reine Daten: Grundzahlen, Counter-Tabellen, Referenz — bilingual)
-- `numbers.js`: ~294 Zeilen (via QuizEngine)
+- `numbers.js`: ~278 Zeilen (via QuizEngine, Nachschlag-Sidebar statt View-Toggle)
 - `training-data.js`: ~330 Zeilen (reine Daten: 6 Segmente Grammatik, Fragen, Referenz — bilingual; particles+positions+shopping entfernt)
-- `training.js`: ~184 Zeilen (via QuizEngine)
+- `training.js`: ~165 Zeilen (via QuizEngine, Nachschlag-Sidebar statt View-Toggle)
 - `kanji-vocab-data.js`: ~128 Zeilen (reine Daten: ~55 Vokabeln, bilingual, kein level-Feld)
 - `kanji-vocab.js`: ~186 Zeilen (via QuizEngine)
 - `training.html`: ~73 Zeilen (dynamisches Skelett)
@@ -193,6 +206,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `kanji-list.html`: ~36 Zeilen (Karteikarten-Skelett)
 - `kanji-vocab.html`: ~70 Zeilen (Vokabular-Trainer-Skelett)
 - `common.css`: ~594 Zeilen (inkl. alle Shared Quiz-Elemente, quiz-type-toggle, question-display, vis-toggles)
+- `sidebar.css`: ~140 Zeilen (Sidebar-Toggle, Panel, Backdrop, Responsive)
 - `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
 - `verb.css`: ~65 Zeilen (Verb-spezifisch, vertikale Buttons-Ausnahme, .verb-translation, .verb-choice-romaji, Toggle-CSS)
 - `kanji.css`: ~63 Zeilen (nur Kanji-spezifisch, Display + Feedback)
@@ -201,18 +215,20 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
 - `simulation-data.js`: ~720 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen: `visual`-Feld)
-- `simulation.js`: ~520 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(); nutzt getLangField + buildVisibilityToggles)
-- `giving-data.js`: ~195 Zeilen (reine Daten: 3 Szenen — giving1/2/3, bilingual + romaji-Felder; speakerLabels pro Szene)
-- `giving.js`: ~295 Zeilen (Dialog-Rendering + Romaji-Toggle, Luecken-Logik, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
+- `simulation-ref.js`: ~71 Zeilen (Nachschlag-Referenz: Einkaufsphrasen, これ/それ/あれ, Adjektive)
+- `simulation.js`: ~535 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(), Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
+- `giving-data.js`: ~289 Zeilen (reine Daten: 3 Szenen — giving1/2/3, bilingual + romaji-Felder; speakerLabels pro Szene; givingReference)
+- `giving.js`: ~503 Zeilen (Dialog-Rendering + Romaji-Toggle, Luecken-Logik, MC + Text, Spaced Repetition, Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
 - `simulation.css`: ~165 Zeilen (Dialog-Bubbles, Blank-Styles, Eingabe-Modus-Toggle)
-- `location-obj-data.js`: ~85 Zeilen (10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; inkl. in_regal)
-- `location-obj.js`: ~237 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz via QuizEngine)
+- `location-obj-data.js`: ~150 Zeilen (10 Positionen mit SVG-Koordinaten, JP/DE/EN, Romaji; inkl. in_regal; locationObjReference)
+- `location-obj.js`: ~253 Zeilen (SVG-Builder, Beschreiben + Zeigen Quiz via QuizEngine, Nachschlag-Sidebar)
 - `location-obj.css`: ~135 Zeilen (Szene, Hit-Areas, Ball, Display-Bereich)
-- `location-map-data.js`: ~165 Zeilen (8 Gebaeude, directionData, 8 Nav-Fragen, 12 Desc-Fragen)
-- `location-map.js`: ~421 Zeilen (SVG-Karte, Nav-Minispiel, Desc-Quiz; nutzt getLangField + buildVisibilityToggles)
+- `location-map-data.js`: ~267 Zeilen (8 Gebaeude, directionData, 8 Nav-Fragen, 12 Desc-Fragen; locationMapReference)
+- `location-map.js`: ~437 Zeilen (SVG-Karte, Nav-Minispiel, Desc-Quiz, Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
 - `location-map.css`: ~185 Zeilen (Karte, Richtungsbuttons 2x2, Gebaeude-Choices, Schritt-Log, Finalize-Button)
 - `transport-data.js`: ~960 Zeilen (12 Orte, 8 Transportmittel, 14 Routen inkl. 5 のります/おります-Routen, sentenceOptions, bilingual)
-- `transport.js`: ~633 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition; nutzt getLangField + buildVisibilityToggles)
+- `transport-ref.js`: ~103 Zeilen (Nachschlag-Referenz: Transportmittel, Orte, Satzmuster, のります/おります)
+- `transport.js`: ~649 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition, Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
 - `transport.css`: ~460 Zeilen (Kette, Punkte/Striche, SVG-Icons in CSS, Lücken-Animation, Satz-Buttons)
 
 ## Module im Detail
@@ -229,6 +245,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - 15 Verben im ます-Form, je mit Lueckensatz + Uebersetzung (DE + EN)
 - **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering (Verb + Romaji-Span), ruft `engine.finishAnswer()` direkt auf
 - **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji + Übersetzung — localStorage `verb.showRomaji`/`verb.showTranslation`, beide standard-an
+- **Nachschlag-Sidebar:** Verb-Tabelle (15 ます-Form-Verben) + Partikel-Uebersicht (を/に/へ/で/と/が)
 - Choice-Buttons zeigen Verb (ます-Form) + Romaji-Span (versteckbar per Toggle)
 - Übersetzung im Feedback-Bereich entfernt (wird jetzt oben angezeigt)
 
@@ -260,7 +277,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Via QuizEngine**: 4 Fragetypen dynamisch generiert, `renderQuestion` verzweigt nach Fragetyp
 - Datenstruktur Counter: `{ kanji, description, description_en, use_de, use_en, items[{n, reading, romaji}], examples[] }`
 - Alle Lautverschiebungen (rendaku/Gemination) korrekt: z.B. さんぼん (3本), いっぴき (1匹)
-- Ansicht-Toggle: "Ueben" (Quiz) / "Nachschlagen" (Counter-Tabellen als klappbare details/summary)
+- **Nachschlag-Sidebar:** Counter-Tabellen als klappbare details/summary in aufklappbarer Sidebar rechts
 - Texteingabe: Enter = Pruefen, akzeptiert Kana + Romaji
 
 ### Grammatik-Trainer (`training-data.js` + `training.js` + `training.html`)
@@ -270,7 +287,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Via QuizEngine**: ~70 Fragen in 3 Typen (MC, Fill, Translate), `renderQuestion` verzweigt nach Fragetyp
 - Datenstruktur: `{ segment, type, prompt, prompt_en?, prompt_jp?, correct[], choices?, choices_en?, correct_en?, explanation, explanation_en? }`
 - **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: Uebersetzung ein/aus
-- Ansicht-Toggle: "Ueben" (Quiz) / "Nachschlagen" (Grammatik-Referenz als klappbare details/summary)
+- **Nachschlag-Sidebar:** Grammatik-Referenz als klappbare details/summary in aufklappbarer Sidebar rechts
 - Texteingabe: Enter = Pruefen, Feedback mit Erklaerung nach Antwort
 - Loesungen erst nach Beantwortung sichtbar
 
@@ -297,7 +314,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Shared Quiz-Elemente** in `common.css`: `.next-btn` (gruen), `.mode-toggle` (Pill, max 350px), `.view-toggle` (Pill), `.quiz-type-toggle` (Pill), `.choices-area` + `.choice-button` (18px, horizontal wrap, inkl. `:disabled`/`.correct-choice`/`.wrong-choice`), `.input-area` (max 300px), `.question-display` + `.segment-badge`, `.level-filters`, `.segment-filters`, `.ref-block`/`.ref-body`, `.ref-table`, `.map-vis-toggles` / `.map-vis-btn` (Sichtbarkeits-Toggles)
 - **Globaler Level-Toggle** in `common.css`: `.level-toggle-bar` (fixiert, rechts oben unter Sprach-Toggle), `.level-toggle-btn` / `.level-toggle-btn.active`
 - **Ausnahme Verb-Trainer:** `.verb-trainer .choices-area` erzwingt vertikales Layout (Saetze als Antworten koennen lang sein)
-- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation`, `.location-obj`, `.location-map` — als CSS-Scope-Anker fuer modul-spezifische Overrides
+- **Body-Klassen** auf allen Modul-Seiten: `.kana`, `.verb`, `.kanji`, `.kanji-vocab`, `.kanji-list`, `.training`, `.numbers`, `.simulation`, `.giving`, `.location-obj`, `.location-map`, `.transport` — als CSS-Scope-Anker fuer modul-spezifische Overrides
 
 ## Quick Answer (Schnell-Modus)
 
@@ -323,6 +340,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Sprecher-Labels: "Verkäufer" / "Kunde" (i18n-Keys `sim.speaker.staff` / `sim.speaker.customer`)
 - Datenstruktur Zeile: `{ type:'text'|'blank', speaker, jp?, de?, en?, before?, after?, before_en?, after_en?, correct[], choices[], explanation, explanation_en, mcOnly?, visual? }`
 - `visual`-Feld (optional, nur Korero-Szenen): `{ position: 'near-customer'|'near-staff'|'far', item: Emoji-String }` — rendert visuellen Positions-Indikator (👤 Du / Emoji / 👤 Verk.) über der aktiven Lücke via `renderKoreroVisual()`
+- **Nachschlag-Sidebar:** Einkaufsphrasen, これ/それ/あれ Demonstrativpronomen, Adjektive (via simulation-ref.js)
 - i18n-Keys: `sim.*` (11 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation" (`index.group.simulation`)
 
@@ -337,6 +355,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - Datenstruktur Zeile text: `{ type:'text', speaker, jp, romaji, de, en }`
 - Datenstruktur Zeile blank: `{ type:'blank', speaker, before, after, before_romaji, after_romaji, answer_romaji, before_en, after_en, de, en, correct[], choices[], explanation, explanation_en }`
 - simulation.css wird mitgeladen (Dialog-Bubble-Styles); `.dialog-romaji` + `.giving-trainer.hide-romaji .dialog-romaji` in simulation.css ergaenzt
+- **Nachschlag-Sidebar:** あげます/もらいます/くれます Uebersicht, Perspektiv-Regeln, Partikel に/から (via givingReference in giving-data.js)
 - i18n-Keys: `giving.title`, `index.giving.title`, `index.giving.desc` (3 Eintraege)
 - Index-Gruppe: "Simulation"
 
@@ -356,6 +375,7 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - **Via QuizEngine** (Tier 2): 2 Quiz-Typen per Toggle — **Beschreiben** (MC, custom Buttons mit JP/Romaji/Translation) / **Zeigen** (SVG-Klick, ruft `engine.finishAnswer()` direkt auf)
 - SVG komplett inline als String (kein fetch, laeuft auf file://)
 - **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji + Uebersetzung
+- **Nachschlag-Sidebar:** Positionswoerter-Tabelle (上/下/前/後ろ/横/中/間) + Satzmuster (~の[Position]にあります)
 - Quick Answer: 400ms auto-advance bei richtig
 - i18n-Keys: `locObj.*` (7 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation"
@@ -371,6 +391,7 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - Highlight: hervorgehobenes Gebaeude mit goldenem Stroke + Glow-Filter (SVG `<filter>`)
 - Start-Marker: weisser Kreis mit "S" auf dem Startgebaeude (Nav-Modus)
 - Getrennte Spaced-Repetition-Pools fuer Nav und Desc (beim Typwechsel erhalten)
+- **Nachschlag-Sidebar:** Richtungswoerter (みぎ/ひだり/まっすぐ/もどる), Gebaeude-Liste (8), Positionsfragen-Muster
 - Quick Answer: 400ms auto-advance
 - i18n-Keys: `locMap.*` (12 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation"
@@ -389,6 +410,7 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - Quick Answer: 400ms auto-advance bei richtig
 - Datenstruktur Route: `{ id, label:{de,en}, difficulty, nodes:[{type:'place'|'transport',id}], questions:[{stepIndex,type,prompt_de,prompt_en,promptArgs,correct[],correctId,choices[],sentenceOptions[],explanation_de,explanation_en}] }`
 - **Verb-Fragen** (のります/おります): `correctId:'norimasu'|'orimasu'` — sentenceOptions.modeId matcht correctId; JS-Fallback holt Fahrzeug-Icon aus Ketten-Node; Texteingabe akzeptiert kurze Kana/Romaji ODER vollständigen Satz
+- **Nachschlag-Sidebar:** Transportmittel-Tabelle (8), Orte-Tabelle (12), Satzmuster (で-Partikel), のります/おります (via transport-ref.js)
 - i18n-Keys: `transport.*` (8 Eintraege in i18n.js)
 - Index-Gruppe: "Simulation"
 

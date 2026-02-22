@@ -479,6 +479,22 @@ document.addEventListener('langchange', () => {
     if (activeScene) renderDialog();
 });
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_giving',
+    buildContent: function (container) {
+        ['verben', 'perspektive', 'partikel'].forEach(function (key) {
+            var ref = givingReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 score = new ScoreTracker('correctCount', 'incorrectCount');

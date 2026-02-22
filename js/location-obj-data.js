@@ -99,3 +99,52 @@ const locationObjPositions = [
         hitX: 404, hitY: 188, hitW: 52, hitH: 38
     }
 ];
+
+/* ============ NACHSCHLAG-REFERENZ ============ */
+
+const locationObjReference = {
+    positions: {
+        title: 'Positionsw\u00f6rter',
+        title_en: 'Position Words',
+        html: '<table class="ref-table"><thead><tr><th>Japanisch</th><th>Romaji</th><th>Bedeutung</th></tr></thead><tbody>' +
+            '<tr><td>上 (うえ)</td><td>ue</td><td>oben / auf</td></tr>' +
+            '<tr><td>下 (した)</td><td>shita</td><td>unten / unter</td></tr>' +
+            '<tr><td>前 (まえ)</td><td>mae</td><td>vorne / vor</td></tr>' +
+            '<tr><td>後ろ (うしろ)</td><td>ushiro</td><td>hinten / hinter</td></tr>' +
+            '<tr><td>横 (よこ)</td><td>yoko</td><td>neben / seitlich</td></tr>' +
+            '<tr><td>中 (なか)</td><td>naka</td><td>innen / in</td></tr>' +
+            '<tr><td>間 (あいだ)</td><td>aida</td><td>zwischen</td></tr>' +
+            '</tbody></table>',
+        html_en: '<table class="ref-table"><thead><tr><th>Japanese</th><th>Romaji</th><th>Meaning</th></tr></thead><tbody>' +
+            '<tr><td>上 (うえ)</td><td>ue</td><td>above / on</td></tr>' +
+            '<tr><td>下 (した)</td><td>shita</td><td>below / under</td></tr>' +
+            '<tr><td>前 (まえ)</td><td>mae</td><td>in front of</td></tr>' +
+            '<tr><td>後ろ (うしろ)</td><td>ushiro</td><td>behind</td></tr>' +
+            '<tr><td>横 (よこ)</td><td>yoko</td><td>beside / next to</td></tr>' +
+            '<tr><td>中 (なか)</td><td>naka</td><td>inside / in</td></tr>' +
+            '<tr><td>間 (あいだ)</td><td>aida</td><td>between</td></tr>' +
+            '</tbody></table>'
+    },
+    muster: {
+        title: 'Satzmuster',
+        title_en: 'Sentence Patterns',
+        html: '<ul>' +
+            '<li><strong>Grundmuster:</strong> [Objekt] の [Position] に あります</li>' +
+            '<li>テーブル<strong>の上に</strong>あります = Es ist <strong>auf dem Tisch</strong></li>' +
+            '<li>箱<strong>の前に</strong>あります = Es ist <strong>vor der Box</strong></li>' +
+            '<li>棚<strong>の中に</strong>あります = Es ist <strong>im Regal</strong></li>' +
+            '<li>箱<strong>と</strong>テーブル<strong>の間に</strong>あります = Es ist <strong>zwischen</strong> Box <strong>und</strong> Tisch</li>' +
+            '</ul>' +
+            '<p><strong>Objekte in dieser &Uuml;bung:</strong></p>' +
+            '<ul><li>テーブル (t&emacr;buru) = Tisch</li><li>箱 (hako) = Box</li><li>棚 (tana) = Regal</li><li>ボール (b&omacr;ru) = Ball</li></ul>',
+        html_en: '<ul>' +
+            '<li><strong>Basic pattern:</strong> [Object] の [Position] に あります</li>' +
+            '<li>テーブル<strong>の上に</strong>あります = It is <strong>on the table</strong></li>' +
+            '<li>箱<strong>の前に</strong>あります = It is <strong>in front of the box</strong></li>' +
+            '<li>棚<strong>の中に</strong>あります = It is <strong>in the shelf</strong></li>' +
+            '<li>箱<strong>と</strong>テーブル<strong>の間に</strong>あります = It is <strong>between</strong> box <strong>and</strong> table</li>' +
+            '</ul>' +
+            '<p><strong>Objects in this exercise:</strong></p>' +
+            '<ul><li>テーブル (t&emacr;buru) = Table</li><li>箱 (hako) = Box</li><li>棚 (tana) = Shelf</li><li>ボール (b&omacr;ru) = Ball</li></ul>'
+    }
+};

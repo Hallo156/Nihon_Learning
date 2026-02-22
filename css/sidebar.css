@@ -1,0 +1,140 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* sidebar.css — Aufklappbare Nachschlag-Sidebar (rechte Seite).
+   Wird auf allen Modul-Seiten geladen, die eine Referenz-Sidebar haben. */
+
+/* ===== Toggle-Tab (rechter Rand) ===== */
+
+.sidebar-toggle {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 900;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    padding: 14px 7px;
+    background: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.12);
+    transition: background 0.2s, right 0.3s ease;
+}
+
+.sidebar-toggle:hover {
+    background: #0056b3;
+}
+
+.sidebar-toggle.open {
+    right: 320px;
+}
+
+/* ===== Sidebar Panel ===== */
+
+.ref-sidebar {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background: #fff;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 899;
+    overflow-y: auto;
+    padding: 20px 16px 30px;
+    transition: right 0.3s ease;
+}
+
+.ref-sidebar.open {
+    right: 0;
+}
+
+/* Sidebar-Kopf */
+.ref-sidebar h2 {
+    font-size: 17px;
+    color: #0056b3;
+    margin: 0 0 16px;
+    padding-right: 36px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+/* Schliessen-Button */
+.sidebar-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.sidebar-close:hover {
+    color: #333;
+    background: #f0f0f0;
+}
+
+/* Sidebar-Inhalt: Overrides fuer kompaktere Darstellung */
+.ref-sidebar .ref-block {
+    margin-bottom: 8px;
+    padding: 8px 12px;
+}
+
+.ref-sidebar .ref-block summary {
+    font-size: 14px;
+}
+
+.ref-sidebar .ref-body {
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.ref-sidebar .ref-table {
+    font-size: 12px;
+}
+
+.ref-sidebar .ref-table th,
+.ref-sidebar .ref-table td {
+    padding: 5px 7px;
+}
+
+/* ===== Backdrop (Mobile-Overlay) ===== */
+
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 898;
+}
+
+.sidebar-backdrop.visible {
+    display: block;
+}
+
+/* ===== Responsive: Mobile ===== */
+
+@media (max-width: 767px) {
+    .ref-sidebar {
+        width: 85vw;
+        right: -85vw;
+    }
+
+    .sidebar-toggle.open {
+        right: 85vw;
+    }
+}

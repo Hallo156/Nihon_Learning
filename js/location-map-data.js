@@ -200,3 +200,68 @@ const descQuestions = [
         explanation_en: 'The Convenience Store is above the Bank (銀行).'
     }
 ];
+
+/* ============ NACHSCHLAG-REFERENZ ============ */
+
+const locationMapReference = {
+    richtungen: {
+        title: 'Richtungsw\u00f6rter',
+        title_en: 'Direction Words',
+        html: '<table class="ref-table"><thead><tr><th>Japanisch</th><th>Romaji</th><th>Bedeutung</th></tr></thead><tbody>' +
+            '<tr><td>みぎ</td><td>migi</td><td>rechts</td></tr>' +
+            '<tr><td>ひだり</td><td>hidari</td><td>links</td></tr>' +
+            '<tr><td>まっすぐ</td><td>massugu</td><td>geradeaus</td></tr>' +
+            '<tr><td>もどる</td><td>modoru</td><td>zur&uuml;ck / umkehren</td></tr>' +
+            '</tbody></table>' +
+            '<p><strong>Navigation:</strong> W&auml;hle bei jedem Schritt die richtige Richtung, um zum Ziel zu gelangen.</p>',
+        html_en: '<table class="ref-table"><thead><tr><th>Japanese</th><th>Romaji</th><th>Meaning</th></tr></thead><tbody>' +
+            '<tr><td>みぎ</td><td>migi</td><td>right</td></tr>' +
+            '<tr><td>ひだり</td><td>hidari</td><td>left</td></tr>' +
+            '<tr><td>まっすぐ</td><td>massugu</td><td>straight ahead</td></tr>' +
+            '<tr><td>もどる</td><td>modoru</td><td>go back / return</td></tr>' +
+            '</tbody></table>' +
+            '<p><strong>Navigation:</strong> Choose the correct direction at each step to reach your destination.</p>'
+    },
+    gebaeude: {
+        title: 'Geb\u00e4ude',
+        title_en: 'Buildings',
+        html: '<table class="ref-table"><thead><tr><th>Kanji</th><th>Romaji</th><th>Bedeutung</th></tr></thead><tbody>' +
+            '<tr><td>駅</td><td>Eki</td><td>Bahnhof</td></tr>' +
+            '<tr><td>学校</td><td>Gakk&omacr;</td><td>Schule</td></tr>' +
+            '<tr><td>コンビニ</td><td>Konbini</td><td>Konbini</td></tr>' +
+            '<tr><td>病院</td><td>By&omacr;in</td><td>Krankenhaus</td></tr>' +
+            '<tr><td>公園</td><td>K&omacr;en</td><td>Park</td></tr>' +
+            '<tr><td>銀行</td><td>Gink&omacr;</td><td>Bank</td></tr>' +
+            '<tr><td>郵便局</td><td>Y&umacr;binkyoku</td><td>Postamt</td></tr>' +
+            '<tr><td>図書館</td><td>Toshokan</td><td>Bibliothek</td></tr>' +
+            '</tbody></table>',
+        html_en: '<table class="ref-table"><thead><tr><th>Kanji</th><th>Romaji</th><th>Meaning</th></tr></thead><tbody>' +
+            '<tr><td>駅</td><td>Eki</td><td>Station</td></tr>' +
+            '<tr><td>学校</td><td>Gakk&omacr;</td><td>School</td></tr>' +
+            '<tr><td>コンビニ</td><td>Konbini</td><td>Convenience Store</td></tr>' +
+            '<tr><td>病院</td><td>By&omacr;in</td><td>Hospital</td></tr>' +
+            '<tr><td>公園</td><td>K&omacr;en</td><td>Park</td></tr>' +
+            '<tr><td>銀行</td><td>Gink&omacr;</td><td>Bank</td></tr>' +
+            '<tr><td>郵便局</td><td>Y&umacr;binkyoku</td><td>Post Office</td></tr>' +
+            '<tr><td>図書館</td><td>Toshokan</td><td>Library</td></tr>' +
+            '</tbody></table>'
+    },
+    fragen: {
+        title: 'Frageform',
+        title_en: 'Question Pattern',
+        html: '<ul>' +
+            '<li><strong>Muster:</strong> [Geb&auml;ude] の [Richtung] に 何がありますか？</li>' +
+            '<li>駅<strong>の右に</strong>何がありますか？ = Was ist <strong>rechts vom</strong> Bahnhof?</li>' +
+            '<li>学校<strong>の下に</strong>何がありますか？ = Was ist <strong>unter</strong> der Schule?</li>' +
+            '<li><strong>上 (ue)</strong> = oben / &uuml;ber &bull; <strong>下 (shita)</strong> = unten / unter</li>' +
+            '<li><strong>右 (migi)</strong> = rechts &bull; <strong>左 (hidari)</strong> = links</li>' +
+            '</ul>',
+        html_en: '<ul>' +
+            '<li><strong>Pattern:</strong> [Building] の [Direction] に 何がありますか？</li>' +
+            '<li>駅<strong>の右に</strong>何がありますか？ = What is <strong>to the right of</strong> the Station?</li>' +
+            '<li>学校<strong>の下に</strong>何がありますか？ = What is <strong>below</strong> the School?</li>' +
+            '<li><strong>上 (ue)</strong> = above &bull; <strong>下 (shita)</strong> = below</li>' +
+            '<li><strong>右 (migi)</strong> = right &bull; <strong>左 (hidari)</strong> = left</li>' +
+            '</ul>'
+    }
+};

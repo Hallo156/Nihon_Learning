@@ -232,6 +232,22 @@ document.getElementById('typeZeigen').addEventListener('click', () => {
     engine.resetQuiz();
 });
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_locObj',
+    buildContent: function (container) {
+        ['positions', 'muster'].forEach(function (key) {
+            var ref = locationObjReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 engine.loadQuestion();

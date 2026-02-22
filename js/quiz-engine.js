@@ -383,3 +383,83 @@ class QuizEngine {
         });
     }
 }
+
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+/**
+ * Erzeugt eine aufklappbare Referenz-Sidebar am rechten Bildschirmrand.
+ * @param {Object} config
+ * @param {string} config.storageKey - localStorage-Key fuer offen/zu (z.B. 'sidebar_verb')
+ * @param {function(HTMLElement)} config.buildContent - Callback: befuellt den Container mit ref-blocks
+ * @returns {{ toggle: function, rebuild: function, isOpen: function }}
+ */
+function buildReferenceSidebar(config) {
+    const storageKey = config.storageKey || 'sidebar_open';
+    let isOpen = localStorage.getItem(storageKey) === 'true';
+
+    /* Backdrop (Mobile-Overlay) */
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+
+    /* Sidebar-Panel */
+    const aside = document.createElement('aside');
+    aside.className = 'ref-sidebar' + (isOpen ? ' open' : '');
+    document.body.appendChild(aside);
+
+    /* Innere Struktur */
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'sidebar-close';
+    closeBtn.innerHTML = '&times;';
+    closeBtn.title = t('sidebar.close');
+    aside.appendChild(closeBtn);
+
+    const heading = document.createElement('h2');
+    heading.textContent = t('sidebar.title');
+    aside.appendChild(heading);
+
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'sidebar-content';
+    aside.appendChild(contentDiv);
+
+    /* Toggle-Tab (rechter Rand) */
+    const toggleBtn = document.createElement('button');
+    toggleBtn.className = 'sidebar-toggle' + (isOpen ? ' open' : '');
+    toggleBtn.textContent = t('sidebar.toggle');
+    document.body.appendChild(toggleBtn);
+
+    /* Inhalt bauen */
+    function rebuild() {
+        contentDiv.innerHTML = '';
+        heading.textContent = t('sidebar.title');
+        toggleBtn.textContent = t('sidebar.toggle');
+        closeBtn.title = t('sidebar.close');
+        config.buildContent(contentDiv);
+    }
+
+    /* Oeffnen / Schliessen */
+    function toggle() {
+        isOpen = !isOpen;
+        localStorage.setItem(storageKey, String(isOpen));
+        aside.classList.toggle('open', isOpen);
+        toggleBtn.classList.toggle('open', isOpen);
+        backdrop.classList.toggle('visible', isOpen);
+        if (isOpen) rebuild();
+    }
+
+    /* Events */
+    toggleBtn.addEventListener('click', toggle);
+    closeBtn.addEventListener('click', toggle);
+    backdrop.addEventListener('click', toggle);
+    document.addEventListener('langchange', function () {
+        if (isOpen) rebuild();
+    });
+
+    /* Initial */
+    if (isOpen) {
+        rebuild();
+        backdrop.classList.add('visible');
+    }
+
+    return { toggle: toggle, rebuild: rebuild, isOpen: function () { return isOpen; } };
+}

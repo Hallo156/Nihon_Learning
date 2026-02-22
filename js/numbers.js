@@ -14,11 +14,6 @@ function getItemName(ex) { return currentLang === 'en' ? ex.item_en : ex.item_de
 /* ============ DOM-REFERENZEN (modul-spezifisch) ============ */
 
 const segmentFiltersDiv = document.getElementById('segmentFilters');
-const viewQuizBtn = document.getElementById('viewQuiz');
-const viewRefBtn = document.getElementById('viewReference');
-const quizView = document.getElementById('quizView');
-const referenceView = document.getElementById('referenceView');
-const referenceContent = document.getElementById('referenceContent');
 
 /* ============ STATE ============ */
 
@@ -253,40 +248,29 @@ const engine = new QuizEngine({
 
     onLangChange: () => {
         buildFilterCheckboxes();
-        if (referenceView.style.display !== 'none') {
-            buildReferenceContent();
-        }
     }
 });
 
-/* ============ ANSICHT-WECHSEL (Quiz / Nachschlagen) ============ */
+/* ============ NACHSCHLAG-SIDEBAR ============ */
 
-function switchView(view) {
-    viewQuizBtn.classList.toggle('active', view === 'quiz');
-    viewRefBtn.classList.toggle('active', view === 'reference');
-    quizView.style.display = view === 'quiz' ? '' : 'none';
-    referenceView.style.display = view === 'reference' ? '' : 'none';
-    if (view === 'reference') buildReferenceContent();
-}
-
-function buildReferenceContent() {
-    let html = '';
-    numbersSegments.forEach(seg => {
-        const ref = numbersReference[seg.id];
-        if (!ref) return;
-        html += '<details class="ref-block">';
-        html += '<summary>' + getRefTitle(ref) + '</summary>';
-        html += '<div class="ref-body">' + getRefHtml(ref) + '</div>';
-        html += '</details>';
-    });
-    referenceContent.innerHTML = html;
-}
+buildReferenceSidebar({
+    storageKey: 'sidebar_numbers',
+    buildContent: function (container) {
+        numbersSegments.forEach(function (seg) {
+            var ref = numbersReference[seg.id];
+            if (!ref) return;
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getRefTitle(ref) + '</summary>' +
+                '<div class="ref-body">' + getRefHtml(ref) + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
 
 /* ============ EVENT LISTENERS (modul-spezifisch) ============ */
 
 document.getElementById('applyFilter').addEventListener('click', applySegmentFilter);
-viewQuizBtn.addEventListener('click', () => switchView('quiz'));
-viewRefBtn.addEventListener('click', () => switchView('reference'));
 
 /* ============ INITIALISIERUNG ============ */
 

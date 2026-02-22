@@ -111,6 +111,85 @@ const engine = new QuizEngine({
     }
 });
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+const verbReference = {
+    verben: {
+        title: 'ます-Form Verben',
+        title_en: 'ます-Form Verbs',
+        html: '<p>Die <strong>ます-Form</strong> ist die h&ouml;fliche Gegenwartsform japanischer Verben. Sie wird im Alltag und in formellen Situationen verwendet.</p>' +
+            '<table class="ref-table"><thead><tr><th>Verb</th><th>Romaji</th><th>Bedeutung</th></tr></thead><tbody>' +
+            '<tr><td>いきます</td><td>ikimasu</td><td>gehen</td></tr>' +
+            '<tr><td>かえります</td><td>kaerimasu</td><td>zur&uuml;ckkehren</td></tr>' +
+            '<tr><td>かきます</td><td>kakimasu</td><td>schreiben</td></tr>' +
+            '<tr><td>よみます</td><td>yomimasu</td><td>lesen</td></tr>' +
+            '<tr><td>ききます</td><td>kikimasu</td><td>h&ouml;ren / fragen</td></tr>' +
+            '<tr><td>みます</td><td>mimasu</td><td>sehen / schauen</td></tr>' +
+            '<tr><td>たべます</td><td>tabemasu</td><td>essen</td></tr>' +
+            '<tr><td>のみます</td><td>nomimasu</td><td>trinken</td></tr>' +
+            '<tr><td>かいます</td><td>kaimasu</td><td>kaufen</td></tr>' +
+            '<tr><td>つくります</td><td>tsukurimasu</td><td>machen / herstellen</td></tr>' +
+            '<tr><td>はなします</td><td>hanashimasu</td><td>sprechen</td></tr>' +
+            '<tr><td>します</td><td>shimasu</td><td>tun / machen</td></tr>' +
+            '<tr><td>きます</td><td>kimasu</td><td>kommen</td></tr>' +
+            '<tr><td>ねます</td><td>nemasu</td><td>schlafen</td></tr>' +
+            '<tr><td>おきます</td><td>okimasu</td><td>aufstehen</td></tr>' +
+            '</tbody></table>',
+        html_en: '<p>The <strong>ます form</strong> is the polite present tense of Japanese verbs. It is used in everyday and formal situations.</p>' +
+            '<table class="ref-table"><thead><tr><th>Verb</th><th>Romaji</th><th>Meaning</th></tr></thead><tbody>' +
+            '<tr><td>いきます</td><td>ikimasu</td><td>to go</td></tr>' +
+            '<tr><td>かえります</td><td>kaerimasu</td><td>to return</td></tr>' +
+            '<tr><td>かきます</td><td>kakimasu</td><td>to write</td></tr>' +
+            '<tr><td>よみます</td><td>yomimasu</td><td>to read</td></tr>' +
+            '<tr><td>ききます</td><td>kikimasu</td><td>to listen / to ask</td></tr>' +
+            '<tr><td>みます</td><td>mimasu</td><td>to watch / to see</td></tr>' +
+            '<tr><td>たべます</td><td>tabemasu</td><td>to eat</td></tr>' +
+            '<tr><td>のみます</td><td>nomimasu</td><td>to drink</td></tr>' +
+            '<tr><td>かいます</td><td>kaimasu</td><td>to buy</td></tr>' +
+            '<tr><td>つくります</td><td>tsukurimasu</td><td>to make / to create</td></tr>' +
+            '<tr><td>はなします</td><td>hanashimasu</td><td>to speak</td></tr>' +
+            '<tr><td>します</td><td>shimasu</td><td>to do</td></tr>' +
+            '<tr><td>きます</td><td>kimasu</td><td>to come</td></tr>' +
+            '<tr><td>ねます</td><td>nemasu</td><td>to sleep</td></tr>' +
+            '<tr><td>おきます</td><td>okimasu</td><td>to wake up</td></tr>' +
+            '</tbody></table>'
+    },
+    partikel: {
+        title: 'Wichtige Partikel mit Verben',
+        title_en: 'Important Particles with Verbs',
+        html: '<ul>' +
+            '<li><strong>を (wo)</strong> — Objekt-Partikel: ほん<strong>を</strong>よみます (ein Buch lesen)</li>' +
+            '<li><strong>に (ni)</strong> — Ziel / Zeitpunkt: がっこう<strong>に</strong>いきます (zur Schule gehen)</li>' +
+            '<li><strong>へ (e)</strong> — Richtung: うち<strong>へ</strong>かえります (nach Hause zur&uuml;ckkehren)</li>' +
+            '<li><strong>で (de)</strong> — Ort / Mittel: レストラン<strong>で</strong>たべます (im Restaurant essen)</li>' +
+            '<li><strong>と (to)</strong> — Mit / zusammen: せんせい<strong>と</strong>はなします (mit dem Lehrer sprechen)</li>' +
+            '<li><strong>が (ga)</strong> — Subjekt: ともだち<strong>が</strong>きます (ein Freund kommt)</li>' +
+            '</ul>',
+        html_en: '<ul>' +
+            '<li><strong>を (wo)</strong> — Object particle: ほん<strong>を</strong>よみます (read a book)</li>' +
+            '<li><strong>に (ni)</strong> — Target / Time: がっこう<strong>に</strong>いきます (go to school)</li>' +
+            '<li><strong>へ (e)</strong> — Direction: うち<strong>へ</strong>かえります (return home)</li>' +
+            '<li><strong>で (de)</strong> — Place / Means: レストラン<strong>で</strong>たべます (eat at a restaurant)</li>' +
+            '<li><strong>と (to)</strong> — With / Together: せんせい<strong>と</strong>はなします (speak with the teacher)</li>' +
+            '<li><strong>が (ga)</strong> — Subject: ともだち<strong>が</strong>きます (a friend comes)</li>' +
+            '</ul>'
+    }
+};
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_verb',
+    buildContent: function (container) {
+        ['verben', 'partikel'].forEach(function (key) {
+            var ref = verbReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 engine.loadQuestion();

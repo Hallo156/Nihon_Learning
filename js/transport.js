@@ -625,6 +625,22 @@ document.addEventListener('langchange', () => {
     }
 });
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_transport',
+    buildContent: function (container) {
+        ['transportmittel', 'orte', 'satzmuster', 'verben'].forEach(function (key) {
+            var ref = transportReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 score = new ScoreTracker('correctCount', 'incorrectCount');

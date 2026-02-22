@@ -511,6 +511,22 @@ document.addEventListener('langchange', () => {
     if (activeScene) renderDialog();
 });
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_simulation',
+    buildContent: function (container) {
+        ['phrasen', 'kosoado', 'adjektive'].forEach(function (key) {
+            var ref = simulationReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 score = new ScoreTracker('correctCount', 'incorrectCount');

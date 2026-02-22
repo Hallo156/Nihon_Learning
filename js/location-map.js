@@ -415,6 +415,22 @@ document.getElementById('typeDesc').addEventListener('click', () => {
 
 document.addEventListener('langchange', loadQuestion);
 
+/* ============ NACHSCHLAG-SIDEBAR ============ */
+
+buildReferenceSidebar({
+    storageKey: 'sidebar_locMap',
+    buildContent: function (container) {
+        ['richtungen', 'gebaeude', 'fragen'].forEach(function (key) {
+            var ref = locationMapReference[key];
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getLangField(ref, 'title', 'title_en') + '</summary>' +
+                '<div class="ref-body">' + getLangField(ref, 'html', 'html_en') + '</div>';
+            container.appendChild(details);
+        });
+    }
+});
+
 /* ============ INIT ============ */
 
 injectQuickAnswerButton(document.querySelector('.location-map-trainer'));

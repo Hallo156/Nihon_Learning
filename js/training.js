@@ -16,11 +16,6 @@ function getRefHtml(ref) { return getLangField(ref, 'html', 'html_en'); }
 /* ============ DOM-REFERENZEN (modul-spezifisch) ============ */
 
 const segmentFiltersDiv = document.getElementById('segmentFilters');
-const viewQuizBtn = document.getElementById('viewQuiz');
-const viewRefBtn = document.getElementById('viewReference');
-const quizView = document.getElementById('quizView');
-const referenceView = document.getElementById('referenceView');
-const referenceContent = document.getElementById('referenceContent');
 
 /* ============ SICHTBARKEITS-TOGGLE ============ */
 
@@ -140,43 +135,29 @@ const engine = new QuizEngine({
 
     onLangChange: () => {
         buildFilterCheckboxes();
-        if (referenceView.style.display !== 'none') {
-            buildReferenceContent();
-        }
     }
 });
 
-/* ============ ANSICHT-WECHSEL (Quiz / Nachschlagen) ============ */
+/* ============ NACHSCHLAG-SIDEBAR ============ */
 
-function switchView(view) {
-    viewQuizBtn.classList.toggle('active', view === 'quiz');
-    viewRefBtn.classList.toggle('active', view === 'reference');
-    quizView.style.display = view === 'quiz' ? '' : 'none';
-    referenceView.style.display = view === 'reference' ? '' : 'none';
-
-    if (view === 'reference') {
-        buildReferenceContent();
+buildReferenceSidebar({
+    storageKey: 'sidebar_training',
+    buildContent: function (container) {
+        trainingSegments.forEach(function (seg) {
+            var ref = trainingReference[seg.id];
+            if (!ref) return;
+            var details = document.createElement('details');
+            details.className = 'ref-block';
+            details.innerHTML = '<summary>' + getRefTitle(ref) + '</summary>' +
+                '<div class="ref-body">' + getRefHtml(ref) + '</div>';
+            container.appendChild(details);
+        });
     }
-}
-
-function buildReferenceContent() {
-    let html = '';
-    trainingSegments.forEach(seg => {
-        const ref = trainingReference[seg.id];
-        if (!ref) return;
-        html += '<details class="ref-block">';
-        html += '<summary>' + getRefTitle(ref) + '</summary>';
-        html += '<div class="ref-body">' + getRefHtml(ref) + '</div>';
-        html += '</details>';
-    });
-    referenceContent.innerHTML = html;
-}
+});
 
 /* ============ EVENT LISTENERS (modul-spezifisch) ============ */
 
 document.getElementById('applyFilter').addEventListener('click', applySegmentFilter);
-viewQuizBtn.addEventListener('click', () => switchView('quiz'));
-viewRefBtn.addEventListener('click', () => switchView('reference'));
 
 /* ============ INITIALISIERUNG ============ */
 

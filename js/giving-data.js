@@ -226,3 +226,64 @@ const givingDialogs = {
           en:     'What a lovely story!' },
     ],
 };
+
+/* ============ NACHSCHLAG-REFERENZ ============ */
+
+const givingReference = {
+    verben: {
+        title: 'Die drei Geben-/Nehmen-Verben',
+        title_en: 'The Three Giving/Receiving Verbs',
+        html: '<table class="ref-table"><thead><tr><th>Verb</th><th>Romaji</th><th>Bedeutung</th><th>Wer?</th></tr></thead><tbody>' +
+            '<tr><td>あげます</td><td>agemasu</td><td>geben</td><td>Sprecher gibt an andere</td></tr>' +
+            '<tr><td>もらいます</td><td>moraimasu</td><td>bekommen</td><td>Sprecher bekommt von anderen</td></tr>' +
+            '<tr><td>くれます</td><td>kuremasu</td><td>geben (an mich)</td><td>Andere geben an den Sprecher</td></tr>' +
+            '</tbody></table>' +
+            '<p><strong>Vergangenheit (ました):</strong> あげました, もらいました, くれました</p>',
+        html_en: '<table class="ref-table"><thead><tr><th>Verb</th><th>Romaji</th><th>Meaning</th><th>Who?</th></tr></thead><tbody>' +
+            '<tr><td>あげます</td><td>agemasu</td><td>to give</td><td>Speaker gives to others</td></tr>' +
+            '<tr><td>もらいます</td><td>moraimasu</td><td>to receive</td><td>Speaker receives from others</td></tr>' +
+            '<tr><td>くれます</td><td>kuremasu</td><td>to give (to me)</td><td>Others give to the speaker</td></tr>' +
+            '</tbody></table>' +
+            '<p><strong>Past tense (ました):</strong> あげました, もらいました, くれました</p>'
+    },
+    perspektive: {
+        title: 'Perspektiv-Regeln',
+        title_en: 'Perspective Rules',
+        html: '<ul>' +
+            '<li><strong>あげます:</strong> ICH gebe DIR etwas. &rarr; 友達にチョコをあげました。</li>' +
+            '<li><strong>もらいます:</strong> ICH bekomme von DIR etwas. &rarr; 友達からプレゼントをもらいました。</li>' +
+            '<li><strong>くれます:</strong> DU gibst MIR etwas. &rarr; お母さんが私にかばんをくれました。</li>' +
+            '</ul>' +
+            '<p><strong>Wichtig:</strong> くれます und もらいます k&ouml;nnen dasselbe Ereignis beschreiben!</p>' +
+            '<ul>' +
+            '<li>先生が私に本を<strong>くれました</strong> = Der Lehrer gab mir ein Buch (Fokus: Geber)</li>' +
+            '<li>先生から本を<strong>もらいました</strong> = Ich bekam ein Buch vom Lehrer (Fokus: Empf&auml;nger)</li>' +
+            '</ul>',
+        html_en: '<ul>' +
+            '<li><strong>あげます:</strong> I give YOU something. &rarr; 友達にチョコをあげました。</li>' +
+            '<li><strong>もらいます:</strong> I receive from YOU. &rarr; 友達からプレゼントをもらいました。</li>' +
+            '<li><strong>くれます:</strong> YOU give ME something. &rarr; お母さんが私にかばんをくれました。</li>' +
+            '</ul>' +
+            '<p><strong>Important:</strong> くれます and もらいます can describe the same event!</p>' +
+            '<ul>' +
+            '<li>先生が私に本を<strong>くれました</strong> = The teacher gave me a book (focus: giver)</li>' +
+            '<li>先生から本を<strong>もらいました</strong> = I received a book from the teacher (focus: receiver)</li>' +
+            '</ul>'
+    },
+    partikel: {
+        title: 'Partikel',
+        title_en: 'Particles',
+        html: '<ul>' +
+            '<li><strong>に (ni)</strong> — Empf&auml;nger: 友達<strong>に</strong>あげました (an den Freund gegeben)</li>' +
+            '<li><strong>から (kara)</strong> — Quelle: 先生<strong>から</strong>もらいました (vom Lehrer bekommen)</li>' +
+            '<li><strong>を (wo)</strong> — Objekt: 本<strong>を</strong>あげました (ein Buch gegeben)</li>' +
+            '<li><strong>が (ga)</strong> — Subjekt bei くれます: お母さん<strong>が</strong>くれました</li>' +
+            '</ul>',
+        html_en: '<ul>' +
+            '<li><strong>に (ni)</strong> — Recipient: 友達<strong>に</strong>あげました (gave to a friend)</li>' +
+            '<li><strong>から (kara)</strong> — Source: 先生<strong>から</strong>もらいました (received from the teacher)</li>' +
+            '<li><strong>を (wo)</strong> — Object: 本<strong>を</strong>あげました (gave a book)</li>' +
+            '<li><strong>が (ga)</strong> — Subject with くれます: お母さん<strong>が</strong>くれました</li>' +
+            '</ul>'
+    }
+};

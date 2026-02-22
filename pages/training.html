@@ -7,18 +7,13 @@
     <title data-i18n="training.title">Grammatik-Trainer</title>
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/training.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
 </head>
 <body class="training">
     <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
 
     <div class="container training-trainer">
         <h1 data-i18n="training.title">Grammatik-Trainer</h1>
-
-        <!-- Ansicht-Toggle: Üben / Nachschlagen -->
-        <div class="view-toggle">
-            <button id="viewQuiz" class="active" data-i18n="training.viewQuiz">Üben</button>
-            <button id="viewReference" data-i18n="training.viewRef">Nachschlagen</button>
-        </div>
 
         <!-- ===== QUIZ-ANSICHT ===== -->
         <div id="quizView">
@@ -59,10 +54,6 @@
             </div>
         </div>
 
-        <!-- ===== NACHSCHLAGEN-ANSICHT ===== -->
-        <div id="referenceView" style="display:none;">
-            <div id="referenceContent" class="reference-section"></div>
-        </div>
     </div>
 
     <script src="../js/common.js"></script>

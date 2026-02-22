@@ -28,6 +28,11 @@ const uiStrings = {
     'vis.romaji':       { de: 'Romaji',                     en: 'Romaji' },
     'vis.translation':  { de: 'Übersetzung',                en: 'Translation' },
 
+    // --- Sidebar (Nachschlagen) ---
+    'sidebar.title':    { de: 'Nachschlagen',                en: 'Reference' },
+    'sidebar.toggle':   { de: 'Nachschlagen',                en: 'Reference' },
+    'sidebar.close':    { de: 'Schließen',                   en: 'Close' },
+
     // --- index.html ---
     'index.title':      { de: 'Japanisch Lernen',          en: 'Learn Japanese' },
     'index.subtitle':   { de: 'Wähle ein Lernmodul aus:',  en: 'Choose a learning module:' },
