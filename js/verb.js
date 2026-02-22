@@ -1,7 +1,8 @@
 /* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
 
-/* verb.js — Verb-Trainer: Satzluecken mit Multiple-Choice (15 Verben)
-   Zwei Modi per Toggle: "Zufaellig" und "Wiederholung" (Spaced Repetition 70/30).
+/* verb.js — Verb-Trainer: Bedeutungs-Quiz (15 Verben, Satz → Bedeutung wählen).
+   Zeigt vollständigen JP-Satz mit hervorgehobenem Verb; Nutzer wählt korrekte Bedeutung.
+   Zwei Modi per Toggle: "Zufällig" und "Wiederholung" (Spaced Repetition 70/30).
    Braucht: common.js, i18n.js, quiz-engine.js */
 
 /* ============ DATEN ============ */
@@ -33,12 +34,12 @@ function getSentenceFilled(v) {
     return currentLang === 'en' ? v.sentence_en_filled : v.sentence_de_filled;
 }
 
-/* ============ DOM (modul-spezifisch) ============ */
+/* ============ DOM ============ */
 
 const questionArea = document.getElementById('questionArea');
-let verbTranslationEl = null;
+let verbRomajiEl = null;
 
-/* ============ SICHTBARKEITS-TOGGLE ============ */
+/* ============ SICHTBARKEITS-TOGGLE (nur Romaji) ============ */
 
 const verbContainer = document.querySelector('.verb-trainer');
 
@@ -47,66 +48,69 @@ const visState = buildVisibilityToggles({
     insertAfter: document.querySelector('.verb-trainer .mode-toggle'),
     target: verbContainer,
     toggles: [
-        { key: 'verb_romaji', i18nKey: 'vis.romaji', cssClass: 'hide-romaji', defaultOn: true },
-        { key: 'verb_translation', i18nKey: 'vis.translation', cssClass: 'hide-translation', defaultOn: true }
+        { key: 'verb_romaji', i18nKey: 'vis.romaji', cssClass: 'hide-romaji', defaultOn: true }
     ]
 });
 
-/* Uebersetzungs-Element erstellen */
-verbTranslationEl = document.createElement('div');
-verbTranslationEl.className = 'verb-translation';
-questionArea.insertAdjacentElement('afterend', verbTranslationEl);
+/* Romaji-Hint-Element unterhalb des Satzes */
+verbRomajiEl = document.createElement('div');
+verbRomajiEl.className = 'verb-romaji-hint';
+questionArea.insertAdjacentElement('afterend', verbRomajiEl);
 
 /* ============ QUIZ-ENGINE ============ */
 
 const engine = new QuizEngine({
-    feedbackId: 'feedbackArea',
-    nextButtonId: 'nextButton',
-    choicesAreaId: 'choicesArea',
-    modeRandomId: 'modeRandom',
-    modeSemiId: 'modeSemiRandom',
-    correctSpanId: 'correctCount',
+    feedbackId:      'feedbackArea',
+    nextButtonId:    'nextButton',
+    choicesAreaId:   'choicesArea',
+    modeRandomId:    'modeRandom',
+    modeSemiId:      'modeSemiRandom',
+    correctSpanId:   'correctCount',
     incorrectSpanId: 'incorrectCount',
     quickAnswerTarget: '.score',
 
     getPool: () => verbsData,
 
     renderQuestion: (v, eng) => {
-        questionArea.textContent = v.sentence_jp_blank.replace("＿＿＿＿＿", " ______ ");
-        if (verbTranslationEl) verbTranslationEl.textContent = getSentenceFilled(v);
+        /* Vollständiger Satz — kein Highlight, Nutzer liest den ganzen Satz */
+        questionArea.textContent = v.sentence_jp_filled;
 
-        /* 3 Verb-Choices mit Romaji-Span */
-        let choiceVerbs = [v];
-        while (choiceVerbs.length < 3) {
-            const random = verbsData[Math.floor(Math.random() * verbsData.length)];
-            if (!choiceVerbs.some(cv => cv.verb_masu === random.verb_masu)) choiceVerbs.push(random);
+        /* Romaji-Hint: (verb = romaji) */
+        if (verbRomajiEl) verbRomajiEl.textContent = '(' + v.verb_masu + ' = ' + v.romaji + ')';
+
+        /* 3 Bedeutungs-Choices in aktiver Sprache */
+        let choices = [v];
+        while (choices.length < 3) {
+            const rand = verbsData[Math.floor(Math.random() * verbsData.length)];
+            if (!choices.some(c => c.verb_masu === rand.verb_masu)) choices.push(rand);
         }
-        shuffleArray(choiceVerbs);
+        shuffleArray(choices);
 
         eng.choicesArea.innerHTML = '';
-        choiceVerbs.forEach(verbObj => {
-            const button = document.createElement('button');
-            button.classList.add('choice-button');
-            button.innerHTML = verbObj.verb_masu + '<span class="verb-choice-romaji">' + verbObj.romaji + '</span>';
-            button.addEventListener('click', () => {
+        choices.forEach(verbObj => {
+            const btn = document.createElement('button');
+            btn.classList.add('choice-button');
+            btn.textContent = getMeaning(verbObj);
+            btn.addEventListener('click', () => {
                 if (eng.answered) return;
-                eng.choicesArea.querySelectorAll('.choice-button').forEach(btn => { btn.disabled = true; });
+                eng.choicesArea.querySelectorAll('.choice-button').forEach(b => { b.disabled = true; });
                 eng.finishAnswer(verbObj.verb_masu === v.verb_masu);
             });
-            eng.choicesArea.appendChild(button);
+            eng.choicesArea.appendChild(btn);
         });
     },
 
     buildFeedback: (v, isCorrect) => {
         let html = '';
         if (isCorrect) {
-            html += `<strong>${t('verb.correctVerb', v.verb_masu)}</strong><br>`;
+            html += `<strong>${t('verb.correctMeaning', getMeaning(v))}</strong><br>`;
         } else {
-            html += `<strong>${t('verb.wrongSel', '')}</strong><br>`;
-            html += `${t('verb.correctAns', v.verb_masu)}<br>`;
+            html += `<strong>${t('verb.wrong')}</strong><br>`;
+            html += `${t('verb.correctAns', getMeaning(v))}<br>`;
         }
         html += `${t('verb.fullSentence')}: <strong>${v.sentence_jp_filled}</strong><br>`;
-        html += `<span class="romaji">(${v.verb_masu} - ${v.romaji} - ${getMeaning(v)})</span>`;
+        html += `<em>${getSentenceFilled(v)}</em><br>`;
+        html += `<span class="romaji">(${v.verb_masu} &mdash; ${v.romaji} &mdash; ${getMeaning(v)})</span>`;
         return html;
     }
 });

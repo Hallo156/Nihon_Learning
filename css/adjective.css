@@ -14,14 +14,6 @@
     line-height: 1.6;
 }
 
-/* Hervorgehobenes Adjektiv im Satz */
-.adj-highlight {
-    color: #007bff;
-    font-weight: bold;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 1px;
-}
-
 /* Romaji-Hint unterhalb des Satzes (ein-/ausblendbar) */
 .adj-romaji-hint {
     font-size: 13px;

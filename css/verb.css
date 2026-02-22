@@ -5,7 +5,7 @@
 .question-area {
     font-size: 22px;
     color: #34495e;
-    margin: 25px 0;
+    margin: 25px 0 8px;
     padding: 20px;
     background-color: #ecf0f1;
     border-radius: 8px;
@@ -13,7 +13,17 @@
     line-height: 1.6;
 }
 
-/* Verb-Trainer: vertikale Buttons (Sätze können lang sein) */
+/* Romaji-Hint unterhalb des Satzes (ein-/ausblendbar) */
+.verb-romaji-hint {
+    font-size: 13px;
+    color: #777;
+    font-style: italic;
+    text-align: center;
+    margin: 0 0 16px;
+    min-height: 16px;
+}
+
+/* Verb-Trainer: vertikale Buttons (Bedeutungen können etwas länger sein) */
 .verb-trainer .choices-area {
     flex-direction: column;
     align-items: center;
@@ -22,7 +32,8 @@
 
 .verb-trainer .choice-button {
     width: 80%;
-    max-width: 350px;
+    max-width: 380px;
+    font-size: 16px;
 }
 
 /* Verb-Trainer: Feedback mit mehr Platz */
@@ -38,31 +49,5 @@
     color: #555;
 }
 
-.feedback .translation {
-    margin-top: 5px;
-    color: #444;
-}
-
-/* Übersetzungs-Anzeige zwischen Frage und Choices */
-.verb-translation {
-    font-size: 14px;
-    color: #555;
-    font-style: italic;
-    text-align: center;
-    margin: -12px 0 14px;
-    min-height: 18px;
-}
-
-/* Romaji-Span unter dem Verb-Masu in den Choice-Buttons */
-.verb-choice-romaji {
-    display: block;
-    font-size: 12px;
-    opacity: 0.75;
-    font-style: italic;
-    margin-top: 2px;
-}
-
-/* Sichtbarkeits-Toggle-Steuerung */
-.verb-trainer.hide-translation .verb-translation { display: none; }
-.verb-trainer.hide-romaji      .verb-choice-romaji { display: none; }
-
+/* Sichtbarkeits-Toggle: Romaji ein-/ausblenden */
+.verb-trainer.hide-romaji .verb-romaji-hint { display: none; }

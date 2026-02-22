@@ -213,7 +213,7 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `common.css`: ~594 Zeilen (inkl. alle Shared Quiz-Elemente, quiz-type-toggle, question-display, vis-toggles)
 - `sidebar.css`: ~140 Zeilen (Sidebar-Toggle, Panel, Backdrop, Responsive)
 - `kana.css`: ~55 Zeilen (nur Kana-spezifisch)
-- `verb.css`: ~65 Zeilen (Verb-spezifisch, vertikale Buttons-Ausnahme, .verb-translation, .verb-choice-romaji, Toggle-CSS)
+- `verb.css`: ~55 Zeilen (Verb-spezifisch, vertikale Buttons-Ausnahme, .verb-highlight, .verb-romaji-hint, Toggle-CSS)
 - `kanji.css`: ~63 Zeilen (nur Kanji-spezifisch, Display + Feedback)
 - `kanji-list.css`: ~225 Zeilen (Flip-Card Styles + Kategorie-Abschnitt: .category-section, .category-summary, .cat-arrow)
 - `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
@@ -250,12 +250,15 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **IDs (vereinheitlicht):** Texteingabe `#textInput` (war `romajiInput`), Filter-Button `#applyFilter` (war `applyFiltersButton`)
 
 ### Verb-Trainer (`verb.js` + `verb.html`)
-- 15 Verben im ます-Form, je mit Lueckensatz + Uebersetzung (DE + EN)
-- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering (Verb + Romaji-Span), ruft `engine.finishAnswer()` direkt auf
-- **Sichtbarkeits-Toggles** via `buildVisibilityToggles()`: Romaji + Übersetzung — localStorage `verb.showRomaji`/`verb.showTranslation`, beide standard-an
+- 15 Verben im ます-Form, je mit vollständigem JP-Satz + Übersetzung (DE + EN)
+- Datenstruktur: `{ verb_masu, romaji, meaning_de, meaning_en, sentence_jp_blank, sentence_jp_filled, sentence_de_filled, sentence_en_filled }`
+- **Quiz-Format:** Vollständiger JP-Satz wird angezeigt (Verb **blau hervorgehoben**); Nutzer wählt die korrekte Bedeutung aus 3 Choices (in DE/EN)
+- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering mit Bedeutungstext, ruft `engine.finishAnswer()` direkt auf
+- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: nur Romaji — localStorage `verb_romaji`, standard-an — zeigt `(verb = romaji)` unter dem Satz
 - **Nachschlag-Sidebar:** Verb-Tabelle (15 ます-Form-Verben) + Partikel-Uebersicht (を/に/へ/で/と/が)
-- Choice-Buttons zeigen Verb (ます-Form) + Romaji-Span (versteckbar per Toggle)
-- Übersetzung im Feedback-Bereich entfernt (wird jetzt oben angezeigt)
+- Feedback zeigt: Bedeutung + vollständiger JP-Satz + Übersetzung + Romaji
+- Index-Gruppe: **Zahlen & Vokabular** (kein Lückentext mehr → eindeutige Vokabel-Fragen)
+- i18n-Keys: `verb.*` (6 Einträge), `index.verb.*` (2 Einträge)
 
 ### Adjektiv-Trainer (`adjective-data.js` + `adjective.js` + `adjective.html`)
 - 25 Adjektive (18 い-Adjektive, 7 な-Adjektive), bilingual + adjReference (3 Abschnitte)

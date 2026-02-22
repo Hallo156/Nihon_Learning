@@ -52,13 +52,8 @@ const engine = new QuizEngine({
     getPool: () => adjectivesData,
 
     renderQuestion: (a, eng) => {
-        /* Vollständiger Satz mit farbig hervorgehobenem Adjektiv */
-        const escaped = a.adj.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const highlighted = a.sentence_jp_filled.replace(
-            new RegExp(escaped),
-            '<span class="adj-highlight">' + a.adj + '</span>'
-        );
-        questionArea.innerHTML = highlighted;
+        /* Vollständiger Satz — kein Highlight, Nutzer liest den ganzen Satz */
+        questionArea.textContent = a.sentence_jp_filled;
 
         /* Romaji-Hint: (adjektiv = romaji) */
         if (adjRomajiEl) adjRomajiEl.textContent = '(' + a.adj + ' = ' + a.romaji + ')';

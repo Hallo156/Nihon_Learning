@@ -46,7 +46,7 @@ const uiStrings = {
     'index.training.title': { de: 'Grammatik-Trainer',     en: 'Grammar Trainer' },
     'index.training.desc':  { de: 'Grammatikübungen zu Partikeln, Verben, Adjektiven und Satzstrukturen.', en: 'Grammar exercises on particles, verbs, adjectives and sentence structures.' },
     'index.verb.title': { de: 'Verb-Trainer',              en: 'Verb Trainer' },
-    'index.verb.desc':  { de: 'Sätze mit dem passenden Verb vervollständigen.', en: 'Complete sentences with the correct verb.' },
+    'index.verb.desc':  { de: 'Verb-Bedeutungen in japanischen Sätzen erkennen. 15 Verben.', en: 'Recognize verb meanings in Japanese sentences. 15 verbs.' },
     'index.kanji.title': { de: 'Kanji-Trainer',            en: 'Kanji Trainer' },
     'index.kanji.desc': { de: 'Kanji lesen, verstehen und übersetzen. Verschiedene Fragetypen und Quizmodi.', en: 'Read, understand and translate Kanji. Multiple question types and quiz modes.' },
 
@@ -81,16 +81,15 @@ const uiStrings = {
 
     // --- verb.html ---
     'verb.title':       { de: 'Japanischer Verb-Trainer',  en: 'Japanese Verb Trainer' },
-    'verb.instruction': { de: 'Vervollständige den Satz mit dem passenden Verb:', en: 'Complete the sentence with the correct verb:' },
-    'verb.correctVerb': { de: 'Richtig! Das Verb ist "{0}".', en: 'Correct! The verb is "{0}".' },
-    'verb.wrongSel':    { de: 'Falsch. Ausgewählt: "{0}".', en: 'Wrong. Selected: "{0}".' },
-    'verb.correctAns':  { de: 'Die richtige Antwort ist: "{0}".', en: 'The correct answer is: "{0}".' },
-    'verb.fullSentence': { de: 'Vollständiger Satz',       en: 'Full sentence' },
-    'verb.meaningLabel': { de: 'Bedeutung',                 en: 'Meaning' },
+    'verb.instruction':    { de: 'Was bedeutet das Verb im Satz?', en: 'What does the verb in the sentence mean?' },
+    'verb.correctMeaning': { de: 'Richtig! Die Bedeutung ist "{0}".', en: 'Correct! The meaning is "{0}".' },
+    'verb.wrong':          { de: 'Falsch.',                       en: 'Wrong.' },
+    'verb.correctAns':     { de: 'Die richtige Bedeutung ist: "{0}".', en: 'The correct meaning is: "{0}".' },
+    'verb.fullSentence':   { de: 'Vollständiger Satz',            en: 'Full sentence' },
 
     // --- adjective.html ---
     'adj.title':        { de: 'Japanischer Adjektiv-Trainer', en: 'Japanese Adjective Trainer' },
-    'adj.instruction':    { de: 'Was bedeutet das hervorgehobene Adjektiv?', en: 'What does the highlighted adjective mean?' },
+    'adj.instruction':    { de: 'Was bedeutet das Adjektiv im Satz?', en: 'What does the adjective in the sentence mean?' },
     'adj.correctMeaning': { de: 'Richtig! Die Bedeutung ist "{0}".', en: 'Correct! The meaning is "{0}".' },
     'adj.wrong':          { de: 'Falsch.',                       en: 'Wrong.' },
     'adj.correctAns':     { de: 'Die richtige Bedeutung ist: "{0}".', en: 'The correct meaning is: "{0}".' },
