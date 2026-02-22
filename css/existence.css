@@ -1,0 +1,146 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* existence.css — Leseverstehen-Modul: Lesetext, Gebäude-Farbmarkierung, Frage-Buttons */
+
+/* ============ LESETEXT-BOX ============ */
+
+.reading-passage {
+    background: #fff;
+    border: 1px solid #d8d8d8;
+    border-left-width: 5px;
+    border-left-style: solid;
+    border-left-color: #007bff;   /* Fallback; überschrieben durch housing-Klasse */
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+/* Farbige linke Kante je Gebäudetyp */
+.reading-passage.housing-manshon { border-left-color: #007bff; }
+.reading-passage.housing-apaato  { border-left-color: #28a745; }
+.reading-passage.housing-hotel   { border-left-color: #dc3545; }
+.reading-passage.housing-ikkenya { border-left-color: #fd7e14; }
+
+.passage-header {
+    margin-bottom: 12px;
+}
+
+.passage-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ============ ZEILE-FÜR-ZEILE-LAYOUT ============ */
+
+.passage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.passage-line-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.passage-line-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.line-jp {
+    font-size: 1.05rem;
+    color: #222;
+    line-height: 1.7;
+}
+
+.line-romaji {
+    font-size: 0.82rem;
+    color: #888;
+    font-style: italic;
+    line-height: 1.4;
+}
+
+.line-trans {
+    font-size: 0.88rem;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* Romaji ausblenden (Standard: versteckt, da defaultOn: false) */
+.existence-trainer.hide-romaji .line-romaji {
+    display: none;
+}
+
+/* Übersetzung ausblenden */
+.existence-trainer.hide-translation .line-trans {
+    display: none;
+}
+
+/* ============ FRAGEN-BEREICH ============ */
+
+.question-text {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin: 8px 0 14px;
+}
+
+/* ============ CHOICE-BUTTONS (zweizeilig: JP + Übersetzung) ============ */
+
+.existence-trainer .choices-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.existence-choice {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 130px;
+    max-width: 220px;
+    padding: 10px 14px;
+    line-height: 1.4;
+}
+
+.existence-choice .choice-jp {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: white;
+}
+
+.existence-choice .choice-trans {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 3px;
+}
+
+/* ============ ERKLÄRUNG IM FEEDBACK ============ */
+
+.existence-explanation {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.88rem;
+    color: #444;
+}
+
+.correct-answer {
+    margin-left: 4px;
+}
+
+/* ============ FRAGEN-FORTSCHRITT ============ */
+
+#questionProgress {
+    text-align: center;
+    font-size: 0.82rem;
+    color: #888;
+    margin: 4px 0 10px;
+}

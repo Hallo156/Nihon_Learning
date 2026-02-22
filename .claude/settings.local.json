@@ -9,5 +9,8 @@
       "Bash(Get-Content \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\js\\\\transport.js\")",
       "Bash(Get-Content \"C:\\\\Users\\\\hahah\\\\Desktop\\\\AI HTML\\\\JapanischHTMLLearning\\\\css\\\\transport.css\")"
     ]
+  },
+  "env": {
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS": "100000"
   }
 }

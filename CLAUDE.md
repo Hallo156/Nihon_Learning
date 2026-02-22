@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (13 Karten → Module, inkl. Simulation-Gruppe)
+index.html                 Hauptmenue (14 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -26,6 +26,7 @@ css/
   location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
   location-map.css         SVG-Karte, Richtungsbuttons 2x2-Grid, Gebaeude-Choices (Stadtkarte)
   transport.css            Ketten-Visualisierung (Punkte/Striche), Transport-Icons, Lücken-Animation
+  existence.css            Lesetext-Box, Gebaeude-Badges (4 Typen), Zweizeilige Choice-Buttons, Fragenfortschritt
   sidebar.css              Aufklappbare Nachschlag-Sidebar (Toggle-Tab, Panel, Backdrop, Responsive)
 js/
   common.js                Shared: shuffleArray(), ScoreTracker, showFeedback(), clearFeedback(), Quick Answer
@@ -56,6 +57,8 @@ js/
   transport-data.js        Transport-Daten: 12 Orte, 8 Transportmittel, 9 Routen (einfach/mittel/komplex), bilingual
   transport-ref.js         Nachschlag-Referenz fuer Transport: Transportmittel, Orte, Satzmuster, のります/おります
   transport.js             Ketten-Quiz: Visualisierung, Lücken-Quiz, MC + Texteingabe, Nachschlag-Sidebar
+  existence-data.js        Lesetext-Daten: 6 Texte (2x Manshon, 2x Apaato, 1x Hotel, 1x Ikkenya), je 5-6 Fragen (MC+Fill), housingTypes, existenceReference (bilingual)
+  existence.js             Leseverstehen-Quiz: Textanzeige, Gebaeude-Filter, Fragen sequenziell (MC+Fill), Übersetzungs-Toggle, Nachschlag-Sidebar
 pages/
   kana.html                Kana-Trainer (Checkbox-Filter, Romaji-Eingabe, Score)
   kanji.html               Kanji-Trainer (3 Quiz-Typen, Stufenfilter, MC + Texteingabe, Score)
@@ -70,6 +73,7 @@ pages/
   location-obj.html        Gegenstand-Position (SVG-Szene, Beschreiben + Zeigen, Score)
   location-map.html        Stadtkarte (SVG-Karte, Navigation + Beschreibungs-Quiz, Score)
   transport.html           Verkehr & Fortbewegung (Ketten-Quiz, Schwierigkeitsfilter, MC + Texteingabe, Score)
+  existence.html           Leseverstehen: Wohnen (Lesetext + Quiz, Gebaeude-Filter, MC + Texteingabe, Score)
 ```
 
 ## Architektur-Regeln
@@ -86,6 +90,7 @@ pages/
 - **location-obj.js braucht location-obj-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-obj-data.js → location-obj.js
 - **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-map-data.js → location-map.js
 - **transport.js braucht transport-data.js + transport-ref.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport-ref.js → transport.js
+- **existence.js braucht existence-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → existence-data.js → existence.js
 - **verb.js hat keine separate Daten-Datei.** Reihenfolge: common.js → i18n.js → quiz-engine.js → verb.js
 - **adjective.js braucht adjective-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → adjective-data.js → adjective.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
@@ -238,6 +243,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `transport-ref.js`: ~103 Zeilen (Nachschlag-Referenz: Transportmittel, Orte, Satzmuster, のります/おります)
 - `transport.js`: ~649 Zeilen (Ketten-Rendering, Lücken-Quiz, MC + Text, Spaced Repetition, Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
 - `transport.css`: ~460 Zeilen (Kette, Punkte/Striche, SVG-Icons in CSS, Lücken-Animation, Satz-Buttons)
+- `existence-data.js`: ~380 Zeilen (6 Lesetexte × 5-6 Fragen, housingTypes, existenceReference bilingual)
+- `existence.js`: ~180 Zeilen (Filter, Text-Rendering, Fragen-Lifecycle, MC+Fill, Übersetzungs-Toggle, Nachschlag-Sidebar)
+- `existence.css`: ~115 Zeilen (Lesetext-Box, Gebaeude-Badges, Choice-Buttons, Fragenfortschritt)
 
 ## Module im Detail
 
@@ -442,6 +450,24 @@ Jede Luecke in einem Dialog muss **genau eine richtige Antwort** haben — entwe
 - **Verb-Fragen** (のります/おります): `correctId:'norimasu'|'orimasu'` — sentenceOptions.modeId matcht correctId; JS-Fallback holt Fahrzeug-Icon aus Ketten-Node; Texteingabe akzeptiert kurze Kana/Romaji ODER vollständigen Satz
 - **Nachschlag-Sidebar:** Transportmittel-Tabelle (8), Orte-Tabelle (12), Satzmuster (で-Partikel), のります/おります (via transport-ref.js)
 - i18n-Keys: `transport.*` (8 Eintraege in i18n.js)
+- Index-Gruppe: "Simulation"
+
+### Leseverstehen: Wohnen (`existence-data.js` + `existence.js` + `existence.html`)
+- 6 Lesetexte (A1-Fokus): 2x Manshon, 2x Apaato, 1x Hotel, 1x Ikkenya — je 5-6 Fragen
+- Jeder Text hat: Titel (bilingual), JP-Text, Übersetzung (DE+EN), Fragen-Array
+- **Ablauf:** Text immer sichtbar → Fragen sequenziell beantworten → nächster Text
+- **Fragetypen:** `mc` (Multiple-Choice mit jp/de/en-Choices) + `fill` (Texteingabe, correct[]-Array)
+- Gebäudetyp-Filter: 4 Checkboxen (マンション / アパート / ホテル / 一軒家), "Filter anwenden" resettet Quiz
+- **Übersetzungs-Toggle** via `buildVisibilityToggles()`: ein/aus für Textübersetzung (`exist_translation`)
+- **Nachschlag-Sidebar:** Grammatik あります/います, Gebäudetypen, Räume, Möbel (via existenceReference in existence-data.js)
+- Fragen decken ab: Gebäudetyp, Anzahl (Zähler), Existenz (あります/ありません・います/いません), Inhalt von Räumen
+- **Tier-3-Modul:** Eigener Quiz-Lifecycle, nutzt `getLangField()` + `buildVisibilityToggles()` + `buildReferenceSidebar()`
+- Quick Answer: 400ms auto-advance bei richtiger Antwort (ausser letzter Frage eines Texts)
+- Fill-Antworten: akzeptiert Zahl (1/2/3…), Kana (いち/に/さん…), Romaji (ichi/ni/san…), Zähler-Varianten
+- Datenstruktur Text: `{ id, type, title_de, title_en, text_jp, text_de, text_en, questions[] }`
+- Datenstruktur Frage MC: `{ prompt_de, prompt_en, type:'mc', correct[], choices[{jp,de,en}], explanation_de, explanation_en }`
+- Datenstruktur Frage Fill: `{ prompt_de, prompt_en, type:'fill', correct[], explanation_de, explanation_en }`
+- i18n-Keys: `existence.*` (4 Eintraege), `index.existence.*` (2 Eintraege)
 - Index-Gruppe: "Simulation"
 
 ### mcOnly-Pflicht bei offenem Vokabular

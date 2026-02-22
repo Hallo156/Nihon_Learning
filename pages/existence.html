@@ -1,0 +1,66 @@
+<!-- Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) -->
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="existence.title">Leseverstehen: Wohnen</title>
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="../css/existence.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+</head>
+<body class="existence">
+    <a href="../index.html" class="nav-back" data-i18n="nav.back">&larr; Zurück zum Menü</a>
+
+    <div class="container existence-trainer">
+        <h1 data-i18n="existence.title">Leseverstehen: Wohnen</h1>
+
+        <!-- Gebäudetyp-Filter -->
+        <div class="segment-filters">
+            <div id="existenceFilters"></div>
+            <button id="applyFilter" class="filter-apply-btn" data-i18n="btn.applyFilter">Filter anwenden</button>
+        </div>
+
+        <!-- Lesetext (immer sichtbar während Fragen) -->
+        <div id="passageContainer" class="reading-passage" style="display:none">
+            <div class="passage-header">
+                <span id="passageTitle" class="passage-title"></span>
+            </div>
+            <div id="passageContent" class="passage-content"></div>
+        </div>
+
+        <!-- Fragenfortschritt -->
+        <div id="questionProgress"></div>
+
+        <!-- Frage -->
+        <div id="displayArea" class="question-display"></div>
+
+        <!-- Multiple Choice -->
+        <div id="choicesArea" class="choices-area"></div>
+
+        <!-- Texteingabe -->
+        <div class="input-area" id="inputArea" style="display:none">
+            <input type="text" id="textInput" data-i18n-placeholder="input.answer" placeholder="Antwort eingeben..." />
+            <button id="checkButton" data-i18n="btn.check">Prüfen</button>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback" id="feedbackArea"></div>
+
+        <!-- Weiter-Button -->
+        <button id="nextButton" class="next-btn" style="display:none" data-i18n="btn.next">Nächste Frage</button>
+
+        <!-- Score -->
+        <div class="score">
+            <span data-i18n="score.correct">Richtig</span>: <span id="correctCount">0</span> |
+            <span data-i18n="score.incorrect">Falsch</span>: <span id="incorrectCount">0</span>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/i18n.js"></script>
+    <script src="../js/quiz-engine.js"></script>
+    <script src="../js/existence-data.js"></script>
+    <script src="../js/existence.js"></script>
+</body>
+</html>

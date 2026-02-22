@@ -228,7 +228,15 @@ const uiStrings = {
     'transport.inputText':   { de: 'Texteingabe',              en: 'Text Input' },
     'transport.toggleRomaji':       { de: 'Romaji',            en: 'Romaji' },
     'transport.toggleTranslation':  { de: 'Übersetzung',       en: 'Translation' },
-    'transport.noRoute':     { de: 'Bitte eine Schwierigkeit auswählen.', en: 'Please select a difficulty.' }
+    'transport.noRoute':     { de: 'Bitte eine Schwierigkeit auswählen.', en: 'Please select a difficulty.' },
+
+    // --- existence.html (Leseverstehen: Wohnen) ---
+    'index.existence.title': { de: 'Leseverstehen: Wohnen',   en: 'Reading: Housing' },
+    'index.existence.desc':  { de: 'Texte zu Wohnungen und Häusern lesen und Fragen zur Existenz von Gegenständen und Personen beantworten.', en: 'Read texts about apartments and houses, then answer questions about the existence of objects and people.' },
+    'existence.title':       { de: 'Leseverstehen: Wohnen',   en: 'Reading: Housing' },
+    'existence.questionOf':  { de: 'Frage {0} von {1}',       en: 'Question {0} of {1}' },
+    'existence.nextText':    { de: 'Nächster Text',            en: 'Next Text' },
+    'existence.noFilter':    { de: 'Bitte mindestens einen Gebäudetyp auswählen.', en: 'Please select at least one building type.' }
 };
 
 /* ============ UEBERSETZUNGSFUNKTION ============ */
