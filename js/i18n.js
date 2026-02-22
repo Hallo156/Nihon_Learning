@@ -25,6 +25,8 @@ const uiStrings = {
     'input.answer':     { de: 'Antwort eingeben...',        en: 'Enter answer...' },
     'btn.quickOn':      { de: '⚡ Schnell',                 en: '⚡ Quick' },
     'btn.quickOff':     { de: '⚡ Normal',                  en: '⚡ Normal' },
+    'btn.selectAll':    { de: 'Alle',                       en: 'All' },
+    'round.progress':   { de: 'Runde: {0}/{1}',            en: 'Round: {0}/{1}' },
     'vis.romaji':       { de: 'Romaji',                     en: 'Romaji' },
     'vis.translation':  { de: 'Übersetzung',                en: 'Translation' },
 

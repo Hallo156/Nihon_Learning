@@ -191,8 +191,8 @@ textInput.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') checkAnswer();
 });
 
-/* Quick Answer Button injizieren */
-const scoreEl = document.querySelector('.score');
-if (scoreEl) injectQuickAnswerButton(scoreEl.parentElement);
+/* Quick Answer Button + Select All injizieren */
+injectQuickAnswerButton();
+injectSelectAllButton(document.querySelector('.filters'));
 
 loadNextKana();

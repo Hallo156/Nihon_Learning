@@ -88,8 +88,15 @@ function applySceneFilter() {
     scenePool       = getSelectedScenes();
     remainingScenes = [...scenePool];
     incorrectScenes = [];
+    givRoundMastered = new Set();
     score.reset();
+    updateGivRoundProgress();
     loadNextScene();
+}
+
+function updateGivRoundProgress() {
+    if (currentMode !== 'spaced') { givRoundProgress.hide(); return; }
+    givRoundProgress.update(givRoundMastered.size, scenePool.length);
 }
 
 /* ============ SZENEN-AUSWAHL ============ */
@@ -107,6 +114,7 @@ function pickNextScene() {
     if (remainingScenes.length === 0) {
         remainingScenes = [...scenePool];
         incorrectScenes = [];
+        givRoundMastered = new Set();
     }
     if (remainingScenes.length === 0) return null;
     const idx = Math.floor(Math.random() * remainingScenes.length);
@@ -420,6 +428,10 @@ function advanceBlank() {
     nextButton.style.display = 'none';
 
     if (blankIndex >= blankLines.length) {
+        if (currentMode === 'spaced' && !incorrectScenes.includes(activeSceneId)) {
+            givRoundMastered.add(activeSceneId);
+        }
+        updateGivRoundProgress();
         loadNextScene();
     } else {
         renderDialog();
@@ -444,6 +456,7 @@ modeRandomBtn.addEventListener('click', () => {
     currentMode = 'random';
     modeRandomBtn.classList.add('active');
     modeSemiBtn.classList.remove('active');
+    givRoundProgress.hide();
     applySceneFilter();
 });
 
@@ -499,5 +512,8 @@ buildReferenceSidebar({
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
 buildSceneCheckboxes();
-injectQuickAnswerButton(givingTrainer);
+injectQuickAnswerButton();
+injectSelectAllButton(document.querySelector('.scene-filters'));
+var givRoundProgress = createRoundProgress();
+var givRoundMastered = new Set();
 applySceneFilter();

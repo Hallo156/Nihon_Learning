@@ -95,8 +95,15 @@ function applySceneFilter() {
     scenePool        = getSelectedScenes();
     remainingScenes  = [...scenePool];
     incorrectScenes  = [];
+    simRoundMastered = new Set();
     score.reset();
+    updateSimRoundProgress();
     loadNextScene();
+}
+
+function updateSimRoundProgress() {
+    if (currentMode !== 'spaced') { simRoundProgress.hide(); return; }
+    simRoundProgress.update(simRoundMastered.size, scenePool.length);
 }
 
 /* ============ SZENEN-AUSWAHL ============ */
@@ -114,6 +121,7 @@ function pickNextScene() {
     if (remainingScenes.length === 0) {
         remainingScenes = [...scenePool];
         incorrectScenes = [];
+        simRoundMastered = new Set();
     }
     if (remainingScenes.length === 0) return null;
     const idx = Math.floor(Math.random() * remainingScenes.length);
@@ -395,6 +403,11 @@ function advanceBlank() {
     nextButton.style.display = 'none';
 
     if (blankIndex >= blankLines.length) {
+        // Szene abgeschlossen — wenn nicht in incorrectScenes, ist sie gemeistert
+        if (currentMode === 'spaced' && !incorrectScenes.includes(activeSceneId)) {
+            simRoundMastered.add(activeSceneId);
+        }
+        updateSimRoundProgress();
         loadNextScene();
     } else {
         renderDialog();
@@ -476,6 +489,7 @@ modeRandomBtn.addEventListener('click', () => {
     currentMode = 'random';
     modeRandomBtn.classList.add('active');
     modeSemiBtn.classList.remove('active');
+    simRoundProgress.hide();
     applySceneFilter();
 });
 
@@ -531,5 +545,8 @@ buildReferenceSidebar({
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
 buildSceneCheckboxes();
-injectQuickAnswerButton(document.querySelector('.simulation-trainer'));
+injectQuickAnswerButton();
+injectSelectAllButton(document.querySelector('.scene-filters'));
+var simRoundProgress = createRoundProgress();
+var simRoundMastered = new Set();
 applySceneFilter();

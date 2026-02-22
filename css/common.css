@@ -85,18 +85,30 @@ button:hover, .check-button:hover {
     color: #555;
 }
 
-/* ===== Navigation ===== */
+/* ===== Navigation (fixed top-left) ===== */
 .nav-back {
-    display: inline-block;
-    margin-bottom: 15px;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1000;
     color: #007bff;
     text-decoration: none;
-    font-size: 15px;
-    align-self: flex-start;
+    font-size: 14px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 6px 14px;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: background-color 0.2s;
 }
 
 .nav-back:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    background: #e8f0fe;
+}
+
+body:has(.nav-back) {
+    padding-top: 55px;
 }
 
 /* ===== Language Toggle ===== */
@@ -124,18 +136,23 @@ button:hover, .check-button:hover {
     transform: scale(1.05);
 }
 
-/* ===== Quick Answer Toggle ===== */
+/* ===== Quick Answer Toggle (fixed top-right) ===== */
 .quick-answer-toggle {
-    padding: 6px 14px;
-    font-size: 13px;
-    background-color: #e0e0e0;
+    position: fixed;
+    top: 82px;
+    right: 15px;
+    z-index: 999;
+    padding: 5px 12px;
+    font-size: 12px;
+    background-color: rgba(224, 224, 224, 0.92);
     color: #555;
     border: 2px solid #ccc;
     border-radius: 20px;
     cursor: pointer;
-    margin: 8px auto;
+    margin: 0;
     display: block;
     transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .quick-answer-toggle:hover {
@@ -435,12 +452,16 @@ button:hover, .check-button:hover {
     background-color: #f8f9fa;
 }
 
-/* ===== Sichtbarkeits-Toggles (Romaji / Übersetzung) – geteilt ===== */
+/* ===== Sichtbarkeits-Toggles (Romaji / Übersetzung) – fixed bottom-right ===== */
 .map-vis-toggles {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 800;
     display: flex;
     gap: 8px;
-    justify-content: center;
-    margin: 0 auto 10px;
+    justify-content: flex-end;
+    margin: 0;
 }
 
 .map-vis-btn {
@@ -591,4 +612,50 @@ button:hover, .check-button:hover {
 .training .score,
 .numbers .score {
     margin-top: 15px;
+}
+
+/* ===== Round Progress (fixed top-right, below quick-answer) ===== */
+.round-progress {
+    position: fixed;
+    top: 112px;
+    right: 15px;
+    z-index: 999;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.92);
+    color: #007bff;
+    border: 2px solid #007bff;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+}
+
+.round-progress.visible {
+    display: block;
+}
+
+/* ===== Select All Button (in filter sections) ===== */
+.select-all-btn {
+    padding: 6px 16px;
+    font-size: 12px;
+    background: #f0f2f5;
+    color: #555;
+    border: 2px solid #bbb;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: block;
+    margin: 8px auto 0;
+}
+
+.select-all-btn:hover {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.select-all-btn.active {
+    background: #e8f0fe;
+    color: #0056b3;
+    border-color: #007bff;
 }

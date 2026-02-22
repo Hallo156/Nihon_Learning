@@ -72,13 +72,13 @@ function isQuickAnswer() {
     return quickAnswerEnabled;
 }
 
-function injectQuickAnswerButton(container) {
+function injectQuickAnswerButton() {
     const btn = document.createElement('button');
     btn.id = 'quickAnswerToggle';
     btn.className = 'quick-answer-toggle' + (quickAnswerEnabled ? ' active' : '');
     btn.textContent = quickAnswerEnabled ? t('btn.quickOn') : t('btn.quickOff');
     btn.addEventListener('click', toggleQuickAnswer);
-    container.appendChild(btn);
+    document.body.appendChild(btn);
 
     document.addEventListener('quickanswerchange', () => {
         btn.className = 'quick-answer-toggle' + (quickAnswerEnabled ? ' active' : '');
@@ -87,4 +87,63 @@ function injectQuickAnswerButton(container) {
     document.addEventListener('langchange', () => {
         btn.textContent = quickAnswerEnabled ? t('btn.quickOn') : t('btn.quickOff');
     });
+}
+
+/* --- Select All Button (für Filter-Sektionen) --- */
+
+function injectSelectAllButton(filterContainer) {
+    const btn = document.createElement('button');
+    btn.className = 'select-all-btn';
+
+    function updateState() {
+        const cbs = filterContainer.querySelectorAll('input[type="checkbox"]');
+        const allChecked = cbs.length > 0 && Array.from(cbs).every(function(cb) { return cb.checked; });
+        btn.classList.toggle('active', allChecked);
+        btn.textContent = t('btn.selectAll');
+    }
+
+    btn.addEventListener('click', function() {
+        const cbs = filterContainer.querySelectorAll('input[type="checkbox"]');
+        const allChecked = cbs.length > 0 && Array.from(cbs).every(function(cb) { return cb.checked; });
+        cbs.forEach(function(cb) { cb.checked = !allChecked; });
+        updateState();
+    });
+
+    filterContainer.addEventListener('change', updateState);
+    document.addEventListener('langchange', updateState);
+
+    updateState();
+
+    var applyBtn = filterContainer.querySelector('.filter-apply-btn') || filterContainer.querySelector('button[data-i18n="btn.applyFilter"]');
+    if (applyBtn) {
+        applyBtn.parentElement.insertBefore(btn, applyBtn);
+    } else {
+        filterContainer.appendChild(btn);
+    }
+}
+
+/* --- Round Progress (Runde: X/Y für Wiederholungsmodus) --- */
+
+function createRoundProgress() {
+    var el = document.createElement('div');
+    el.className = 'round-progress';
+    document.body.appendChild(el);
+
+    function update(done, total) {
+        el.textContent = t('round.progress', done, total);
+        el.classList.add('visible');
+    }
+
+    function hide() {
+        el.classList.remove('visible');
+    }
+
+    document.addEventListener('langchange', function() {
+        if (el.classList.contains('visible')) {
+            var m = el.textContent.match(/(\d+).*?(\d+)/);
+            if (m) el.textContent = t('round.progress', m[1], m[2]);
+        }
+    });
+
+    return { update: update, hide: hide, el: el };
 }

@@ -142,13 +142,16 @@ class QuizEngine {
             config.incorrectSpanId || 'incorrectCount'
         );
 
+        /* --- Round Progress --- */
+        this.roundMastered = new Set();
+        this.roundProgress = createRoundProgress();
+
         /* --- Events binden --- */
         this._bindEvents(config);
 
         /* --- Quick Answer --- */
         if (config.quickAnswerTarget) {
-            const target = document.querySelector(config.quickAnswerTarget);
-            if (target) injectQuickAnswerButton(target.parentElement || target);
+            injectQuickAnswerButton();
         }
     }
 
@@ -172,6 +175,7 @@ class QuizEngine {
             && this.incorrectQuestions.length === 0) {
             this.remainingQuestions = [...pool];
             shuffleArray(this.remainingQuestions);
+            this.roundMastered = new Set();
         }
 
         // 30% Chance aus der Falsch-Queue
@@ -301,6 +305,9 @@ class QuizEngine {
         /* Score */
         if (isCorrect) {
             this.score.addCorrect();
+            if (this.currentMode === 'semi-random') {
+                this.roundMastered.add(this.currentQuestion);
+            }
             if (this.config.onCorrect) this.config.onCorrect(this.currentQuestion);
         } else {
             this.score.addIncorrect();
@@ -317,12 +324,27 @@ class QuizEngine {
             this.feedbackEl.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
         }
 
+        /* Round Progress aktualisieren */
+        this._updateRoundProgress();
+
         /* Quick Answer oder Next-Button */
         if (isCorrect && isQuickAnswer()) {
             setTimeout(() => this.loadQuestion(), 400);
         } else if (this.nextButton) {
             this.nextButton.style.display = 'block';
         }
+    }
+
+    /* ============ ROUND PROGRESS ============ */
+
+    _updateRoundProgress() {
+        if (this.currentMode !== 'semi-random') {
+            this.roundProgress.hide();
+            return;
+        }
+        const pool = this.config.getPool();
+        const total = pool ? pool.length : 0;
+        this.roundProgress.update(this.roundMastered.size, total);
     }
 
     /* ============ QUIZ RESET ============ */
@@ -333,7 +355,9 @@ class QuizEngine {
         this.remainingQuestions = pool ? [...pool] : [];
         shuffleArray(this.remainingQuestions);
         this.incorrectQuestions = [];
+        this.roundMastered = new Set();
         if (this.config.onReset) this.config.onReset();
+        this._updateRoundProgress();
         this.loadQuestion();
     }
 
@@ -452,6 +476,7 @@ function buildReferenceSidebar(config) {
     closeBtn.addEventListener('click', toggle);
     backdrop.addEventListener('click', toggle);
     document.addEventListener('langchange', function () {
+        toggleBtn.textContent = t('sidebar.toggle');
         if (isOpen) rebuild();
     });
 

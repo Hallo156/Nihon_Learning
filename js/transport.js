@@ -14,6 +14,7 @@ let answered      = false;
 let remaining   = [];
 let incorrectPool = [];
 let score;
+let currentRouteHadError = false;
 
 /* ============ DOM-REFS ============ */
 
@@ -493,6 +494,7 @@ function finishAnswer(correct, q) {
         }
     } else {
         score.addIncorrect();
+        currentRouteHadError = true;
         if (currentMode === 'spaced') incorrectPool.push(currentRoute);
         const explanation = getLangField(q, 'explanation_de', 'explanation_en');
         const correctLabel = getCorrectLabel(q);
@@ -544,6 +546,10 @@ function advanceQuestion() {
         renderChain();
         renderQuestion();
     } else {
+        if (currentMode === 'spaced' && !currentRouteHadError) {
+            trRoundMastered.add(currentRoute.id);
+        }
+        updateTrRoundProgress();
         loadNextRoute();
     }
 }
@@ -554,6 +560,12 @@ function buildPool() {
     remaining = [...transportRoutes];
     shuffleArray(remaining);
     incorrectPool = [];
+    trRoundMastered = new Set();
+}
+
+function updateTrRoundProgress() {
+    if (currentMode !== 'spaced') { trRoundProgress.hide(); return; }
+    trRoundProgress.update(trRoundMastered.size, transportRoutes.length);
 }
 
 function pickNextRoute() {
@@ -566,6 +578,7 @@ function pickNextRoute() {
     if (remaining.length === 0) {
         remaining = [...transportRoutes];
         shuffleArray(remaining);
+        trRoundMastered = new Set();
     }
     return remaining.pop();
 }
@@ -574,6 +587,7 @@ function loadNextRoute() {
     currentRoute  = pickNextRoute();
     questionIndex = 0;
     answered      = false;
+    currentRouteHadError = false;
     clearFeedback('feedbackArea');
     nextButton.style.display = 'none';
     renderChain();
@@ -583,6 +597,7 @@ function loadNextRoute() {
 function resetQuiz() {
     score.reset();
     buildPool();
+    updateTrRoundProgress();
     loadNextRoute();
 }
 
@@ -644,6 +659,8 @@ buildReferenceSidebar({
 /* ============ INIT ============ */
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
-injectQuickAnswerButton(document.querySelector('.transport-trainer'));
+injectQuickAnswerButton();
+var trRoundProgress = createRoundProgress();
+var trRoundMastered = new Set();
 buildPool();
 loadNextRoute();

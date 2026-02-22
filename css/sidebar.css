@@ -32,6 +32,7 @@
 
 .sidebar-toggle.open {
     right: 320px;
+    z-index: 1010;
 }
 
 /* ===== Sidebar Panel ===== */
@@ -52,6 +53,7 @@
 
 .ref-sidebar.open {
     right: 0;
+    z-index: 1010;
 }
 
 /* Sidebar-Kopf */
@@ -124,6 +126,7 @@
 
 .sidebar-backdrop.visible {
     display: block;
+    z-index: 1005;
 }
 
 /* ===== Responsive: Mobile ===== */
@@ -136,5 +139,6 @@
 
     .sidebar-toggle.open {
         right: 85vw;
+        z-index: 1010;
     }
 }

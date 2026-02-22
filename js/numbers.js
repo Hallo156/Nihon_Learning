@@ -275,4 +275,5 @@ document.getElementById('applyFilter').addEventListener('click', applySegmentFil
 /* ============ INITIALISIERUNG ============ */
 
 buildFilterCheckboxes();
+injectSelectAllButton(document.querySelector('.segment-filters'));
 applySegmentFilter();
