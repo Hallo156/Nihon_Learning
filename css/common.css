@@ -205,6 +205,8 @@ body:has(.nav-back) {
     color: #007bff;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
+    white-space: normal;
+    line-height: 1.3;
 }
 
 .mode-toggle button.active {
@@ -614,25 +616,16 @@ body:has(.nav-back) {
     margin-top: 15px;
 }
 
-/* ===== Round Progress (fixed top-right, below quick-answer) ===== */
+/* ===== Round Progress (unterhalb des Mode-Toggles) ===== */
 .round-progress {
-    position: fixed;
-    top: 112px;
-    right: 15px;
-    z-index: 999;
-    padding: 4px 12px;
-    font-size: 12px;
-    font-weight: bold;
-    background: rgba(255, 255, 255, 0.92);
-    color: #007bff;
-    border: 2px solid #007bff;
-    border-radius: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     display: none;
-}
-
-.round-progress.visible {
-    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #007bff;
+    text-align: center;
+    margin: -8px auto 10px;
+    width: 100%;
+    max-width: 350px;
 }
 
 /* ===== Select All Button (in filter sections) ===== */

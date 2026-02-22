@@ -81,6 +81,14 @@ let currentKana = null;
 let activeKanaList = [];
 const score = new ScoreTracker('correctCount', 'incorrectCount');
 
+let kanaMode = 'random';
+let kanaRemaining = [];
+let kanaIncorrect = [];
+let kanaMastered = new Set();
+let kanaAnswered = false;
+let kanaIncorrectAdded = false;
+let roundProgress = null;
+
 /* ============ DOM ============ */
 
 const kanaDisplay = document.getElementById('kanaDisplay');
@@ -88,7 +96,6 @@ const textInput = document.getElementById('textInput');
 const checkButton = document.getElementById('checkButton');
 const nextButton = document.getElementById('nextButton');
 const feedbackArea = document.getElementById('feedbackArea');
-const statsDisplay = document.getElementById('statsDisplay');
 
 const hiraganaBasicCheckbox = document.getElementById('hiraganaBasic');
 const katakanaBasicCheckbox = document.getElementById('katakanaBasic');
@@ -97,6 +104,8 @@ const katakanaDakutenCheckbox = document.getElementById('katakanaDakuten');
 const hiraganaYoonCheckbox = document.getElementById('hiraganaYoon');
 const katakanaYoonCheckbox = document.getElementById('katakanaYoon');
 const applyFilterBtn = document.getElementById('applyFilter');
+const modeRandomBtn = document.getElementById('modeRandom');
+const modeSemiBtn = document.getElementById('modeSemiRandom');
 
 /* ============ FILTER-LOGIK ============ */
 
@@ -109,8 +118,6 @@ function updateActiveKanaList() {
     if (hiraganaYoonCheckbox.checked) activeKanaList.push(...kanaData.hiraganaYoon);
     if (katakanaYoonCheckbox.checked) activeKanaList.push(...kanaData.katakanaYoon);
 
-    statsDisplay.textContent = t('kana.stats', activeKanaList.length);
-
     if (activeKanaList.length === 0) {
         kanaDisplay.textContent = t('kana.noSelection');
         currentKana = null;
@@ -119,12 +126,56 @@ function updateActiveKanaList() {
     return true;
 }
 
+/* ============ SPACED REPETITION ============ */
+
+function selectNextKana() {
+    if (kanaMode === 'random') {
+        return activeKanaList[Math.floor(Math.random() * activeKanaList.length)];
+    }
+    if (kanaRemaining.length === 0 && kanaIncorrect.length === 0) {
+        kanaRemaining = [...activeKanaList];
+        shuffleArray(kanaRemaining);
+        kanaMastered = new Set();
+    }
+    if (kanaIncorrect.length > 0 && Math.random() < 0.3) {
+        return kanaIncorrect.shift();
+    }
+    if (kanaRemaining.length > 0) {
+        return kanaRemaining.shift();
+    }
+    return kanaIncorrect.shift();
+}
+
+function updateKanaRoundProgress() {
+    if (!roundProgress) return;
+    if (kanaMode !== 'semi-random') {
+        roundProgress.hide();
+        return;
+    }
+    roundProgress.update(kanaMastered.size, activeKanaList.length);
+}
+
+function switchKanaMode(mode) {
+    kanaMode = mode;
+    if (modeRandomBtn) modeRandomBtn.classList.toggle('active', mode === 'random');
+    if (modeSemiBtn) modeSemiBtn.classList.toggle('active', mode === 'semi-random');
+    score.reset();
+    kanaRemaining = [];
+    kanaIncorrect = [];
+    kanaMastered = new Set();
+    updateKanaRoundProgress();
+    loadNextKana();
+}
+
 /* ============ NAECHSTES ZEICHEN ============ */
 
 function loadNextKana() {
     if (!updateActiveKanaList()) return;
 
-    currentKana = activeKanaList[Math.floor(Math.random() * activeKanaList.length)];
+    nextButton.style.display = 'none';
+    kanaAnswered = false;
+    kanaIncorrectAdded = false;
+    currentKana = selectNextKana();
     kanaDisplay.textContent = currentKana ? currentKana.kana : '-';
 
     textInput.value = '';
@@ -136,6 +187,7 @@ function loadNextKana() {
 /* ============ ANTWORT PRUEFEN (mit Romaji-Varianten) ============ */
 
 function checkAnswer() {
+    if (kanaAnswered) return;
     if (!currentKana) {
         feedbackArea.textContent = t('kana.noFilter');
         feedbackArea.className = 'feedback incorrect';
@@ -162,14 +214,28 @@ function checkAnswer() {
     }
 
     if (acceptedAnswers.includes(userAnswer)) {
+        kanaAnswered = true;
         feedbackArea.textContent = t('feedback.correct');
         feedbackArea.className = 'feedback correct';
         score.addCorrect();
-        setTimeout(loadNextKana, isQuickAnswer() ? 400 : 800);
+        if (kanaMode === 'semi-random') {
+            kanaMastered.add(currentKana);
+        }
+        updateKanaRoundProgress();
+        if (isQuickAnswer()) {
+            setTimeout(loadNextKana, 400);
+        } else {
+            nextButton.style.display = 'block';
+        }
     } else {
         feedbackArea.textContent = t('kana.wrong', currentKana.romaji);
         feedbackArea.className = 'feedback incorrect';
         score.addIncorrect();
+        if (kanaMode === 'semi-random' && !kanaIncorrectAdded) {
+            kanaIncorrect.push(currentKana);
+            kanaIncorrectAdded = true;
+        }
+        updateKanaRoundProgress();
     }
 }
 
@@ -177,6 +243,7 @@ function checkAnswer() {
 
 document.addEventListener('langchange', () => {
     updateActiveKanaList();
+    updateKanaRoundProgress();
 });
 
 /* ============ INIT ============ */
@@ -185,11 +252,22 @@ checkButton.addEventListener('click', checkAnswer);
 nextButton.addEventListener('click', loadNextKana);
 applyFilterBtn.addEventListener('click', function () {
     score.reset();
+    kanaRemaining = [];
+    kanaIncorrect = [];
+    kanaMastered = new Set();
+    updateKanaRoundProgress();
     loadNextKana();
 });
 textInput.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') checkAnswer();
 });
+
+/* Mode Toggle */
+if (modeRandomBtn) modeRandomBtn.addEventListener('click', () => switchKanaMode('random'));
+if (modeSemiBtn) modeSemiBtn.addEventListener('click', () => switchKanaMode('semi-random'));
+
+/* Round Progress — nach dem Mode-Toggle-Element einfügen */
+roundProgress = createRoundProgress(modeSemiBtn);
 
 /* Quick Answer Button + Select All injizieren */
 injectQuickAnswerButton();

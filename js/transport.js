@@ -660,7 +660,7 @@ buildReferenceSidebar({
 
 score = new ScoreTracker('correctCount', 'incorrectCount');
 injectQuickAnswerButton();
-var trRoundProgress = createRoundProgress();
+var trRoundProgress = createRoundProgress(document.getElementById('modeSemiRandom'));
 var trRoundMastered = new Set();
 buildPool();
 loadNextRoute();

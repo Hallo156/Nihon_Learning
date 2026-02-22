@@ -124,26 +124,30 @@ function injectSelectAllButton(filterContainer) {
 
 /* --- Round Progress (Runde: X/Y für Wiederholungsmodus) --- */
 
-function createRoundProgress() {
-    var el = document.createElement('div');
+function createRoundProgress(semiButton) {
+    var el = document.createElement('span');
     el.className = 'round-progress';
-    document.body.appendChild(el);
+    if (semiButton) {
+        var parent = semiButton.parentElement;
+        (parent || semiButton).insertAdjacentElement('afterend', el);
+    }
 
     function update(done, total) {
         el.textContent = t('round.progress', done, total);
-        el.classList.add('visible');
+        el.style.display = 'block';
     }
 
     function hide() {
-        el.classList.remove('visible');
+        el.style.display = 'none';
     }
 
     document.addEventListener('langchange', function() {
-        if (el.classList.contains('visible')) {
+        if (el.style.display !== 'none') {
             var m = el.textContent.match(/(\d+).*?(\d+)/);
             if (m) el.textContent = t('round.progress', m[1], m[2]);
         }
     });
 
+    hide();
     return { update: update, hide: hide, el: el };
 }

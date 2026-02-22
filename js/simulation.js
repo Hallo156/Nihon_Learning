@@ -547,6 +547,6 @@ score = new ScoreTracker('correctCount', 'incorrectCount');
 buildSceneCheckboxes();
 injectQuickAnswerButton();
 injectSelectAllButton(document.querySelector('.scene-filters'));
-var simRoundProgress = createRoundProgress();
+var simRoundProgress = createRoundProgress(document.getElementById('modeSemiRandom'));
 var simRoundMastered = new Set();
 applySceneFilter();

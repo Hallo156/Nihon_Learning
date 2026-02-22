@@ -144,7 +144,7 @@ class QuizEngine {
 
         /* --- Round Progress --- */
         this.roundMastered = new Set();
-        this.roundProgress = createRoundProgress();
+        this.roundProgress = createRoundProgress(this._el(config.modeSemiId));
 
         /* --- Events binden --- */
         this._bindEvents(config);
