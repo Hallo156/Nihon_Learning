@@ -1,0 +1,75 @@
+/* Japanisch Lernprogramm — Erstellt von Hi156 unter Verwendung von Claude (Anthropic) */
+
+/* ===== Adjektiv-Trainer spezifische Styles ===== */
+
+/* Satz-Anzeige: etwas größer für gute Lesbarkeit */
+.question-area {
+    font-size: 22px;
+    color: #34495e;
+    margin: 25px 0 8px;
+    padding: 20px;
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    min-height: 60px;
+    line-height: 1.6;
+}
+
+/* Hervorgehobenes Adjektiv im Satz */
+.adj-highlight {
+    color: #007bff;
+    font-weight: bold;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 1px;
+}
+
+/* Romaji-Hint unterhalb des Satzes (ein-/ausblendbar) */
+.adj-romaji-hint {
+    font-size: 13px;
+    color: #777;
+    font-style: italic;
+    text-align: center;
+    margin: 0 0 16px;
+    min-height: 16px;
+}
+
+/* Adjektiv-Trainer: vertikale Buttons (Bedeutungen können länger sein) */
+.adj-trainer .choices-area {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.adj-trainer .choice-button {
+    width: 80%;
+    max-width: 380px;
+    font-size: 16px;
+}
+
+/* Feedback mit mehr Platz */
+.adj-trainer .feedback {
+    min-height: 100px;
+    text-align: left;
+    line-height: 1.7;
+    font-size: 17px;
+}
+
+.feedback .romaji {
+    font-style: italic;
+    color: #555;
+}
+
+/* Typ-Badge im Feedback-Romaji-Span */
+.adj-type-inline {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 0px 5px;
+    border-radius: 8px;
+    font-style: normal;
+}
+
+.adj-type-inline.i  { background: #d0e8ff; color: #0056b3; }
+.adj-type-inline.na { background: #ffecd0; color: #a0500a; }
+
+/* Sichtbarkeits-Toggle: Romaji ein-/ausblenden */
+.adj-trainer.hide-romaji .adj-romaji-hint { display: none; }

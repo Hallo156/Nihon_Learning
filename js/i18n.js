@@ -88,6 +88,18 @@ const uiStrings = {
     'verb.fullSentence': { de: 'Vollständiger Satz',       en: 'Full sentence' },
     'verb.meaningLabel': { de: 'Bedeutung',                 en: 'Meaning' },
 
+    // --- adjective.html ---
+    'adj.title':        { de: 'Japanischer Adjektiv-Trainer', en: 'Japanese Adjective Trainer' },
+    'adj.instruction':    { de: 'Was bedeutet das hervorgehobene Adjektiv?', en: 'What does the highlighted adjective mean?' },
+    'adj.correctMeaning': { de: 'Richtig! Die Bedeutung ist "{0}".', en: 'Correct! The meaning is "{0}".' },
+    'adj.wrong':          { de: 'Falsch.',                       en: 'Wrong.' },
+    'adj.correctAns':     { de: 'Die richtige Bedeutung ist: "{0}".', en: 'The correct meaning is: "{0}".' },
+    'adj.fullSentence': { de: 'Vollständiger Satz',            en: 'Full sentence' },
+    'adj.typeI':        { de: 'い-Adjektiv',                   en: 'i-Adjective' },
+    'adj.typeNa':       { de: 'な-Adjektiv',                   en: 'na-Adjective' },
+    'index.adj.title':  { de: 'Adjektiv-Trainer',              en: 'Adjective Trainer' },
+    'index.adj.desc':   { de: 'Adjektiv-Bedeutungen in Sätzen erkennen. 25 Adjektive, い-Form und な-Form.', en: 'Recognize adjective meanings in sentences. 25 adjectives, i-form and na-form.' },
+
     // --- training.html ---
     'training.title':   { de: 'Grammatik-Trainer',          en: 'Grammar Trainer' },
     'training.viewQuiz': { de: 'Üben',                      en: 'Practice' },

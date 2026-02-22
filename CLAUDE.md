@@ -7,7 +7,7 @@ Interaktive Web-App zum Japanisch lernen. Deutsche und englische UI, Vanilla JS,
 ## Dateistruktur
 
 ```
-index.html                 Hauptmenue (12 Karten → Module, inkl. Simulation-Gruppe)
+index.html                 Hauptmenue (13 Karten → Module, inkl. Simulation-Gruppe)
 css/
   common.css               Shared: Body, Container, Feedback, Buttons, Score, Nav-Back, Lang-Toggle,
                            next-btn, mode-toggle, view-toggle, choices-area/choice-button,
@@ -20,6 +20,7 @@ css/
   numbers.css              Number-Display (64px), Container-Override
   training.css             Container-Override (900px), Hide-Translation-Regel
   verb.css                 Fragen-Bereich, Verb-Trainer-Ausnahme (Buttons vertikal), Feedback
+  adjective.css            Fragen-Bereich, Adjektiv-Trainer (Buttons vertikal), Typ-Badge (い/な)
   kanji-vocab.css          Wort-Display (64px), Override fuer Kanji-Vokabular-Modul
   simulation.css           Dialog-Layout (Bubbles, Lücken, Eingabe-Modus-Toggle)
   location-obj.css         SVG-Szene, Hit-Areas, Ball-Styles (Gegenstand-Position)
@@ -39,6 +40,8 @@ js/
   training-data.js         Trainingsdaten: 6 Segmente, ~49 Fragen (MC/Fill), Referenz-Inhalte (particles+positions+shopping entfernt)
   training.js              Grammatik-Quiz via QuizEngine: Segment-Filter, Nachschlag-Sidebar
   verb.js                  15 Verb-Daten + Quiz via QuizEngine + Romaji/Translation-Toggle + Nachschlag-Referenz
+  adjective-data.js        Adjektiv-Daten: 25 Adjektive (18 い, 7 な), bilingual + adjReference (3 Abschnitte)
+  adjective.js             Adjektiv-Quiz via QuizEngine + Romaji/Translation-Toggle + Typ-Badge + Nachschlag-Sidebar
   kanji-vocab-data.js      Kanji-Vokabular-Daten: ~55 Verbindungen mit reading, romaji, meanings (bilingual, kein level-Feld)
   kanji-vocab.js           Kanji-Vokabular-Quiz via QuizEngine: 3 Typen, dynamischer Stufenfilter via computeVocabLevel()
   simulation-data.js       Simulations-Daten: 4 Themen (Kleidung, Essen, Moebel, Kore/Sore/Are), Multiline-Dialoge mit Luecken (bilingual); Korero-Szenen haben visual-Feld
@@ -60,6 +63,7 @@ pages/
   numbers.html             Zahlen & Zaehler Trainer (4 Quiz-Typen, 13 Segmente, Nachschlag-Sidebar)
   training.html            Grammatik-Trainer (dynamisches Quiz, Nachschlag-Sidebar)
   verb.html                Verb-Trainer (Satzluecken, Multiple-Choice, Mode-Toggle)
+  adjective.html           Adjektiv-Trainer (Satzluecken, Multiple-Choice, Typ-Badge, Mode-Toggle)
   kanji-vocab.html         Kanji-Vokabular-Trainer (3 Quiz-Typen, dynamischer Stufenfilter, MC + Texteingabe, Score)
   simulation.html          Einkaufs-Simulation (Multiline-Dialog, Szenenfilter, MC + Texteingabe, Score)
   giving.html              Geben & Nehmen (Multiline-Dialog, Szenenfilter, Romaji-Toggle, MC + Texteingabe, Score)
@@ -83,6 +87,7 @@ pages/
 - **location-map.js braucht location-map-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → location-map-data.js → location-map.js
 - **transport.js braucht transport-data.js + transport-ref.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → transport-data.js → transport-ref.js → transport.js
 - **verb.js hat keine separate Daten-Datei.** Reihenfolge: common.js → i18n.js → quiz-engine.js → verb.js
+- **adjective.js braucht adjective-data.js.** Reihenfolge: common.js → i18n.js → quiz-engine.js → adjective-data.js → adjective.js
 - **Pfade:** HTML in `pages/` nutzt `../css/` und `../js/`. `index.html` im Root nutzt `css/` und `js/`.
 - **Kein Framework, keine Dependencies.** Alles laeuft ohne Server direkt im Browser (file://) und via GitHub Pages.
 - **Antworten immer in Romaji oder Kana akzeptieren.** Jedes `correct[]`-Array muss sowohl Kana- als auch Romaji-Varianten enthalten (z.B. `['に', 'ni']`). Texteingabe-Pruefung case-insensitive fuer Romaji.
@@ -214,6 +219,9 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - `training.css`: ~14 Zeilen (nur Container-Override + hide-translation)
 - `numbers.css`: ~18 Zeilen (nur Container + Number-Display)
 - `kanji-vocab.css`: ~30 Zeilen (Wort-Display Override)
+- `adjective-data.js`: ~150 Zeilen (reine Daten: 25 Adjektive bilingual + adjReference 3 Abschnitte)
+- `adjective.js`: ~85 Zeilen (via QuizEngine, Typ-Badge, Nachschlag-Sidebar)
+- `adjective.css`: ~80 Zeilen (Fragen-Bereich, vertikale Buttons, Typ-Badge い/な, Toggle-CSS)
 - `simulation-data.js`: ~720 Zeilen (reine Daten: 8 Szenen — 2x Kleidung/Essen/Moebel + 2x Kore/Sore/Are, Multiline-Dialoge bilingual; Korero-Szenen: `visual`-Feld)
 - `simulation-ref.js`: ~71 Zeilen (Nachschlag-Referenz: Einkaufsphrasen, これ/それ/あれ, Adjektive)
 - `simulation.js`: ~535 Zeilen (Dialog-Rendering, Luecken-Logik, MC + Text, Spaced Repetition, renderKoreroVisual(), Nachschlag-Sidebar; nutzt getLangField + buildVisibilityToggles)
@@ -248,6 +256,17 @@ Aktueller Stand (alle unter 1000 Zeilen):
 - **Nachschlag-Sidebar:** Verb-Tabelle (15 ます-Form-Verben) + Partikel-Uebersicht (を/に/へ/で/と/が)
 - Choice-Buttons zeigen Verb (ます-Form) + Romaji-Span (versteckbar per Toggle)
 - Übersetzung im Feedback-Bereich entfernt (wird jetzt oben angezeigt)
+
+### Adjektiv-Trainer (`adjective-data.js` + `adjective.js` + `adjective.html`)
+- 25 Adjektive (18 い-Adjektive, 7 な-Adjektive), bilingual + adjReference (3 Abschnitte)
+- Datenstruktur: `{ adj, romaji, type('i'|'na'), meaning_de, meaning_en, sentence_jp_blank, sentence_jp_filled, sentence_de_filled, sentence_en_filled }`
+- **Quiz-Format:** Vollständiger JP-Satz wird angezeigt (Adjektiv **blau hervorgehoben**); Nutzer wählt die korrekte Bedeutung aus 3 Choices (in DE/EN)
+- **Via QuizEngine** (MC-only, kein textInput): Custom Button-Rendering mit Bedeutungstext, ruft `engine.finishAnswer()` direkt auf
+- **Sichtbarkeits-Toggle** via `buildVisibilityToggles()`: nur Romaji — localStorage `adj_romaji`, standard-an — zeigt `(adjektiv = romaji)` unter dem Satz
+- **Nachschlag-Sidebar:** 3 Abschnitte — い-Adjektive-Tabelle (18), な-Adjektive-Tabelle (7), Grammatik-Hinweise (prädikativ vs. attributiv)
+- Feedback zeigt: Bedeutung + JP-Satz + Übersetzung + Romaji + Typ-Badge (い/な) inline
+- Index-Gruppe: **Zahlen & Vokabular** (kein Lückentext mehr → eindeutige Vokabel-Fragen)
+- i18n-Keys: `adj.*` (8 Einträge), `index.adj.*` (2 Einträge)
 
 ### Kanji-Trainer (`kanji-data.js` + `kanji.js` + `kanji.html`)
 - 108 Kanji in 2 Stufen: A1 (73), A2 (35)
